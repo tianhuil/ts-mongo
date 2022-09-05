@@ -1,0 +1,21 @@
+{
+  "name": "ts-mongo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "assert": ". ./assert.sh"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "mongodb": "^4.0.0",
+    "ts-node": "^10.9.1",
+    "type-assertions": "^1.1.0",
+    "typescript": "^4.8.2"
+  },
+  "peerDependencies": {
+    "mongodb": "^4.0.0"
+  }
+}
