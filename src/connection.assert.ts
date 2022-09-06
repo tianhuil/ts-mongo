@@ -1,4 +1,4 @@
-import { Collection, Filter, WithId } from 'mongodb'
+import { Collection, Filter, WithId, Document } from 'mongodb'
 import * as ta from 'type-assertions'
 import { TsCollection } from './connection'
 import { Filter as TsFilter } from './types'
@@ -24,7 +24,7 @@ ta.assert<
   >
 >()
 
-ta.assert<ta.Extends<TsCollection<TSchema>, { count(): Promise<number> }>>()
+ta.assert<ta.Extends<TsCollection<TSchema>, { countDocuments(filter: TsFilter<TSchema>): Promise<number> }>>()
 ta.assert<
   ta.Not<ta.Extends<TsCollection<TSchema>, { notMember(): Promise<number> }>>
 >()
@@ -32,7 +32,7 @@ ta.assert<
 ta.assert<
   ta.Extends<
     TsCollection<TSchema>,
-    { findOne(): Promise<WithId<TSchema> | null> }
+    { findOne(filter: TsFilter<TSchema>): Promise<WithId<TSchema> | null> }
   >
 >()
 ta.assert<

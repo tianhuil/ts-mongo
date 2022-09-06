@@ -8,7 +8,7 @@
       "moduleResolution": "node",
       "lib": ["esnext", "dom"],
       "esModuleInterop": true,
-      "types": ["node", "jest"]
+      "types": ["jest"]
     }
   }
   

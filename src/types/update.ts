@@ -37,7 +37,7 @@ export declare type Update<TSchema extends Document> = {
 
 // Select for UpdatePaths
 export declare type SelectFlattenUpdatePaths<
-  TSchema extends Document,
+  TSchema,
   KeepType
 > = {
   readonly [Property in FlattenUpdatePaths<TSchema>]: FlattenUpdateType<
@@ -103,13 +103,13 @@ export declare type UpdateFlattenArrayTypes<
     TSchema,
     Array<unknown>
   >]?: FlattenUpdateType<TSchema, Property> extends Array<infer ArrayType>
-    ? unknown extends AssignType
+    ? ArrayType extends Document
       ? ArrayAssignType<ArrayType>
       : AssignType
     : never
 }
 
-export declare type ArrayAssignType<T> =
+export declare type ArrayAssignType<T extends Document> =
   | T
   | {
       $each: ReadonlyArray<T>

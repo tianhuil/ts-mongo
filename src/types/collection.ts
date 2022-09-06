@@ -207,7 +207,7 @@ export declare class SafeCollection<TSchema extends Doc> {
    *
    * @param filter - The filter predicate. If unspecified, then all documents in the collection will match the predicate
    */
-  find<T = TSchema>(
+  find<T extends Document = TSchema>(
     filter: Filter<TSchema>,
     options?: TsFindOptions<TSchema>
   ): TsFindCursor<T>
@@ -439,7 +439,7 @@ export declare class SafeCollection<TSchema extends Doc> {
    * @param pipeline - An array of {@link https://docs.mongodb.com/manual/reference/operator/aggregation-pipeline/|aggregation pipeline stages} through which to pass change stream documents. This allows for filtering (using $match) and manipulating the change stream documents.
    * @param options - Optional settings for the command
    */
-  watch<TLocal = TSchema>(
+  watch<TLocal extends Doc = TSchema>(
     pipeline?: Document[],
     options?: ChangeStreamOptions
   ): ChangeStream<TLocal>

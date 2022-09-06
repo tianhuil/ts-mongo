@@ -77,3 +77,6 @@ typings/
 
 # jest-mongodb
 globalConfig.json
+
+# output
+dist

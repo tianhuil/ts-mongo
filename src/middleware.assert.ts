@@ -25,10 +25,8 @@ ta.assert<ta.Not<ta.Extends<string, FuncType>>>()
 ta.assert<ta.Not<ta.Extends<{}, FuncType>>>()
 
 // Test Handler and Middleware
-ta.assert<ta.Extends<Handler<TSchema<string>, 'aggregate'>, FuncType>>()
-ta.assert<
-  ta.Extends<Middleware<TSchema<string>, MiddlewareMethods>, FuncType>
->()
+ta.assert<ta.Extends<Handler, FuncType>>()
+ta.assert<ta.Extends<Middleware['handler'], FuncType | undefined>>()
 
 // Test MiddlewareMethods
 ta.assert<

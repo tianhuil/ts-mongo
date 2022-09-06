@@ -16,6 +16,7 @@ export declare type SortDirection =
   | 'ascending'
   | 'descending'
 
+// Needs to extends Document, not Doc because recursive structure of Doc will not work here
 export declare type Sort<TSchema extends Document> = {
   [Property in FlattenFilterPaths<TSchema>]?: FilterType<
     TSchema,

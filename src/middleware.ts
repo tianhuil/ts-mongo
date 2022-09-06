@@ -68,7 +68,7 @@ export interface Context {
 
 export type Handler = (ctx: Context) => (...args: unknown[]) => any
 
-type Middleware = {
+export type Middleware = {
   handler?: Handler
 }
 
