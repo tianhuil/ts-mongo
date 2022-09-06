@@ -1,4 +1,4 @@
-import { Collection, Filter, WithId, Document } from 'mongodb'
+import { Collection, Filter, WithId } from 'mongodb'
 import * as ta from 'type-assertions'
 import { TsCollection } from './connection'
 import { Filter as TsFilter } from './types'
