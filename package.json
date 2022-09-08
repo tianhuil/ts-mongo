@@ -6,6 +6,7 @@
   "scripts": {
     "assert": ". ./assert.sh",
     "build": "tsc",
+    "typecheck": "tsc --noEmit",
     "jest": "jest",
     "jest:watch": "jest --watch"
   },
