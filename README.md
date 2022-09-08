@@ -1,3 +1,5 @@
+[![Node.js CI Lint](https://github.com/tianhuil/ts-mongo/actions/workflows/test.yaml/badge.svg)](https://github.com/tianhuil/ts-mongo/actions/workflows/test.yaml)
+
 # TS Mongo
 Strongly-typed Mongo native driver.
 
