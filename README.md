@@ -6,6 +6,14 @@ Mongodb's node-native driver and mongoose both provide poor typescript support. 
 
 We re-type the node-native driver to provide uptight type-safety.  We choose to have type-safety disallow queries that are hard to type or which we deem poor practice.  While there are plenty of valid mongo queries our type checking disallows, our aim is to minimize bad queries that pass type checking.
 
+### Getting Started
+To create a type-safe drop-in replacement
+```ts
+const collection = mkTsCollection(db, 'colleciton-name')
+const result = await colleciton.findOne(...) // now with better type safety
+const unsafeResult = await colleciton.unsafe.findOne(...) // with old types
+```
+
 ### Example
 Assume you have a collection type of
 ```ts
