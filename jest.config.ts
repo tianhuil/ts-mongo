@@ -195,4 +195,7 @@ export default merge(mongoDbPreset, {
 
   // Whether to use watchman for file crawling
   // watchman: true,
+
+  // To close run on CI, we need --detectOpenHandles:
+  detectOpenHandles: true,
 })
