@@ -48,4 +48,4 @@ jobs:
       - run: pnpm install
       - run: pnpm run typecheck
       - run: pnpm run assert
-      # - run: pnpm run jest
+      - run: pnpm run jest

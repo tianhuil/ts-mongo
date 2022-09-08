@@ -198,4 +198,6 @@ export default merge(mongoDbPreset, {
 
   // To close run on CI, we need --detectOpenHandles:
   detectOpenHandles: true,
+  // From https://github.com/facebook/jest/issues/1456#issuecomment-600811247
+  forceExit: true,
 })
