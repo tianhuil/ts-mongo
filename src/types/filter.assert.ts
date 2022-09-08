@@ -1,15 +1,16 @@
 import { ObjectId } from 'mongodb'
 import * as ta from 'type-assertions'
-import { Filter, FilterType, WithOperator } from './filter'
+import { FilterType, TsFilter, WithOperator } from './filter'
 
 // cannot use `number` in template type of object key; works if you use specific numbers
 ta.assert<ta.Extends<'a20b', `a${number}b`>>()
 ta.assert<ta.Not<ta.Extends<'does-not-match-pattern', `a${number}b`>>>()
-ta.assert<ta.Extends<{'a20b': true}, {[x in `a${number}b`]: boolean}>>()
-ta.assert<ta.Extends<{'does-not-match-pattern': true}, {[x in `a${number}b`]: boolean}>>()
-ta.assert<ta.Extends<{'does-not-match-pattern': true}, Record<`a${number}b`, boolean>>>()
-ta.assert<ta.Not<ta.Extends<{'does-not-match-pattern': true}, {[x in `a${1 | 2 | 3}b`]: boolean}>>>()
-
+ta.assert<ta.Extends<{ a20b: true }, { [x in `a${number}b`]: boolean }>>()
+ta.assert<ta.Extends<{ 'does-not-match-pattern': true }, { [x in `a${number}b`]: boolean }>>()
+ta.assert<ta.Extends<{ 'does-not-match-pattern': true }, Record<`a${number}b`, boolean>>>()
+ta.assert<
+  ta.Not<ta.Extends<{ 'does-not-match-pattern': true }, { [x in `a${1 | 2 | 3}b`]: boolean }>>
+>()
 
 // Test WithOperator number
 ta.assert<ta.Extends<{ $eq: 2 }, WithOperator<number>>>()
@@ -59,17 +60,14 @@ ta.assert<ta.Not<ta.Extends<{ $all: 'a' }, WithOperator<string[]>>>>()
 ta.assert<ta.Extends<{ $size: 2 }, WithOperator<{ a: number }[]>>>()
 ta.assert<ta.Extends<{ $all: [{ a: 2 }] }, WithOperator<{ a: number }[]>>>()
 ta.assert<
-  ta.Extends<
-    { $all: [{ $elemMatch: { a: { $gte: 4 } } }] },
-    WithOperator<{ a: number }[]>
-  >
+  ta.Extends<{ $all: [{ $elemMatch: { a: { $gte: 4 } } }] }, WithOperator<{ a: number }[]>>
 >()
 
 // Test Filter equivalence
 // https://docs.mongodb.com/manual/reference/operator/query/all/
-ta.assert<ta.Extends<{ a: [2, 3] }, Filter<{ a: number[] }>>>()
-ta.assert<ta.Extends<{ a: { $all: [2, 3] } }, Filter<{ a: number[] }>>>()
-ta.assert<ta.Extends<{ $and: [{ a: [2, 3] }] }, Filter<{ a: number[] }>>>()
+ta.assert<ta.Extends<{ a: [2, 3] }, TsFilter<{ a: number[] }>>>()
+ta.assert<ta.Extends<{ a: { $all: [2, 3] } }, TsFilter<{ a: number[] }>>>()
+ta.assert<ta.Extends<{ $and: [{ a: [2, 3] }] }, TsFilter<{ a: number[] }>>>()
 ta.assert<ta.Extends<{ a: [2, 3] }, WithOperator<{ a: number[] }>>>()
 
 // Test WithOperator negation
@@ -82,22 +80,12 @@ ta.assert<ta.Not<ta.Extends<'a', WithOperator<number>>>>()
 ta.assert<ta.Extends<'a', WithOperator<string>>>()
 
 // Test WithLogicalOperators
-ta.assert<ta.Extends<{ a: { $gt: 2 } }, Filter<{ a: number }>>>()
-ta.assert<
-  ta.Extends<
-    { $and: [{ a: { $gt: 2 } }, { a: { $lt: 5 } }] },
-    Filter<{ a: number }>
-  >
->()
+ta.assert<ta.Extends<{ a: { $gt: 2 } }, TsFilter<{ a: number }>>>()
+ta.assert<ta.Extends<{ $and: [{ a: { $gt: 2 } }, { a: { $lt: 5 } }] }, TsFilter<{ a: number }>>>()
 
 // Test $not operator
-ta.assert<ta.Extends<{ a: { $not: { $gt: 2 } } }, Filter<{ a: number }>>>()
-ta.assert<
-  ta.Extends<
-    { a: { $not: { $text: { $search: 'a' } } } },
-    Filter<{ a: string }>
-  >
->()
+ta.assert<ta.Extends<{ a: { $not: { $gt: 2 } } }, TsFilter<{ a: number }>>>()
+ta.assert<ta.Extends<{ a: { $not: { $text: { $search: 'a' } } } }, TsFilter<{ a: string }>>>()
 
 // Test FlattenPaths / FlattenType
 type Example = {
@@ -134,9 +122,7 @@ ta.assert<ta.Extends<{ $size: 2 }, FilterType<Example, 'b.f'>>>()
 
 // Test FilterType - with operators
 ta.assert<ta.Extends<{ $lt: 2 }, FilterType<Example, 'a'>>>()
-ta.assert<
-  ta.Extends<{ $text: { $search: 'hi' } }, FilterType<Example, 'b.c'>>
->()
+ta.assert<ta.Extends<{ $text: { $search: 'hi' } }, FilterType<Example, 'b.c'>>>()
 ta.assert<ta.Extends<{ $exists: true }, FilterType<Example, 'b.d'>>>()
 ta.assert<ta.Extends<{ e: { $eq: false } }, FilterType<Example, 'b.d'>>>()
 ta.assert<ta.Extends<{ $size: 2 }, FilterType<Example, 'b.f'>>>()
@@ -145,5 +131,5 @@ ta.assert<ta.Extends<{ $size: 2 }, FilterType<Example, 'b.f'>>>()
 ta.assert<ta.Not<ta.Extends<{ a: 2 }, WithOperator<{ a: number }[]>>>>()
 
 // Disallow extraneous fields, except when index supports number
-ta.assert<ta.Not<ta.Extends<{ z: 2 }, Filter<{ a: number; b: string[] }>>>>()
-ta.assert<ta.Extends<{ z: 2 }, Filter<{ a: number; b: string[] }, number>>>()
+ta.assert<ta.Not<ta.Extends<{ z: 2 }, TsFilter<{ a: number; b: string[] }>>>>()
+ta.assert<ta.Extends<{ z: 2 }, TsFilter<{ a: number; b: string[] }, number>>>()

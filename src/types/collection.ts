@@ -38,7 +38,7 @@ import {
   WithoutId,
 } from 'mongodb'
 import { TsAggregationCursor } from './aggregation'
-import { Filter } from './filter'
+import { TsFilter } from './filter'
 import {
   TsFindCursor,
   TsFindOneAndDeleteOptions,
@@ -121,7 +121,7 @@ export declare class SafeCollection<TSchema extends Doc> {
    * @param callback - An optional callback, a Promise will be returned if none is provided
    */
   updateOne(
-    filter: Filter<TSchema>,
+    filter: TsFilter<TSchema>,
     update: Update<TSchema>,
     options?: UpdateOptions
   ): Promise<UpdateResult>
@@ -134,7 +134,7 @@ export declare class SafeCollection<TSchema extends Doc> {
    * @param callback - An optional callback, a Promise will be returned if none is provided
    */
   replaceOne(
-    filter: Filter<TSchema>,
+    filter: TsFilter<TSchema>,
     replacement: WithoutId<TSchema>,
     options?: ReplaceOptions
   ): Promise<UpdateResult | Document>
@@ -147,7 +147,7 @@ export declare class SafeCollection<TSchema extends Doc> {
    * @param callback - An optional callback, a Promise will be returned if none is provided
    */
   updateMany(
-    filter: Filter<TSchema>,
+    filter: TsFilter<TSchema>,
     update: Update<TSchema>,
     options?: UpdateOptions
   ): Promise<UpdateResult | Document>
@@ -158,10 +158,7 @@ export declare class SafeCollection<TSchema extends Doc> {
    * @param options - Optional settings for the command
    * @param callback - An optional callback, a Promise will be returned if none is provided
    */
-  deleteOne(
-    filter: Filter<TSchema>,
-    options?: DeleteOptions
-  ): Promise<DeleteResult>
+  deleteOne(filter: TsFilter<TSchema>, options?: DeleteOptions): Promise<DeleteResult>
   /**
    * Delete multiple documents from a collection
    *
@@ -169,10 +166,7 @@ export declare class SafeCollection<TSchema extends Doc> {
    * @param options - Optional settings for the command
    * @param callback - An optional callback, a Promise will be returned if none is provided
    */
-  deleteMany(
-    filter: Filter<TSchema>,
-    options?: DeleteOptions
-  ): Promise<DeleteResult>
+  deleteMany(filter: TsFilter<TSchema>, options?: DeleteOptions): Promise<DeleteResult>
   /**
    * Rename the collection.
    *
@@ -199,7 +193,7 @@ export declare class SafeCollection<TSchema extends Doc> {
    * @param callback - An optional callback, a Promise will be returned if none is provided
    */
   findOne<T = TSchema>(
-    filter: Filter<TSchema>,
+    filter: TsFilter<TSchema>,
     options?: TsFindOptions<TSchema>
   ): Promise<T | null>
   /**
@@ -208,7 +202,7 @@ export declare class SafeCollection<TSchema extends Doc> {
    * @param filter - The filter predicate. If unspecified, then all documents in the collection will match the predicate
    */
   find<T extends Document = TSchema>(
-    filter: Filter<TSchema>,
+    filter: TsFilter<TSchema>,
     options?: TsFindOptions<TSchema>
   ): TsFindCursor<T>
   /**
@@ -308,10 +302,7 @@ export declare class SafeCollection<TSchema extends Doc> {
    * @param options - Optional settings for the command
    * @param callback - An optional callback, a Promise will be returned if none is provided
    */
-  indexExists(
-    indexes: string | string[],
-    options?: IndexInformationOptions
-  ): Promise<boolean>
+  indexExists(indexes: string | string[], options?: IndexInformationOptions): Promise<boolean>
   /**
    * Retrieves this collections index info.
    *
@@ -325,9 +316,7 @@ export declare class SafeCollection<TSchema extends Doc> {
    * @param options - Optional settings for the command
    * @param callback - An optional callback, a Promise will be returned if none is provided
    */
-  estimatedDocumentCount(
-    options?: EstimatedDocumentCountOptions
-  ): Promise<number>
+  estimatedDocumentCount(options?: EstimatedDocumentCountOptions): Promise<number>
   /**
    * Gets the number of documents matching the filter.
    * For a fast count of the total documents in a collection see {@link Collection#estimatedDocumentCount| estimatedDocumentCount}.
@@ -354,10 +343,7 @@ export declare class SafeCollection<TSchema extends Doc> {
    * @see https://docs.mongodb.com/manual/reference/operator/query/center/#op._S_center
    * @see https://docs.mongodb.com/manual/reference/operator/query/centerSphere/#op._S_centerSphere
    */
-  countDocuments(
-    filter: Filter<TSchema>,
-    options?: CountDocumentsOptions
-  ): Promise<number>
+  countDocuments(filter: TsFilter<TSchema>, options?: CountDocumentsOptions): Promise<number>
   /**
    * The distinct command returns a list of distinct values for the given key across a collection.
    *
@@ -366,11 +352,7 @@ export declare class SafeCollection<TSchema extends Doc> {
    * @param options - Optional settings for the command
    * @param callback - An optional callback, a Promise will be returned if none is provided
    */
-  distinct(
-    key: string,
-    filter: Filter<TSchema>,
-    options?: DistinctOptions
-  ): Promise<any[]>
+  distinct(key: string, filter: TsFilter<TSchema>, options?: DistinctOptions): Promise<any[]>
   /**
    * Find a document and delete it in one atomic operation. Requires a write lock for the duration of the operation.
    *
@@ -379,7 +361,7 @@ export declare class SafeCollection<TSchema extends Doc> {
    * @param callback - An optional callback, a Promise will be returned if none is provided
    */
   findOneAndDelete(
-    filter: Filter<TSchema>,
+    filter: TsFilter<TSchema>,
     options?: TsFindOneAndDeleteOptions<TSchema>
   ): Promise<ModifyResult<TSchema>>
   /**
@@ -391,7 +373,7 @@ export declare class SafeCollection<TSchema extends Doc> {
    * @param callback - An optional callback, a Promise will be returned if none is provided
    */
   findOneAndReplace(
-    filter: Filter<TSchema>,
+    filter: TsFilter<TSchema>,
     replacement: WithoutId<TSchema>,
     options?: TsFindOneAndReplaceOptions<TSchema>
   ): Promise<ModifyResult<TSchema>>
@@ -418,7 +400,7 @@ export declare class SafeCollection<TSchema extends Doc> {
    * @param callback - An optional callback, a Promise will be returned if none is provided
    */
   findOneAndUpdate(
-    filter: Filter<TSchema>,
+    filter: TsFilter<TSchema>,
     update: Update<TSchema>,
     options?: TsFindOneAndUpdateOptions<TSchema>
   ): Promise<ModifyResult<TSchema>>
@@ -484,7 +466,7 @@ export declare class SafeCollection<TSchema extends Doc> {
    * @param callback - An optional callback, a Promise will be returned if none is provided
    */
   update(
-    selector: Filter<TSchema>,
+    selector: TsFilter<TSchema>,
     update: Update<TSchema>,
     options?: UpdateOptions
   ): Promise<UpdateResult>
@@ -496,10 +478,7 @@ export declare class SafeCollection<TSchema extends Doc> {
    * @param options - Optional settings for the command
    * @param callback - An optional callback, a Promise will be returned if none is provided
    */
-  remove(
-    selector: Filter<TSchema>,
-    options?: DeleteOptions
-  ): Promise<DeleteResult>
+  remove(selector: TsFilter<TSchema>, options?: DeleteOptions): Promise<DeleteResult>
   /**
    * An estimated count of matching documents in the db to a filter.
    *
@@ -513,5 +492,5 @@ export declare class SafeCollection<TSchema extends Doc> {
    * @param options - Optional settings for the command
    * @param callback - An optional callback, a Promise will be returned if none is provided
    */
-  count(filter: Filter<TSchema>, options?: CountOptions): Promise<number>
+  count(filter: TsFilter<TSchema>, options?: CountOptions): Promise<number>
 }
