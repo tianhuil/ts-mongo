@@ -9,7 +9,7 @@ We re-type the node-native driver to provide uptight type-safety.  We choose to 
 ### Getting Started
 To create a type-safe drop-in replacement
 ```ts
-const collection = mkTsCollection(db, 'colleciton-name')
+const collection = mkTsCollection<TSchema>(db, 'colleciton-name')
 const result = await colleciton.findOne(...) // now with better type safety
 const unsafeResult = await colleciton.unsafe.findOne(...) // with old types
 ```
