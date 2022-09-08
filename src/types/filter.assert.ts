@@ -2,6 +2,15 @@ import { ObjectId } from 'mongodb'
 import * as ta from 'type-assertions'
 import { Filter, FilterType, WithOperator } from './filter'
 
+// cannot use `number` in template type of object key; works if you use specific numbers
+ta.assert<ta.Extends<'a20b', `a${number}b`>>()
+ta.assert<ta.Not<ta.Extends<'does-not-match-pattern', `a${number}b`>>>()
+ta.assert<ta.Extends<{'a20b': true}, {[x in `a${number}b`]: boolean}>>()
+ta.assert<ta.Extends<{'does-not-match-pattern': true}, {[x in `a${number}b`]: boolean}>>()
+ta.assert<ta.Extends<{'does-not-match-pattern': true}, Record<`a${number}b`, boolean>>>()
+ta.assert<ta.Not<ta.Extends<{'does-not-match-pattern': true}, {[x in `a${1 | 2 | 3}b`]: boolean}>>>()
+
+
 // Test WithOperator number
 ta.assert<ta.Extends<{ $eq: 2 }, WithOperator<number>>>()
 ta.assert<ta.Extends<{ $nin: [2, 3] }, WithOperator<number>>>()
