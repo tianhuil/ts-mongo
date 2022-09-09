@@ -8,7 +8,7 @@ const initializeData = async () => {
   return [col, result.insertedId] as const
 }
 
-test('test set on dot notation', async () => {
+test('set on dot notation', async () => {
   const [col, id] = await initializeData()
 
   await col.findOneAndUpdate({ _id: id }, { $set: { 'a.c': 'bye' } })
@@ -17,7 +17,7 @@ test('test set on dot notation', async () => {
   expect(result3).toStrictEqual({ _id: id, a: { b: 2, c: 'bye' }, d: 5 })
 })
 
-test('test set of object', async () => {
+test('set of object', async () => {
   const [col, id] = await initializeData()
 
   await col.findOneAndUpdate({ _id: id }, { $set: { a: { b: 3 } } })
@@ -26,7 +26,7 @@ test('test set of object', async () => {
   expect(result3).toStrictEqual({ _id: id, a: { b: 3 }, d: 5 })
 })
 
-test('test set other key', async () => {
+test('set other key', async () => {
   const [col, id] = await initializeData()
 
   await col.findOneAndUpdate({ _id: id }, { $set: { d: 10 } })
