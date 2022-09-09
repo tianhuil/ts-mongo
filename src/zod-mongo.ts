@@ -1,6 +1,8 @@
 import {
   BulkWriteOptions,
   Db,
+  DeleteOptions,
+  DeleteResult,
   Document,
   InsertManyResult,
   InsertOneOptions,
@@ -145,5 +147,26 @@ export class ZodCollection<TSchema extends Document> {
     options?: UpdateOptions
   ): Promise<UpdateResult | Document> {
     return this.collection.updateMany(filter, this.updateTimestamp(update), options)
+  }
+
+  /**
+   * Delete a document from a collection
+   *
+   * @param filter - The filter used to select the document to remove
+   * @param options - Optional settings for the command
+   * @param callback - An optional callback, a Promise will be returned if none is provided
+   */
+  deleteOne(filter: TsFilter<WithTime<TSchema>>, options?: DeleteOptions): Promise<DeleteResult> {
+    return this.collection.deleteOne(filter, options)
+  }
+  /**
+   * Delete multiple documents from a collection
+   *
+   * @param filter - The filter used to select the documents to remove
+   * @param options - Optional settings for the command
+   * @param callback - An optional callback, a Promise will be returned if none is provided
+   */
+  deleteMany(filter: TsFilter<WithTime<TSchema>>, options?: DeleteOptions): Promise<DeleteResult> {
+    return this.collection.deleteMany(filter, options)
   }
 }

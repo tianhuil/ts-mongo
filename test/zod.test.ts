@@ -10,7 +10,9 @@ const Example = z.object({
 
 const initializeZodCollection = async () => {
   const db = await setupDb()
-  return new ZodCollection(db, 'collection', Example)
+  const collection = new ZodCollection(db, 'collection', Example)
+  await collection.deleteMany({})
+  return collection
 }
 
 test('insertOne', async () => {
