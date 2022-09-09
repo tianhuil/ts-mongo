@@ -13,9 +13,9 @@ export declare type Pipeline<TSchema extends Document, TSchemaOther extends Docu
   | { $match: TsFilter<TSchema> }
   | { $project: TsProjection<TSchema> }
   | { $sort: TsSort<TSchema> }
-  | { $lookup: Lookup<TSchema, TSchemaOther> }
+  | { $lookup: TsLookup<TSchema, TSchemaOther> }
 
-export declare type Lookup<TSchema extends Document, TSchemaOther extends Document> = {
+export declare type TsLookup<TSchema extends Document, TSchemaOther extends Document> = {
   from: string
   localField: FlattenFilterPaths<TSchema>
   foreignField: FlattenFilterPaths<TSchemaOther>
