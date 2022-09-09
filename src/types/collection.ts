@@ -48,7 +48,7 @@ import {
   TsFindOptions,
 } from './find'
 import { IndexSpecification } from './mongo-index'
-import { Update } from './update'
+import { TsUpdate } from './update'
 import { Doc, DocumentWithId } from './util'
 
 export declare class SafeCollection<TSchema extends Doc> {
@@ -123,7 +123,7 @@ export declare class SafeCollection<TSchema extends Doc> {
    */
   updateOne(
     filter: TsFilter<TSchema>,
-    update: Update<TSchema>,
+    update: TsUpdate<TSchema>,
     options?: UpdateOptions
   ): Promise<UpdateResult>
   /**
@@ -149,7 +149,7 @@ export declare class SafeCollection<TSchema extends Doc> {
    */
   updateMany(
     filter: TsFilter<TSchema>,
-    update: Update<TSchema>,
+    update: TsUpdate<TSchema>,
     options?: UpdateOptions
   ): Promise<UpdateResult | Document>
   /**
@@ -402,7 +402,7 @@ export declare class SafeCollection<TSchema extends Doc> {
    */
   findOneAndUpdate(
     filter: TsFilter<TSchema>,
-    update: Update<TSchema>,
+    update: TsUpdate<TSchema>,
     options?: TsFindOneAndUpdateOptions<TSchema>
   ): Promise<ModifyResult<TSchema>>
   /**
@@ -468,7 +468,7 @@ export declare class SafeCollection<TSchema extends Doc> {
    */
   update(
     selector: TsFilter<TSchema>,
-    update: Update<TSchema>,
+    update: TsUpdate<TSchema>,
     options?: UpdateOptions
   ): Promise<UpdateResult>
   /**

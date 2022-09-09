@@ -4,7 +4,7 @@ import {
   PullAllTypes,
   PullTypes,
   SelectFlattenUpdatePaths,
-  Update,
+  TsUpdate,
   UpdateFlattenArrayTypes,
   UpdateFlattenTypes,
 } from './update'
@@ -75,7 +75,7 @@ ta.assert<ta.Extends<{ d: [true, false] }, PullAllTypes<Example>>>()
 ta.assert<ta.Extends<{ 'h.i': Date[] }, PullAllTypes<Example>>>()
 
 // Test Empty Update
-ta.assert<ta.Extends<{}, Update<Example>>>()
+ta.assert<ta.Extends<{}, TsUpdate<Example>>>()
 
 // Testing on non-existing fields
 ta.assert<ta.Extends<{}, UpdateFlattenTypes<Example, string>>>()

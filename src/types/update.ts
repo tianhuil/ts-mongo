@@ -8,7 +8,7 @@ import {
 } from './flatten'
 import { TsSort } from './sort'
 
-export declare type Update<TSchema extends Document> = {
+export declare type TsUpdate<TSchema extends Document> = {
   // General operators
   $set?: UpdateFlattenTypes<TSchema, unknown>
   $setOnInsert?: UpdateFlattenTypes<TSchema, unknown>
