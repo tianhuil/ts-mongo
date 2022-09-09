@@ -22,3 +22,13 @@ test('insertOne', async () => {
   expect(result2?.createdAt).toBeInstanceOf(Date)
   expect(result2?.updatedAt).toBeInstanceOf(Date)
 })
+
+test('findOne', async () => {
+  const collection = await initializeZodCollection()
+  const result = await collection.insertOne({ a: 'a' })
+  expect(result.acknowledged).toBeTruthy()
+
+  const date = new Date()
+  expect((await collection.findOne({ createdAt: { $lte: date } }))?.a).toEqual('a')
+  expect(await collection.findOne({ createdAt: { $gt: date } })).toBeFalsy()
+})

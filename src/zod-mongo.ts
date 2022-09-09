@@ -6,11 +6,13 @@ import {
   InsertOneOptions,
   InsertOneResult,
   OptionalUnlessRequiredId,
+  UpdateOptions,
+  UpdateResult,
   WithId,
 } from 'mongodb'
 import { z } from 'zod'
 import { mkTsCollection, TsCollection } from './collection'
-import { DocumentWithId, TsFilter, TsFindCursor, TsFindOptions } from './types'
+import { DocumentWithId, TsFilter, TsFindCursor, TsFindOptions, TsUpdate } from './types'
 
 export type WithTime<T extends Document> = T & {
   createdAt: Date
@@ -23,17 +25,17 @@ export type DocumentWithIdTime = DocumentWithId & {
 }
 
 export class ZodCollection<TSchema extends Document> {
-  public collection: TsCollection<TSchema>
+  public collection: TsCollection<WithTime<TSchema>>
 
   constructor(public db: Db, public collectionName: string, public schema: z.ZodType<TSchema>) {
-    this.collection = mkTsCollection<TSchema>(db, collectionName)
+    this.collection = mkTsCollection<WithTime<TSchema>>(db, collectionName)
   }
 
   insertTimestamp(
     x: OptionalUnlessRequiredId<TSchema>
-  ): WithTime<OptionalUnlessRequiredId<TSchema>> {
+  ): OptionalUnlessRequiredId<WithTime<TSchema>> {
     const date = new Date()
-    return { ...x, createdAt: date, updatedAt: date }
+    return { ...x, createdAt: date, updatedAt: date } as any
   }
 
   /**
@@ -82,8 +84,8 @@ export class ZodCollection<TSchema extends Document> {
    * @param options - Optional settings for the command
    */
   findOne<T extends DocumentWithIdTime = WithTime<WithId<TSchema>>>(
-    filter: TsFilter<TSchema>,
-    options?: TsFindOptions<TSchema>
+    filter: TsFilter<WithTime<TSchema>>,
+    options?: TsFindOptions<WithTime<TSchema>>
   ): Promise<T | null> {
     if (!options) {
       return this.collection.findOne<T>(filter)
@@ -97,12 +99,52 @@ export class ZodCollection<TSchema extends Document> {
    * @param filter - The filter predicate. If unspecified, then all documents in the collection will match the predicate
    */
   find<T extends DocumentWithIdTime = WithTime<WithId<TSchema>>>(
-    filter: TsFilter<TSchema>,
-    options?: TsFindOptions<TSchema>
+    filter: TsFilter<WithTime<TSchema>>,
+    options?: TsFindOptions<WithTime<TSchema>>
   ): TsFindCursor<T> {
     if (!options) {
       return this.collection.find<T>(filter)
     }
     return this.collection.find<T>(filter, options)
+  }
+
+  updateTimestamp(update: TsUpdate<TSchema>): TsUpdate<WithTime<TSchema>> {
+    const date = new Date()
+    return {
+      ...update,
+      $setOnInsert: { ...update.$setOnInsert, createdAt: date },
+      $set: { ...update.$set, updatedAt: date },
+    } as any
+  }
+
+  /**
+   * Updates documents.
+   *
+   * @deprecated use updateOne, updateMany or bulkWrite
+   * @param selector - The selector for the update operation.
+   * @param update - The update operations to be applied to the documents
+   * @param options - Optional settings for the command
+   */
+  updateOne(
+    filter: TsFilter<WithTime<TSchema>>,
+    update: TsUpdate<TSchema>,
+    options?: UpdateOptions
+  ): Promise<UpdateResult> {
+    return this.collection.updateOne(filter, this.updateTimestamp(update), options)
+  }
+
+  /**
+   * Update multiple documents in a collection
+   *
+   * @param filter - The filter used to select the documents to update
+   * @param update - The update operations to be applied to the documents
+   * @param options - Optional settings for the command
+   */
+  updateMany(
+    filter: TsFilter<WithTime<TSchema>>,
+    update: TsUpdate<TSchema>,
+    options?: UpdateOptions
+  ): Promise<UpdateResult | Document> {
+    return this.collection.updateMany(filter, this.updateTimestamp(update), options)
   }
 }
