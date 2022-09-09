@@ -1,5 +1,4 @@
 import { TsCollection } from './collection'
-import { DocumentWithId } from './types'
 
 export declare type FuncType = (...args: any[]) => any
 
@@ -72,7 +71,7 @@ export type Middleware = {
   handler?: Handler
 }
 
-export const addMiddleware = <TSchema extends DocumentWithId>(
+export const addMiddleware = <TSchema>(
   collection: TsCollection<TSchema>,
   { handler }: Middleware = {}
 ) => {

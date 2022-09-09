@@ -35,7 +35,8 @@ import {
   UnorderedBulkOperation,
   UpdateOptions,
   UpdateResult,
-  WithoutId,
+  WithId,
+  WithoutId
 } from 'mongodb'
 import { TsAggregationCursor } from './aggregation'
 import { TsFilter } from './filter'
@@ -44,11 +45,11 @@ import {
   TsFindOneAndDeleteOptions,
   TsFindOneAndReplaceOptions,
   TsFindOneAndUpdateOptions,
-  TsFindOptions,
+  TsFindOptions
 } from './find'
 import { IndexSpecification } from './mongo-index'
 import { Update } from './update'
-import { Doc } from './util'
+import { Doc, DocumentWithId } from './util'
 
 export declare class SafeCollection<TSchema extends Doc> {
   /**
@@ -192,7 +193,7 @@ export declare class SafeCollection<TSchema extends Doc> {
    * @param options - Optional settings for the command
    * @param callback - An optional callback, a Promise will be returned if none is provided
    */
-  findOne<T = TSchema>(
+  findOne<T extends DocumentWithId = WithId<TSchema>>(
     filter: TsFilter<TSchema>,
     options?: TsFindOptions<TSchema>
   ): Promise<T | null>
@@ -201,7 +202,7 @@ export declare class SafeCollection<TSchema extends Doc> {
    *
    * @param filter - The filter predicate. If unspecified, then all documents in the collection will match the predicate
    */
-  find<T extends Document = TSchema>(
+  find<T extends DocumentWithId = WithId<TSchema>>(
     filter: TsFilter<TSchema>,
     options?: TsFindOptions<TSchema>
   ): TsFindCursor<T>

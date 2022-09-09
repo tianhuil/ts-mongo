@@ -1,7 +1,8 @@
+import { ObjectId } from 'mongodb'
 import { addMiddleware } from '../src'
 import { mkTsTestCollection } from './util'
 
-type Example = { a: number }
+type Example = { a: number, _id: ObjectId }
 
 const mkListeningCollection = async () => {
   const col = await mkTsTestCollection<Example>()
@@ -24,7 +25,7 @@ const mkListeningCollection = async () => {
   return { col, before, after, callback }
 }
 
-test('test listening on insertOne', async () => {
+test('listening on insertOne', async () => {
   const { col, before, after, callback } = await mkListeningCollection()
   const { insertedId } = await col.insertOne({ a: 2 })
 
@@ -34,7 +35,7 @@ test('test listening on insertOne', async () => {
   expect(callback).toHaveBeenCalledTimes(1)
 })
 
-test('test listening on find', async () => {
+test('listening on find', async () => {
   const { col, before, after } = await mkListeningCollection()
 
   for await (const _ of col.find({})) {
