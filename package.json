@@ -25,10 +25,7 @@
     "ts-jest": "^28.0.8",
     "ts-node": "^10.9.1",
     "type-assertions": "^1.1.0",
-    "typescript": "^4.8.2"
-  },
-  "peerDependencies": {
-    "mongodb": "^4.0.0",
+    "typescript": "^4.8.2",
     "zod": "^3.19.0"
   }
 }
