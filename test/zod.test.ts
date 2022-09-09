@@ -44,9 +44,9 @@ test('updateOne', async () => {
   const collection = await initializeZodCollection()
   await collection.insertOne({ a: 'a' })
 
-  await delay(1)
+  await delay(5)
   const time = new Date().getTime()
-  await delay(1)
+  await delay(5)
   await collection.updateOne({ a: 'a' }, { $set: { a: 'b' } })
   const result = await collection.findOne({ a: 'b' })
   expect(result?.createdAt.getTime()).toBeLessThan(time)
