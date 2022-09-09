@@ -13,19 +13,19 @@ export type WithElementOperator = {
 /**
  * https://docs.mongodb.com/manual/reference/operator/query-comparison/
  */
-export type WithComparisonOperator<Field> = {
+export type WithEqualityOperator<Field> = {
   $eq?: Field
   $ne?: Field
   $in?: readonly Field[]
   $nin?: readonly Field[]
 }
 
-export type WithNumericOperator<Field> = Field extends number
+export type WithComparisonOperator<Field> = Field extends number | Date
   ? {
-      $gt?: number
-      $lt?: number
-      $gte?: number
-      $lte?: number
+      $gt?: Field
+      $lt?: Field
+      $gte?: Field
+      $lte?: Field
     }
   : {}
 
@@ -83,7 +83,7 @@ export type WithOperator<Field, IndexType extends number = 0> =
         WithRecordOperator<Field, IndexType> &
         WithComparisonOperator<Field> &
         WithStringOperator<Field> &
-        WithNumericOperator<Field> &
+        WithEqualityOperator<Field> &
         WithArrayOperator<Field>
     >
 
