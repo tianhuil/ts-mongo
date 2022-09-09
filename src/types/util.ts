@@ -1,4 +1,8 @@
-import { ObjectId } from 'mongodb'
+import { Document, ObjectId } from 'mongodb'
+
+export declare type DocumentWithId = Document & { _id: ObjectId }
+
+export declare type OptionalId<TSchema extends DocumentWithId> = Omit<TSchema, '_id'> & Partial<Pick<TSchema, '_id'>>
 
 export declare type BaseTypes =
   | string
@@ -9,9 +13,7 @@ export declare type BaseTypes =
   | Buffer
   | Uint8Array
   | ObjectId
-  | {
-      _bsontype: string
-    }
+  | { _bsontype: string }
 
 export declare type Doc = { [x in string]: _Doc }
 export declare type _Doc = BaseTypes | _Doc[] | { [x in string]: _Doc }
@@ -21,9 +23,7 @@ export declare type RecurPartial<T> = T extends BaseTypes
   : T extends ReadonlyArray<infer ArrayType>
   ? ReadonlyArray<RecurPartial<ArrayType>>
   : T extends Record<string, unknown>
-  ? {
-      readonly [P in keyof T]?: RecurPartial<T[P]>
-    }
+  ? { readonly [P in keyof T]?: RecurPartial<T[P]> }
   : never
 
 /**
