@@ -7,7 +7,7 @@ export declare type TsCollection<TSchema extends Document> = RemodelType<
 >
 
 /**
- *
+ * Creates a type-safe collection
  * @param db mongodb
  * @param name name of collection
  * @param options collection
