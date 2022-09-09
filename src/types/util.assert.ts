@@ -3,14 +3,14 @@ import * as ta from 'type-assertions'
 import { Doc, DocumentWithId, NonArrayObject, OptionalId, RecurPartial, _Doc } from './util'
 
 // Test DocumentWithId
-type Obj = {a: string, _id: ObjectId}
+type Obj = { a: string; _id: ObjectId }
 ta.assert<ta.Extends<Obj, DocumentWithId>>()
 
 // Test OptionalId
 ta.assert<ta.Extends<Obj, OptionalId<Obj>>>()
-ta.assert<ta.Extends<{a: string}, OptionalId<Obj>>>()
-ta.assert<ta.Not<ta.Extends<{b: string, _id: ObjectId}, OptionalId<Obj>>>>()
-ta.assert<ta.Not<ta.Extends<{_id: ObjectId}, OptionalId<Obj>>>>()
+ta.assert<ta.Extends<{ a: string }, OptionalId<Obj>>>()
+ta.assert<ta.Not<ta.Extends<{ b: string; _id: ObjectId }, OptionalId<Obj>>>>()
+ta.assert<ta.Not<ta.Extends<{ _id: ObjectId }, OptionalId<Obj>>>>()
 
 // Test RecurPartial
 type Example = {

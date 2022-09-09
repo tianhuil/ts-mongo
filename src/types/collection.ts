@@ -36,7 +36,7 @@ import {
   UpdateOptions,
   UpdateResult,
   WithId,
-  WithoutId
+  WithoutId,
 } from 'mongodb'
 import { TsAggregationCursor } from './aggregation'
 import { TsFilter } from './filter'
@@ -45,7 +45,7 @@ import {
   TsFindOneAndDeleteOptions,
   TsFindOneAndReplaceOptions,
   TsFindOneAndUpdateOptions,
-  TsFindOptions
+  TsFindOptions,
 } from './find'
 import { IndexSpecification } from './mongo-index'
 import { Update } from './update'

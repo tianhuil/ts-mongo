@@ -23,18 +23,7 @@ type Example = {
 
 ta.assert<
   ta.Equal<
-    | '_id'
-    | 'a'
-    | 'b'
-    | 'b.c'
-    | 'b.d.e'
-    | 'b.d'
-    | 'f'
-    | `f.0`
-    | 'g'
-    | `g.0`
-    | `g.0.h`
-    | 'g.h',
+    '_id' | 'a' | 'b' | 'b.c' | 'b.d.e' | 'b.d' | 'f' | `f.0` | 'g' | `g.0` | `g.0.h` | 'g.h',
     FlattenFilterPaths<Example>
   >
 >()
@@ -80,9 +69,7 @@ ta.assert<
 
 ta.assert<ta.Equal<FlattenFilterType<Example, '_id'>, ObjectId>>()
 ta.assert<ta.Equal<FlattenFilterType<Example, 'a'>, number>>()
-ta.assert<
-  ta.Equal<FlattenFilterType<Example, 'b'>, { c: string; d: { e: boolean } }>
->()
+ta.assert<ta.Equal<FlattenFilterType<Example, 'b'>, { c: string; d: { e: boolean } }>>()
 ta.assert<ta.Equal<FlattenFilterType<Example, 'b.c'>, string>>()
 ta.assert<ta.Equal<FlattenFilterType<Example, 'b.d'>, { e: boolean }>>()
 ta.assert<ta.Equal<FlattenFilterType<Example, 'b.d.e'>, boolean>>()

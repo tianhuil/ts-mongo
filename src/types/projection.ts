@@ -4,9 +4,7 @@ import { Doc } from './util'
 
 export declare type TsProjection<TSchema extends Doc> = _Projection<TSchema>
 
-declare type ProjectionOperator<Field> = Field extends ReadonlyArray<
-  infer ArrayType
->
+declare type ProjectionOperator<Field> = Field extends ReadonlyArray<infer ArrayType>
   ? {
       $elemMatch: WithOperator<ArrayType>
       $slice?: number | [number, number]

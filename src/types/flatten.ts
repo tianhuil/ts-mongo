@@ -1,10 +1,10 @@
 import { WithId } from 'mongodb'
 import { BaseTypes, NonArrayObject } from './util'
 
-export declare type FlattenFilterPaths<
-  Type,
-  IndexType extends number = 0
-> = Join<NestedPaths<WithId<Type>, IndexType>, '.'>
+export declare type FlattenFilterPaths<Type, IndexType extends number = 0> = Join<
+  NestedPaths<WithId<Type>, IndexType>,
+  '.'
+>
 
 // Do not allow numeric index because that weakens type-checking
 // (the resulting template literal does not check for extra keys)
@@ -15,15 +15,17 @@ export declare type FlattenUpdatePaths<Type> = Join<
   '.'
 >
 
-export declare type FlattenFilterType<
-  TSchema,
-  Property extends string
-> = _FlattenFilterType<WithId<TSchema>, Property, `${number}`>
+export declare type FlattenFilterType<TSchema, Property extends string> = _FlattenFilterType<
+  WithId<TSchema>,
+  Property,
+  `${number}`
+>
 
-export declare type FlattenUpdateType<
-  TSchema,
-  Property extends string
-> = _FlattenFilterType<WithId<TSchema>, Property, UpdateArrayHolder>
+export declare type FlattenUpdateType<TSchema, Property extends string> = _FlattenFilterType<
+  WithId<TSchema>,
+  Property,
+  UpdateArrayHolder
+>
 
 declare type Join<T extends unknown[], D extends string> = T extends []
   ? ''
@@ -42,16 +44,12 @@ declare type NestedPaths<Type, ArrayIndexType> = Type extends BaseTypes
       | NestedPaths<ArrayType, ArrayIndexType>
         | [ArrayIndexType, ...NestedPaths<ArrayType, ArrayIndexType>]
         | [ArrayIndexType] // Can stop at array
-    :
-        | [ArrayIndexType, ...NestedPaths<ArrayType, ArrayIndexType>]
-        | [ArrayIndexType] // Can stop at array
+    : [ArrayIndexType, ...NestedPaths<ArrayType, ArrayIndexType>] | [ArrayIndexType] // Can stop at array
   : Type extends Map<string, unknown>
   ? [string]
   : Type extends object
   ? {
-      [Key in Extract<keyof Type, string>]:
-        | [Key, ...NestedPaths<Type[Key], ArrayIndexType>]
-        | [Key]
+      [Key in Extract<keyof Type, string>]: [Key, ...NestedPaths<Type[Key], ArrayIndexType>] | [Key]
     }[Extract<keyof Type, string>]
   : []
 

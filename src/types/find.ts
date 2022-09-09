@@ -4,7 +4,7 @@ import {
   FindOneAndDeleteOptions,
   FindOneAndReplaceOptions,
   FindOneAndUpdateOptions,
-  FindOptions
+  FindOptions,
 } from 'mongodb'
 import { TsProjection } from './projection'
 import { SortDirection, TsSort } from './sort'

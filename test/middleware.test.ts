@@ -37,7 +37,8 @@ test('listening on insertOne', async () => {
 test('listening on find', async () => {
   const { col, before, after } = await mkListeningCollection()
 
-  for await (const _ of col.find({})) { }
+  for await (const _ of col.find({})) {
+  }
   expect(before).toHaveBeenCalledTimes(1)
   expect(before).toHaveBeenCalledWith([{}])
   expect(after).toHaveBeenCalledTimes(1)
