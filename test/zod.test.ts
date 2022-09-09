@@ -3,6 +3,12 @@ import { z } from 'zod'
 import { ZodCollection } from '../src'
 import { setupDb } from './util'
 
+const delay = (ms: number) => {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms)
+  })
+}
+
 const Example = z.object({
   a: z.string(),
   b: z.number().optional(),
@@ -39,6 +45,7 @@ test('updateOne', async () => {
   await collection.insertOne({ a: 'a' })
 
   const time = new Date().getTime()
+  await delay(1)
   await collection.updateOne({ a: 'a' }, { $set: { a: 'b' } })
   const result = await collection.findOne({ a: 'b' })
   expect(result?.createdAt.getTime()).toBeLessThan(time)
