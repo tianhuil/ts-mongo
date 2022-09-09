@@ -13,10 +13,6 @@ specifiers:
   ts-node: ^10.9.1
   type-assertions: ^1.1.0
   typescript: ^4.8.2
-  zod: ^3.19.0
-
-dependencies:
-  zod: 3.19.0
 
 devDependencies:
   '@shelf/jest-mongodb': 4.1.0_lepswdi5ay3ug6iqy7v6vktzeq
@@ -2844,7 +2840,3 @@ packages:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
     dev: true
-
-  /zod/3.19.0:
-    resolution: {integrity: sha512-Yw0qvUsCNGBe5YacikdMt5gVYeUuaEFVDIHKMfElrGSaBhwR3CQK6vOzgfAJOjTdGIhEeoaj8GtT+NDZrepZbw==}
-    dev: false
