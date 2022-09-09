@@ -1,5 +1,5 @@
-import { Document } from 'mongodb'
-import { TsCollection } from './connection'
+import { TsCollection } from './collection'
+import { DocumentWithId } from './types'
 
 export declare type FuncType = (...args: any[]) => any
 
@@ -72,7 +72,7 @@ export type Middleware = {
   handler?: Handler
 }
 
-export const addMiddleware = <TSchema extends Document>(
+export const addMiddleware = <TSchema extends DocumentWithId>(
   collection: TsCollection<TSchema>,
   { handler }: Middleware = {}
 ) => {

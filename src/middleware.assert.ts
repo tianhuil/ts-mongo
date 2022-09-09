@@ -1,15 +1,16 @@
-import * as ta from 'type-assertions'
-import { TsCollection } from './connection'
+import { ObjectId } from 'mongodb';
+import * as ta from 'type-assertions';
+import { TsCollection } from './collection';
 import {
   FuncType,
   Handler,
   MethodKeys,
   Methods,
   Middleware,
-  MiddlewareMethods,
-} from './middleware'
+  MiddlewareMethods
+} from './middleware';
 
-type TSchema<T> = { a: () => T; b: (_: T) => string; c: number }
+type TSchema<T> = { a: () => T; b: (_: T) => string; c: number, _id: ObjectId }
 
 // Test MethodKeys and Methods
 ta.assert<ta.Equal<MethodKeys<TSchema<number>>, 'a' | 'b'>>()
