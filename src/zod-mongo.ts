@@ -1,12 +1,15 @@
 import {
   BulkWriteOptions,
+  CountDocumentsOptions,
   Db,
   DeleteOptions,
   DeleteResult,
   Document,
+  EstimatedDocumentCountOptions,
   InsertManyResult,
   InsertOneOptions,
   InsertOneResult,
+  ModifyResult,
   OptionalUnlessRequiredId,
   UpdateOptions,
   UpdateResult,
@@ -14,7 +17,15 @@ import {
 } from 'mongodb'
 import { z } from 'zod'
 import { mkTsCollection, TsCollection } from './collection'
-import { DocumentWithId, TsFilter, TsFindCursor, TsFindOptions, TsUpdate } from './types'
+import {
+  DocumentWithId,
+  TsFilter,
+  TsFindCursor,
+  TsFindOneAndDeleteOptions,
+  TsFindOneAndUpdateOptions,
+  TsFindOptions,
+  TsUpdate,
+} from './types'
 
 export type WithTime<T extends Document> = T & {
   createdAt: Date
@@ -168,5 +179,82 @@ export class ZodCollection<TSchema extends Document> {
    */
   deleteMany(filter: TsFilter<WithTime<TSchema>>, options?: DeleteOptions): Promise<DeleteResult> {
     return this.collection.deleteMany(filter, options)
+  }
+
+  /**
+   * Find a document and delete it in one atomic operation. Requires a write lock for the duration of the operation.
+   *
+   * @param filter - The filter used to select the document to remove
+   * @param options - Optional settings for the command
+   */
+  findOneAndDelete(
+    filter: TsFilter<WithTime<TSchema>>,
+    options?: TsFindOneAndDeleteOptions<WithTime<TSchema>>
+  ): Promise<ModifyResult<WithTime<TSchema>>> {
+    return this.collection.findOneAndDelete(filter, options)
+  }
+
+  /**
+   * Find a document and update it in one atomic operation. Requires a write lock for the duration of the operation.
+   *
+   * @param filter - The filter used to select the document to update
+   * @param update - Update operations to be performed on the document
+   * @param options - Optional settings for the command
+   */
+  findOneAndUpdate(
+    filter: TsFilter<WithTime<TSchema>>,
+    update: TsUpdate<WithTime<TSchema>>,
+    options?: TsFindOneAndUpdateOptions<WithTime<TSchema>>
+  ): Promise<ModifyResult<WithTime<TSchema>>> {
+    return this.collection.findOneAndUpdate(filter, update, options)
+  }
+
+  /**
+   * Gets an estimate of the count of documents in a collection using collection metadata.
+   * This will always run a count command on all server versions.
+   *
+   * due to an oversight in versions 5.0.0-5.0.8 of MongoDB, the count command,
+   * which estimatedDocumentCount uses in its implementation, was not included in v1 of
+   * the Stable API, and so users of the Stable API with estimatedDocumentCount are
+   * recommended to upgrade their server version to 5.0.9+ or set apiStrict: false to avoid
+   * encountering errors.
+   *
+   * @param options - Optional settings for the command
+   * @param callback - An optional callback, a Promise will be returned if none is provided
+   */
+  estimatedDocumentCount(options?: EstimatedDocumentCountOptions): Promise<number> {
+    return this.collection.estimatedDocumentCount(options)
+  }
+  /**
+   * Gets the number of documents matching the filter.
+   * For a fast count of the total documents in a collection see {@link Collection#estimatedDocumentCount| estimatedDocumentCount}.
+   * **Note**: When migrating from {@link Collection#count| count} to {@link Collection#countDocuments| countDocuments}
+   * the following query operators must be replaced:
+   *
+   * | Operator | Replacement |
+   * | -------- | ----------- |
+   * | `$where`   | [`$expr`][1] |
+   * | `$near`    | [`$geoWithin`][2] with [`$center`][3] |
+   * | `$nearSphere` | [`$geoWithin`][2] with [`$centerSphere`][4] |
+   *
+   * [1]: https://docs.mongodb.com/manual/reference/operator/query/expr/
+   * [2]: https://docs.mongodb.com/manual/reference/operator/query/geoWithin/
+   * [3]: https://docs.mongodb.com/manual/reference/operator/query/center/#op._S_center
+   * [4]: https://docs.mongodb.com/manual/reference/operator/query/centerSphere/#op._S_centerSphere
+   *
+   * @param filter - The filter for the count
+   * @param options - Optional settings for the command
+   * @param callback - An optional callback, a Promise will be returned if none is provided
+   *
+   * @see https://docs.mongodb.com/manual/reference/operator/query/expr/
+   * @see https://docs.mongodb.com/manual/reference/operator/query/geoWithin/
+   * @see https://docs.mongodb.com/manual/reference/operator/query/center/#op._S_center
+   * @see https://docs.mongodb.com/manual/reference/operator/query/centerSphere/#op._S_centerSphere
+   */
+  countDocuments(
+    filter: TsFilter<WithTime<TSchema>>,
+    options?: CountDocumentsOptions
+  ): Promise<number> {
+    return this.collection.countDocuments(filter, options)
   }
 }

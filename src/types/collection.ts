@@ -313,6 +313,13 @@ export declare class SafeCollection<TSchema extends Doc> {
   indexInformation(options?: IndexInformationOptions): Promise<Document>
   /**
    * Gets an estimate of the count of documents in a collection using collection metadata.
+   * This will always run a count command on all server versions.
+   *
+   * due to an oversight in versions 5.0.0-5.0.8 of MongoDB, the count command,
+   * which estimatedDocumentCount uses in its implementation, was not included in v1 of
+   * the Stable API, and so users of the Stable API with estimatedDocumentCount are
+   * recommended to upgrade their server version to 5.0.9+ or set apiStrict: false to avoid
+   * encountering errors.
    *
    * @param options - Optional settings for the command
    * @param callback - An optional callback, a Promise will be returned if none is provided
