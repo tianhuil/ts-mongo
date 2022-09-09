@@ -2,8 +2,8 @@ import { AggregationCursor, Document } from 'mongodb'
 import { TsFilter } from './filter'
 import { RemodeledOptions } from './find'
 import { FlattenFilterPaths } from './flatten'
-import { Projection } from './projection'
-import { Sort } from './sort'
+import { TsProjection } from './projection'
+import { TsSort } from './sort'
 import { RemodelType } from './util'
 
 /**
@@ -11,8 +11,8 @@ import { RemodelType } from './util'
  */
 export declare type Pipeline<TSchema extends Document, TSchemaOther extends Document> =
   | { $match: TsFilter<TSchema> }
-  | { $project: Projection<TSchema> }
-  | { $sort: Sort<TSchema> }
+  | { $project: TsProjection<TSchema> }
+  | { $sort: TsSort<TSchema> }
   | { $lookup: Lookup<TSchema, TSchemaOther> }
 
 export declare type Lookup<TSchema extends Document, TSchemaOther extends Document> = {

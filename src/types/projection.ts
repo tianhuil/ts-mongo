@@ -2,7 +2,9 @@ import { WithOperator } from './filter'
 import { FlattenFilterPaths, FlattenFilterType } from './flatten'
 import { Doc } from './util'
 
-export declare type ProjectionOperator<Field> = Field extends ReadonlyArray<
+export declare type TsProjection<TSchema extends Doc> = _Projection<TSchema>
+
+declare type ProjectionOperator<Field> = Field extends ReadonlyArray<
   infer ArrayType
 >
   ? {
@@ -11,12 +13,10 @@ export declare type ProjectionOperator<Field> = Field extends ReadonlyArray<
     }
   : never
 
-export declare type Projection<TSchema extends Doc> = _Projection<TSchema>
-
 /**
  * _Projection is a stub entry that tricks the type system into allowing `TSchema extends Doc`
  */
-export declare type _Projection<TSchema> =
+declare type _Projection<TSchema> =
   | {
       [Property in FlattenFilterPaths<TSchema>]?: Property extends '_id'
         ? 1 | 0 | boolean

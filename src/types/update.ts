@@ -1,12 +1,12 @@
 import { Document, Timestamp } from 'mongodb'
 import { WithOperator } from './filter'
 import {
-  FlattenFilterPaths,
-  FlattenFilterType,
-  FlattenUpdatePaths,
-  FlattenUpdateType,
+    FlattenFilterPaths,
+    FlattenFilterType,
+    FlattenUpdatePaths,
+    FlattenUpdateType
 } from './flatten'
-import { Sort } from './sort'
+import { TsSort } from './sort'
 
 export declare type Update<TSchema extends Document> = {
   // General operators
@@ -115,5 +115,5 @@ export declare type ArrayAssignType<T extends Document> =
       $each: ReadonlyArray<T>
       $position?: number
       $slice?: number
-      $sort?: Sort<T>
+      $sort?: TsSort<T>
     }

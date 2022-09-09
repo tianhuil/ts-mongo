@@ -4,15 +4,15 @@ import {
   FindOneAndDeleteOptions,
   FindOneAndReplaceOptions,
   FindOneAndUpdateOptions,
-  FindOptions,
+  FindOptions
 } from 'mongodb'
-import { Projection } from './projection'
-import { Sort, SortDirection } from './sort'
+import { TsProjection } from './projection'
+import { SortDirection, TsSort } from './sort'
 import { RemodelType } from './util'
 
 export declare type RemodeledOptions<TSchema extends Document> = {
-  sort?: Sort<TSchema>
-  projection?: Projection<TSchema>
+  sort?: TsSort<TSchema>
+  projection?: TsProjection<TSchema>
 }
 
 export declare type TsFindOneAndDeleteOptions<TSchema extends Document> = RemodelType<
@@ -39,8 +39,8 @@ export declare type TsFindCursor<TSchema extends Document> = RemodelType<
   {
     clone(): TsFindCursor<TSchema>
     map<T extends Document>(transform: (doc: TSchema) => T): TsFindCursor<T>
-    project<T extends Document>(value: Projection<TSchema>): TsFindCursor<T>
-    sort(sort: Sort<TSchema> | string, direction?: SortDirection): TsFindCursor<TSchema>
+    project<T extends Document>(value: TsProjection<TSchema>): TsFindCursor<T>
+    sort(sort: TsSort<TSchema> | string, direction?: SortDirection): TsFindCursor<TSchema>
   },
   FindCursor
 >
