@@ -1,10 +1,10 @@
 import {
   BulkWriteOptions,
+  Db,
   Document,
   InsertManyResult,
   InsertOneOptions,
   InsertOneResult,
-  MongoClient,
   OptionalUnlessRequiredId,
   WithId,
 } from 'mongodb'
@@ -17,16 +17,16 @@ export type WithTime<T extends Document> = T & {
   updatedAt: Date
 }
 
+export type DocumentWithIdTime = DocumentWithId & {
+  createdAt: Date
+  updatedAt: Date
+}
+
 export class ZodCollection<TSchema extends Document> {
   public collection: TsCollection<TSchema>
 
-  constructor(
-    public client: MongoClient,
-    public dbName: string,
-    public collectionName: string,
-    public schema: z.ZodType<TSchema>
-  ) {
-    this.collection = mkTsCollection<TSchema>(client.db(dbName), collectionName)
+  constructor(public db: Db, public collectionName: string, public schema: z.ZodType<TSchema>) {
+    this.collection = mkTsCollection<TSchema>(db, collectionName)
   }
 
   insertTimestamp(
@@ -81,7 +81,7 @@ export class ZodCollection<TSchema extends Document> {
    * @param filter - Query for find Operation
    * @param options - Optional settings for the command
    */
-  findOne<T extends DocumentWithId = WithId<TSchema>>(
+  findOne<T extends DocumentWithIdTime = WithTime<WithId<TSchema>>>(
     filter: TsFilter<TSchema>,
     options?: TsFindOptions<TSchema>
   ): Promise<T | null> {
@@ -96,7 +96,7 @@ export class ZodCollection<TSchema extends Document> {
    *
    * @param filter - The filter predicate. If unspecified, then all documents in the collection will match the predicate
    */
-  find<T extends DocumentWithId = WithId<TSchema>>(
+  find<T extends DocumentWithIdTime = WithTime<WithId<TSchema>>>(
     filter: TsFilter<TSchema>,
     options?: TsFindOptions<TSchema>
   ): TsFindCursor<T> {

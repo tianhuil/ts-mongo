@@ -4,7 +4,7 @@ import { mkTsCollection } from '../src'
 let client: MongoClient | null = null
 let cached: boolean = false
 
-const setupDb = async (): Promise<Db> => {
+export const setupDb = async (): Promise<Db> => {
   if (!cached || !client) {
     client = new MongoClient(process.env.MONGO_URL ?? '')
     await client.connect()
