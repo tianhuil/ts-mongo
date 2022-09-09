@@ -118,11 +118,10 @@ export class ZodCollection<TSchema extends Document> {
   }
 
   /**
-   * Updates documents.
+   * Update a single document in a collection
    *
-   * @deprecated use updateOne, updateMany or bulkWrite
-   * @param selector - The selector for the update operation.
-   * @param update - The update operations to be applied to the documents
+   * @param filter - The filter used to select the document to update
+   * @param update - The update operations to be applied to the document
    * @param options - Optional settings for the command
    */
   updateOne(
