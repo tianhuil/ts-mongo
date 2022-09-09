@@ -1,9 +1,9 @@
-import { Collection, Filter, WithId } from 'mongodb'
+import { Collection, Filter, ObjectId, WithId } from 'mongodb'
 import * as ta from 'type-assertions'
 import { TsCollection } from './collection'
 import { TsFilter } from './types'
 
-type TSchema = { a: string }
+type TSchema = { a: string, _id: ObjectId }
 
 // Type inference for Collection
 ta.assert<ta.Extends<Collection<TSchema>, { count(): Promise<number> }>>()
