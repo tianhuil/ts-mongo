@@ -39,6 +39,10 @@ ta.assert<
 >()
 
 // Test UpdateFlattenTypes
+ta.assert<
+  ta.Equal<{ a?: string; b?: string }, UpdateFlattenTypes<{ a: string } & { b: string }, string>>
+>()
+ta.assert<ta.Extends<{ a: string }, UpdateFlattenTypes<Example, string>>>()
 ta.assert<ta.Equal<{ a?: string }, UpdateFlattenTypes<Example, string>>>()
 ta.assert<ta.Extends<{ 'b.c': number }, UpdateFlattenTypes<Example, number>>>()
 ta.assert<ta.Equal<{ 'b.c'?: number; g?: number }, UpdateFlattenTypes<Example, number>>>()
@@ -60,7 +64,7 @@ ta.assert<ta.Extends<{ 'h.i'?: Date }, UpdateFlattenArrayTypes<Example>>>()
 // Test UpdateFlattenTypes on unknown
 // note that if this has type `b?: {c: number}`, i.e. that c is required
 // this is because update sets the entire record for b
-// to set one record, use dot notation
+// to set sub-field only, use dot notation
 ta.assert<ta.Extends<Partial<Example>, UpdateFlattenTypes<Example, unknown>>>()
 ta.assert<ta.Extends<{ a: ''; d: ''; 'e.f': '' }, UpdateFlattenTypes<Example, unknown, ''>>>()
 
