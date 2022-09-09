@@ -63,9 +63,6 @@ export class ZodCollection<TSchema extends Document> {
     doc: OptionalUnlessRequiredId<TSchema>,
     options?: InsertOneOptions
   ): Promise<InsertOneResult<TSchema>> {
-    if (!options) {
-      return this.collection.insertOne(this.insertTimestamp(doc))
-    }
     return this.collection.insertOne(this.insertTimestamp(doc), options)
   }
 
@@ -81,9 +78,6 @@ export class ZodCollection<TSchema extends Document> {
     docs: OptionalUnlessRequiredId<TSchema>[],
     options?: BulkWriteOptions
   ): Promise<InsertManyResult<TSchema>> {
-    if (!options) {
-      return this.collection.insertMany(docs.map((doc) => this.insertTimestamp(doc)))
-    }
     return this.collection.insertMany(
       docs.map((doc) => this.insertTimestamp(doc)),
       options
