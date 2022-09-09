@@ -1,3 +1,4 @@
-export * from './connection'
+export * from './collection'
 export * from './middleware'
 export * from './types'
+

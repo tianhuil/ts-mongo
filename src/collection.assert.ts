@@ -1,6 +1,6 @@
 import { Collection, Filter, WithId } from 'mongodb'
 import * as ta from 'type-assertions'
-import { TsCollection } from './connection'
+import { TsCollection } from './collection'
 import { TsFilter } from './types'
 
 type TSchema = { a: string }
