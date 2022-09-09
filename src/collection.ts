@@ -1,7 +1,7 @@
-import { Collection, CollectionOptions, Db } from 'mongodb'
+import { Collection, CollectionOptions, Db, Document } from 'mongodb'
 import { RemodelType, SafeCollection } from './types'
 
-export declare type TsCollection<TSchema> = RemodelType<
+export declare type TsCollection<TSchema extends Document> = RemodelType<
   SafeCollection<TSchema> & { unsafe: Collection<TSchema> },
   Collection<TSchema>
 >
@@ -13,7 +13,7 @@ export declare type TsCollection<TSchema> = RemodelType<
  * @param options collection
  * @returns
  */
-export const mkTsCollection = <TSchema>(
+export const mkTsCollection = <TSchema extends Document>(
   db: Db,
   name: string,
   options?: CollectionOptions
