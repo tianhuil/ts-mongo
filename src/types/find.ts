@@ -42,5 +42,5 @@ export declare type TsFindCursor<TSchema extends Document> = RemodelType<
     project<T extends Document>(value: TsProjection<TSchema>): TsFindCursor<T>
     sort(sort: TsSort<TSchema> | string, direction?: SortDirection): TsFindCursor<TSchema>
   },
-  FindCursor
+  FindCursor<TSchema>
 >
