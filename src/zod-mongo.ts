@@ -32,6 +32,8 @@ export type WithTime<T extends Document> = T & {
   updatedAt: Date
 }
 
+export type WithIdTime<T extends Document> = WithTime<WithId<T>>
+
 export type DocumentWithIdTime = DocumentWithId & {
   createdAt: Date
   updatedAt: Date
@@ -39,6 +41,7 @@ export type DocumentWithIdTime = DocumentWithId & {
 
 export class ZodCollection<TSchema extends Document> {
   public collection: TsCollection<WithTime<TSchema>>
+  public type!: WithTime<TSchema>
 
   constructor(public db: Db, public collectionName: string, public schema: z.ZodType<TSchema>) {
     this.collection = mkTsCollection<WithTime<TSchema>>(db, collectionName)
