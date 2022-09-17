@@ -97,9 +97,6 @@ export class ZodCollection<TSchema extends Document> {
     filter: TsFilter<WithTime<TSchema>>,
     options?: TsFindOptions<WithTime<TSchema>>
   ): Promise<T | null> {
-    if (!options) {
-      return this.collection.findOne<T>(filter)
-    }
     return this.collection.findOne<T>(filter, options)
   }
 
@@ -200,10 +197,10 @@ export class ZodCollection<TSchema extends Document> {
    */
   findOneAndUpdate(
     filter: TsFilter<WithTime<TSchema>>,
-    update: TsUpdate<WithTime<TSchema>>,
+    update: TsUpdate<TSchema>,
     options?: TsFindOneAndUpdateOptions<WithTime<TSchema>>
   ): Promise<ModifyResult<WithTime<TSchema>>> {
-    return this.collection.findOneAndUpdate(filter, update, options)
+    return this.collection.findOneAndUpdate(filter, this.updateTimestamp(update), options)
   }
 
   /**
