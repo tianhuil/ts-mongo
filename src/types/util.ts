@@ -37,3 +37,15 @@ export declare type NonArrayObject = {
 }
 
 export declare type RemodelType<NewType, OldType> = NewType & Omit<OldType, keyof NewType>
+
+export declare type NonNeverKeys<TSchema extends NonArrayObject> = {
+  [Key in keyof TSchema]: TSchema[Key] extends never ? never : Key
+}[keyof TSchema]
+
+export declare type RecurRemoveNever<TSchema> = TSchema extends BaseTypes
+  ? TSchema
+  : TSchema extends NonArrayObject
+  ? { [Key in NonNeverKeys<TSchema>]: RecurRemoveNever<TSchema[Key]> }
+  : TSchema extends ReadonlyArray<infer ArrayType>
+  ? Array<RecurRemoveNever<ArrayType>>
+  : never

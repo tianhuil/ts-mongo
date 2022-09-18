@@ -1,6 +1,15 @@
 import { ObjectId } from 'mongodb'
 import * as ta from 'type-assertions'
-import { Doc, DocumentWithId, NonArrayObject, OptionalId, RecurPartial, _Doc } from './util'
+import {
+  Doc,
+  DocumentWithId,
+  NonArrayObject,
+  NonNeverKeys,
+  OptionalId,
+  RecurPartial,
+  RecurRemoveNever,
+  _Doc,
+} from './util'
 
 // Test DocumentWithId
 type Obj = { a: string; _id: ObjectId }
@@ -68,3 +77,21 @@ ta.assert<ta.Not<ta.Extends<() => void, _Doc>>>()
 ta.assert<ta.Not<ta.Extends<{ a: () => void }, Doc>>>()
 ta.assert<ta.Not<ta.Extends<HTMLAreaElement, _Doc>>>()
 ta.assert<ta.Not<ta.Extends<{ a: HTMLAreaElement }, Doc>>>()
+
+// Test RemoveNever
+ta.assert<ta.Equal<NonNeverKeys<{ a: number; b: never; c: { d: string } }>, 'a' | 'c'>>()
+
+// Test Remove
+ta.assert<ta.Equal<RecurRemoveNever<{ a: number; b: never }>, { a: number }>>()
+ta.assert<
+  ta.Equal<
+    RecurRemoveNever<{ a: { b: number; c: never }; d: { e: never } }>,
+    { a: { b: number }; d: {} }
+  >
+>()
+ta.assert<
+  ta.Equal<
+    RecurRemoveNever<{ a: number[]; b: { c: string; d: never }[] }>,
+    { a: number[]; b: { c: string }[] }
+  >
+>()
