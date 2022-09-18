@@ -10,8 +10,15 @@ export declare type FlattenFilterPaths<Type, IndexType extends number = 0> = Joi
 // (the resulting template literal does not check for extra keys)
 type UpdateArrayHolder = '$' | '$[]'
 
+type ProjectionArrayHolder = '$'
+
 export declare type FlattenUpdatePaths<Type> = Join<
   FlattenPaths<WithId<Type>, UpdateArrayHolder>,
+  '.'
+>
+
+export declare type FlattenProjectionPaths<Type> = Join<
+  FlattenPaths<WithId<Type>, ProjectionArrayHolder>,
   '.'
 >
 
@@ -25,6 +32,12 @@ export declare type FlattenUpdateType<TSchema, Property extends string> = Flatte
   WithId<TSchema>,
   Property,
   UpdateArrayHolder
+>
+
+export declare type FlattenProjectionType<TSchema, Property extends string> = FlattenType<
+  WithId<TSchema>,
+  Property,
+  ProjectionArrayHolder
 >
 
 declare type Join<T extends unknown[], D extends string> = T extends []
