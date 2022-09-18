@@ -3,6 +3,8 @@ import * as ta from 'type-assertions'
 import {
   FlattenFilterPaths,
   FlattenFilterType,
+  FlattenProjectionPaths,
+  FlattenProjectionType,
   FlattenUpdatePaths,
   FlattenUpdateType,
 } from './flatten'
@@ -67,6 +69,13 @@ ta.assert<
   >
 >()
 
+ta.assert<
+  ta.Equal<
+    '_id' | 'a' | 'b' | 'b.c' | 'b.d.e' | 'b.d' | 'f' | 'g' | 'g.h' | 'f.$' | 'g.$' | 'g.$.h',
+    FlattenProjectionPaths<Example>
+  >
+>()
+
 ta.assert<ta.Equal<FlattenFilterType<Example, '_id'>, ObjectId>>()
 ta.assert<ta.Equal<FlattenFilterType<Example, 'a'>, number>>()
 ta.assert<ta.Equal<FlattenFilterType<Example, 'b'>, { c: string; d: { e: boolean } }>>()
@@ -85,3 +94,7 @@ ta.assert<ta.Equal<FlattenFilterType<Example, 'z'>, never>>()
 ta.assert<ta.Equal<FlattenUpdateType<Example, 'g.$'>, { h: number }>>()
 ta.assert<ta.Equal<FlattenUpdateType<Example, 'g.$.h'>, number>>()
 ta.assert<ta.Equal<FlattenUpdateType<Example, 'g.h'>, number>>()
+
+ta.assert<ta.Equal<FlattenProjectionType<Example, 'b.c'>, string>>()
+ta.assert<ta.Equal<FlattenProjectionType<Example, 'g.h'>, number>>()
+ta.assert<ta.Equal<FlattenProjectionType<Example, 'f.$'>, ObjectId>>()
