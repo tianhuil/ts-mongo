@@ -72,7 +72,7 @@ declare type FlattenPaths<Type, ArrayIndexType> = Type extends BaseTypes
   : []
 
 /**
- * Given a dot path Property, give TSchema's type
+ * Given a "dot path" Property, give TSchema's corresponding type
  */
 declare type FlattenType<
   TSchema,
