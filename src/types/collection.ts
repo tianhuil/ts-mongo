@@ -132,19 +132,6 @@ export declare class SafeCollection<
     options?: UpdateOptions
   ): Promise<UpdateResult>
   /**
-   * Replace a document in a collection with another document
-   *
-   * @param filter - The filter used to select the document to replace
-   * @param replacement - The Document that replaces the matching document
-   * @param options - Optional settings for the command
-   * @param callback - An optional callback, a Promise will be returned if none is provided
-   */
-  replaceOne(
-    filter: TsFilter<TFilterSchema>,
-    replacement: WithoutId<TReplaceSchema>,
-    options?: ReplaceOptions
-  ): Promise<UpdateResult | Document>
-  /**
    * Update multiple documents in a collection
    *
    * @param filter - The filter used to select the documents to update
@@ -156,6 +143,19 @@ export declare class SafeCollection<
     filter: TsFilter<TFilterSchema>,
     update: TsUpdate<TUpdateSchema>,
     options?: UpdateOptions
+  ): Promise<UpdateResult | Document>
+  /**
+   * Replace a document in a collection with another document
+   *
+   * @param filter - The filter used to select the document to replace
+   * @param replacement - The Document that replaces the matching document
+   * @param options - Optional settings for the command
+   * @param callback - An optional callback, a Promise will be returned if none is provided
+   */
+  replaceOne(
+    filter: TsFilter<TFilterSchema>,
+    replacement: WithoutId<TReplaceSchema>,
+    options?: ReplaceOptions
   ): Promise<UpdateResult | Document>
   /**
    * Delete a document from a collection
@@ -391,6 +391,19 @@ export declare class SafeCollection<
     options?: TsFindOneAndReplaceOptions<TReturnSchema>
   ): Promise<ModifyResult<TReturnSchema>>
   /**
+   * Find a document and update it in one atomic operation. Requires a write lock for the duration of the operation.
+   *
+   * @param filter - The filter used to select the document to update
+   * @param update - Update operations to be performed on the document
+   * @param options - Optional settings for the command
+   * @param callback - An optional callback, a Promise will be returned if none is provided
+   */
+  findOneAndUpdate(
+    filter: TsFilter<TFilterSchema>,
+    update: TsUpdate<TUpdateSchema>,
+    options?: TsFindOneAndUpdateOptions<TReturnSchema>
+  ): Promise<ModifyResult<TReturnSchema>>
+  /**
    * Retrieve all the indexes on the collection.
    *
    * @param options - Optional settings for the command
@@ -404,19 +417,6 @@ export declare class SafeCollection<
    * @param callback - An optional callback, a Promise will be returned if none is provided
    */
   stats(options?: CollStatsOptions): Promise<CollStats>
-  /**
-   * Find a document and update it in one atomic operation. Requires a write lock for the duration of the operation.
-   *
-   * @param filter - The filter used to select the document to update
-   * @param update - Update operations to be performed on the document
-   * @param options - Optional settings for the command
-   * @param callback - An optional callback, a Promise will be returned if none is provided
-   */
-  findOneAndUpdate(
-    filter: TsFilter<TFilterSchema>,
-    update: TsUpdate<TUpdateSchema>,
-    options?: TsFindOneAndUpdateOptions<TReturnSchema>
-  ): Promise<ModifyResult<TReturnSchema>>
   /**
    * Execute an aggregation framework pipeline against the collection, needs MongoDB \>= 2.2
    *
