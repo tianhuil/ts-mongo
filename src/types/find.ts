@@ -10,30 +10,18 @@ import { TsProjection } from './projection'
 import { SortDirection, TsSort } from './sort'
 import { RemodelType } from './util'
 
-export declare type RemodeledOptions<TSchema extends Document> = {
-  sort?: TsSort<TSchema>
-  projection?: TsProjection<TSchema>
-}
+// Remove sort and projection from options; instead use project / sort on the cursor
+// This simplifies return types
+export declare type TsFindOneAndDeleteOptions = Omit<FindOneAndDeleteOptions, 'sort' | 'projection'>
 
-export declare type TsFindOneAndDeleteOptions<TSchema extends Document> = RemodelType<
-  RemodeledOptions<TSchema>,
-  FindOneAndDeleteOptions
+export declare type TsFindOneAndReplaceOptions = Omit<
+  FindOneAndReplaceOptions,
+  'sort' | 'projection'
 >
 
-export declare type TsFindOneAndReplaceOptions<TSchema extends Document> = RemodelType<
-  RemodeledOptions<TSchema>,
-  FindOneAndReplaceOptions
->
+export declare type TsFindOneAndUpdateOptions = Omit<FindOneAndUpdateOptions, 'sort' | 'projection'>
 
-export declare type TsFindOneAndUpdateOptions<TSchema extends Document> = RemodelType<
-  RemodeledOptions<TSchema>,
-  FindOneAndUpdateOptions
->
-
-export declare type TsFindOptions<TSchema extends Document> = RemodelType<
-  RemodeledOptions<TSchema>,
-  FindOptions<TSchema>
->
+export declare type TsFindOptions = Omit<FindOptions, 'sort' | 'projection'>
 
 export declare type TsFindCursor<TSchema extends Document> = RemodelType<
   {

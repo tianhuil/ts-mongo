@@ -26,7 +26,6 @@ import {
   ListIndexesOptions,
   MapFunction,
   MapReduceOptions,
-  ModifyResult,
   OptionalUnlessRequiredId,
   OrderedBulkOperation,
   ReduceFunction,
@@ -47,6 +46,7 @@ import {
   TsFindOptions,
 } from './find'
 import { IndexSpecification } from './mongo-index'
+import { TsModifyResult } from './result'
 import { TsUpdate } from './update'
 import { Doc, DocumentWithId } from './util'
 
@@ -198,19 +198,13 @@ export declare class SafeCollection<
    * @param options - Optional settings for the command
    * @param callback - An optional callback, a Promise will be returned if none is provided
    */
-  findOne<T extends DocumentWithId = TReturnSchema>(
-    filter: TsFilter<TFilterSchema>,
-    options?: TsFindOptions<TReturnSchema>
-  ): Promise<T | null>
+  findOne(filter: TsFilter<TFilterSchema>, options?: TsFindOptions): Promise<TReturnSchema | null>
   /**
    * Creates a cursor for a filter that can be used to iterate over results from MongoDB
    *
    * @param filter - The filter predicate. If unspecified, then all documents in the collection will match the predicate
    */
-  find<T extends DocumentWithId = TReturnSchema>(
-    filter: TsFilter<TFilterSchema>,
-    options?: TsFindOptions<TReturnSchema>
-  ): TsFindCursor<T>
+  find(filter: TsFilter<TFilterSchema>, options?: TsFindOptions): TsFindCursor<TReturnSchema>
   /**
    * Creates an index on the db and collection collection.
    *
@@ -375,8 +369,8 @@ export declare class SafeCollection<
    */
   findOneAndDelete(
     filter: TsFilter<TFilterSchema>,
-    options?: TsFindOneAndDeleteOptions<TReturnSchema>
-  ): Promise<ModifyResult<TReturnSchema>>
+    options?: TsFindOneAndDeleteOptions
+  ): Promise<TsModifyResult<TReturnSchema>>
   /**
    * Find a document and replace it in one atomic operation. Requires a write lock for the duration of the operation.
    *
@@ -388,8 +382,8 @@ export declare class SafeCollection<
   findOneAndReplace(
     filter: TsFilter<TFilterSchema>,
     replacement: WithoutId<TReplaceSchema>,
-    options?: TsFindOneAndReplaceOptions<TReturnSchema>
-  ): Promise<ModifyResult<TReturnSchema>>
+    options?: TsFindOneAndReplaceOptions
+  ): Promise<TsModifyResult<TReturnSchema>>
   /**
    * Find a document and update it in one atomic operation. Requires a write lock for the duration of the operation.
    *
@@ -401,8 +395,8 @@ export declare class SafeCollection<
   findOneAndUpdate(
     filter: TsFilter<TFilterSchema>,
     update: TsUpdate<TUpdateSchema>,
-    options?: TsFindOneAndUpdateOptions<TReturnSchema>
-  ): Promise<ModifyResult<TReturnSchema>>
+    options?: TsFindOneAndUpdateOptions
+  ): Promise<TsModifyResult<TReturnSchema>>
   /**
    * Retrieve all the indexes on the collection.
    *

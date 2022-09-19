@@ -1,6 +1,5 @@
 import { AggregationCursor, Document } from 'mongodb'
 import { TsFilter } from './filter'
-import { RemodeledOptions } from './find'
 import { FlattenFilterPaths } from './flatten'
 import { TsProjection } from './projection'
 import { TsSort } from './sort'
@@ -23,6 +22,9 @@ export declare type TsLookup<TSchema extends Document, TSchemaOther extends Docu
 }
 
 export declare type TsAggregationCursor<TSchema extends Document> = RemodelType<
-  RemodeledOptions<TSchema>,
+  {
+    sort?: TsSort<TSchema>
+    projection?: TsProjection<TSchema>
+  },
   AggregationCursor<TSchema>
 >

@@ -9,7 +9,6 @@ import {
   InsertManyResult,
   InsertOneOptions,
   InsertOneResult,
-  ModifyResult,
   OptionalUnlessRequiredId,
   UpdateOptions,
   UpdateResult,
@@ -26,6 +25,7 @@ import {
   TsFindOptions,
   TsUpdate,
 } from './types'
+import { TsModifyResult } from './types/result'
 
 export type WithTime<T extends Document> = T & {
   createdAt: Date
@@ -93,11 +93,11 @@ export class ZodCollection<TSchema extends Document> {
    * @param filter - Query for find Operation
    * @param options - Optional settings for the command
    */
-  findOne<T extends DocumentWithIdTime = WithTime<WithId<TSchema>>>(
+  findOne(
     filter: TsFilter<WithId<WithTime<TSchema>>>,
-    options?: TsFindOptions<WithId<WithTime<TSchema>>>
-  ): Promise<T | null> {
-    return this.collection.findOne<T>(filter, options)
+    options?: TsFindOptions
+  ): Promise<WithId<WithTime<TSchema>> | null> {
+    return this.collection.findOne(filter, options)
   }
 
   /**
@@ -105,14 +105,11 @@ export class ZodCollection<TSchema extends Document> {
    *
    * @param filter - The filter predicate. If unspecified, then all documents in the collection will match the predicate
    */
-  find<T extends DocumentWithIdTime = WithTime<WithId<TSchema>>>(
+  find(
     filter: TsFilter<WithId<WithTime<TSchema>>>,
-    options?: TsFindOptions<WithId<WithTime<TSchema>>>
-  ): TsFindCursor<T> {
-    if (!options) {
-      return this.collection.find<T>(filter)
-    }
-    return this.collection.find<T>(filter, options)
+    options?: TsFindOptions
+  ): TsFindCursor<WithId<WithTime<TSchema>>> {
+    return this.collection.find(filter, options)
   }
 
   updateTimestamp(update: TsUpdate<TSchema>): TsUpdate<WithTime<TSchema>> {
@@ -189,8 +186,8 @@ export class ZodCollection<TSchema extends Document> {
    */
   findOneAndDelete(
     filter: TsFilter<WithId<WithTime<TSchema>>>,
-    options?: TsFindOneAndDeleteOptions<WithId<WithTime<TSchema>>>
-  ): Promise<ModifyResult<WithId<WithTime<TSchema>>>> {
+    options?: TsFindOneAndDeleteOptions
+  ): Promise<TsModifyResult<WithId<WithTime<TSchema>>>> {
     return this.collection.findOneAndDelete(filter, options)
   }
 
@@ -204,8 +201,8 @@ export class ZodCollection<TSchema extends Document> {
   findOneAndUpdate(
     filter: TsFilter<WithId<WithTime<TSchema>>>,
     update: TsUpdate<TSchema>,
-    options?: TsFindOneAndUpdateOptions<WithId<WithTime<TSchema>>>
-  ): Promise<ModifyResult<WithId<WithTime<TSchema>>>> {
+    options?: TsFindOneAndUpdateOptions
+  ): Promise<TsModifyResult<WithId<WithTime<TSchema>>>> {
     return this.collection.findOneAndUpdate(filter, this.updateTimestamp(update), options)
   }
 
