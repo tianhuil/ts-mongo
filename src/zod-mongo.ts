@@ -65,7 +65,7 @@ export class ZodCollection<TSchema extends Document> {
   insertOne(
     doc: OptionalUnlessRequiredId<TSchema>,
     options?: InsertOneOptions
-  ): Promise<InsertOneResult<TSchema>> {
+  ): Promise<InsertOneResult<WithId<WithTime<TSchema>>>> {
     return this.collection.insertOne(this.insertTimestamp(doc), options)
   }
 
@@ -80,7 +80,7 @@ export class ZodCollection<TSchema extends Document> {
   insertMany(
     docs: OptionalUnlessRequiredId<TSchema>[],
     options?: BulkWriteOptions
-  ): Promise<InsertManyResult<TSchema>> {
+  ): Promise<InsertManyResult<WithId<WithTime<TSchema>>>> {
     return this.collection.insertMany(
       docs.map((doc) => this.insertTimestamp(doc)),
       options
@@ -94,8 +94,8 @@ export class ZodCollection<TSchema extends Document> {
    * @param options - Optional settings for the command
    */
   findOne<T extends DocumentWithIdTime = WithTime<WithId<TSchema>>>(
-    filter: TsFilter<WithTime<TSchema>>,
-    options?: TsFindOptions<WithTime<TSchema>>
+    filter: TsFilter<WithId<WithTime<TSchema>>>,
+    options?: TsFindOptions<WithId<WithTime<TSchema>>>
   ): Promise<T | null> {
     return this.collection.findOne<T>(filter, options)
   }
@@ -106,8 +106,8 @@ export class ZodCollection<TSchema extends Document> {
    * @param filter - The filter predicate. If unspecified, then all documents in the collection will match the predicate
    */
   find<T extends DocumentWithIdTime = WithTime<WithId<TSchema>>>(
-    filter: TsFilter<WithTime<TSchema>>,
-    options?: TsFindOptions<WithTime<TSchema>>
+    filter: TsFilter<WithId<WithTime<TSchema>>>,
+    options?: TsFindOptions<WithId<WithTime<TSchema>>>
   ): TsFindCursor<T> {
     if (!options) {
       return this.collection.find<T>(filter)
@@ -132,7 +132,7 @@ export class ZodCollection<TSchema extends Document> {
    * @param options - Optional settings for the command
    */
   updateOne(
-    filter: TsFilter<WithTime<TSchema>>,
+    filter: TsFilter<WithId<WithTime<TSchema>>>,
     update: TsUpdate<TSchema>,
     options?: UpdateOptions
   ): Promise<UpdateResult> {
@@ -147,7 +147,7 @@ export class ZodCollection<TSchema extends Document> {
    * @param options - Optional settings for the command
    */
   updateMany(
-    filter: TsFilter<WithTime<TSchema>>,
+    filter: TsFilter<WithId<WithTime<TSchema>>>,
     update: TsUpdate<TSchema>,
     options?: UpdateOptions
   ): Promise<UpdateResult | Document> {
@@ -161,7 +161,10 @@ export class ZodCollection<TSchema extends Document> {
    * @param options - Optional settings for the command
    * @param callback - An optional callback, a Promise will be returned if none is provided
    */
-  deleteOne(filter: TsFilter<WithTime<TSchema>>, options?: DeleteOptions): Promise<DeleteResult> {
+  deleteOne(
+    filter: TsFilter<WithId<WithTime<TSchema>>>,
+    options?: DeleteOptions
+  ): Promise<DeleteResult> {
     return this.collection.deleteOne(filter, options)
   }
   /**
@@ -171,7 +174,10 @@ export class ZodCollection<TSchema extends Document> {
    * @param options - Optional settings for the command
    * @param callback - An optional callback, a Promise will be returned if none is provided
    */
-  deleteMany(filter: TsFilter<WithTime<TSchema>>, options?: DeleteOptions): Promise<DeleteResult> {
+  deleteMany(
+    filter: TsFilter<WithId<WithTime<TSchema>>>,
+    options?: DeleteOptions
+  ): Promise<DeleteResult> {
     return this.collection.deleteMany(filter, options)
   }
 
@@ -182,9 +188,9 @@ export class ZodCollection<TSchema extends Document> {
    * @param options - Optional settings for the command
    */
   findOneAndDelete(
-    filter: TsFilter<WithTime<TSchema>>,
-    options?: TsFindOneAndDeleteOptions<WithTime<TSchema>>
-  ): Promise<ModifyResult<WithTime<TSchema>>> {
+    filter: TsFilter<WithId<WithTime<TSchema>>>,
+    options?: TsFindOneAndDeleteOptions<WithId<WithTime<TSchema>>>
+  ): Promise<ModifyResult<WithId<WithTime<TSchema>>>> {
     return this.collection.findOneAndDelete(filter, options)
   }
 
@@ -196,10 +202,10 @@ export class ZodCollection<TSchema extends Document> {
    * @param options - Optional settings for the command
    */
   findOneAndUpdate(
-    filter: TsFilter<WithTime<TSchema>>,
+    filter: TsFilter<WithId<WithTime<TSchema>>>,
     update: TsUpdate<TSchema>,
-    options?: TsFindOneAndUpdateOptions<WithTime<TSchema>>
-  ): Promise<ModifyResult<WithTime<TSchema>>> {
+    options?: TsFindOneAndUpdateOptions<WithId<WithTime<TSchema>>>
+  ): Promise<ModifyResult<WithId<WithTime<TSchema>>>> {
     return this.collection.findOneAndUpdate(filter, this.updateTimestamp(update), options)
   }
 
@@ -246,7 +252,7 @@ export class ZodCollection<TSchema extends Document> {
    * @see https://docs.mongodb.com/manual/reference/operator/query/centerSphere/#op._S_centerSphere
    */
   countDocuments(
-    filter: TsFilter<WithTime<TSchema>>,
+    filter: TsFilter<WithId<WithTime<TSchema>>>,
     options?: CountDocumentsOptions
   ): Promise<number> {
     return this.collection.countDocuments(filter, options)

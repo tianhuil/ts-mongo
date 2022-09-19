@@ -1,9 +1,33 @@
-import { Collection, CollectionOptions, Db, Document } from 'mongodb'
-import { RemodelType, SafeCollection } from './types'
+import { Collection, CollectionOptions, Db, Document, WithId } from 'mongodb'
+import { DocumentWithId, RemodelType, SafeCollection } from './types'
 
-export declare type TsCollection<TSchema extends Document> = RemodelType<
-  SafeCollection<TSchema> & { unsafe: Collection<TSchema> },
-  Collection<TSchema>
+export declare type TsRawCollection<
+  TInsertSchema extends Document,
+  TUpdateSchema extends Document,
+  TReplaceSchema extends Document,
+  TFilterSchema extends DocumentWithId,
+  TReturnSchema extends DocumentWithId
+> = RemodelType<
+  SafeCollection<TInsertSchema, TUpdateSchema, TReplaceSchema, TFilterSchema, TReturnSchema> & {
+    unsafe: Collection<TReturnSchema>
+  },
+  Collection<TReturnSchema>
+>
+
+/**
+ * A collection with separate read and write types
+ */
+export declare type TsReadWriteCollection<
+  TWrite extends Document,
+  TRead extends DocumentWithId
+> = TsRawCollection<TWrite, TWrite, TWrite, TRead, TRead>
+
+/**
+ * A simple collection supports filter and return values with id and insert, update, and replace operations without.
+ */
+export declare type TsCollection<TSchema extends Document> = TsReadWriteCollection<
+  TSchema,
+  WithId<TSchema>
 >
 
 /**
