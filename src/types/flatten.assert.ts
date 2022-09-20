@@ -8,6 +8,7 @@ import {
   FlattenUpdatePaths,
   FlattenUpdateType,
 } from './flatten'
+import { UpdateFlattenTypes } from './update'
 
 type Example = {
   a: number
@@ -97,4 +98,39 @@ ta.assert<ta.Equal<FlattenUpdateType<Example, 'g.h'>, number>>()
 
 ta.assert<ta.Equal<FlattenProjectionType<Example, 'b.c'>, string>>()
 ta.assert<ta.Equal<FlattenProjectionType<Example, 'g.h'>, number>>()
-ta.assert<ta.Equal<FlattenProjectionType<Example, 'f.$'>, ObjectId>>()
+
+type SmallExample = {
+  a: number
+  b: {
+    c: string
+  }
+  f: ObjectId[]
+}
+
+ta.assert<
+  ta.Equal<
+    UpdateFlattenTypes<SmallExample, unknown>,
+    {
+      _id?: ObjectId
+      a?: number
+      b?: { c: string }
+      'b.c'?: string
+      f?: ObjectId[]
+      'f.$'?: ObjectId
+      'f.$[]'?: ObjectId
+    }
+  >
+>()
+
+type IntersectionExample = { a: number } & { b: string }
+
+ta.assert<
+  ta.Equal<
+    UpdateFlattenTypes<IntersectionExample, unknown>,
+    {
+      _id?: ObjectId
+      a?: number
+      b?: string
+    }
+  >
+>()
