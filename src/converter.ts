@@ -127,35 +127,28 @@ export const convertRawCollection = <
     ...result,
   })
 
-  const convert = <Prop extends MiddlewareMethods>(
-    target: InputType,
-    prop: Prop,
-    converter: (_: InputType[Prop]) => ReturnType[Prop]
-  ): ReturnType[Prop] => {
-    const oldMethod = target[prop]
-    return converter(oldMethod)
-  }
-
   const proxy = new Proxy<InputType>(collection, {
     get: (target, prop) => {
+      const convert = <Prop extends MiddlewareMethods>(
+        prop_: Prop,
+        converter: (_: InputType[Prop]) => ReturnType[Prop]
+      ): ReturnType[Prop] => {
+        const oldMethod = target[prop_].bind(target) as typeof target[Prop]
+        return converter(oldMethod)
+      }
+
       switch (prop) {
         case 'insertOne': {
-          return convert(
-            target,
-            prop,
-            (oldMethod) => (doc, options) => oldMethod(preInsert(doc), options)
-          )
+          return convert(prop, (oldMethod) => (doc, options) => oldMethod(preInsert(doc), options))
         }
         case 'insertMany': {
           return convert(
-            target,
             prop,
             (oldMethod) => (docs, options) => oldMethod(docs.map(preInsert), options)
           )
         }
         case 'updateOne': {
           return convert(
-            target,
             prop,
             (oldMethod) => (filter, update, options) =>
               oldMethod(filter, preUpdate(update), options)
@@ -163,7 +156,6 @@ export const convertRawCollection = <
         }
         case 'updateMany': {
           return convert(
-            target,
             prop,
             (oldMethod) => (filter, update, options) =>
               oldMethod(filter, preUpdate(update), options)
@@ -171,7 +163,6 @@ export const convertRawCollection = <
         }
         case 'replaceOne': {
           return convert(
-            target,
             prop,
             (oldMethod) => (filter, replacement, options) =>
               oldMethod(filter, preReplace(replacement), options)
@@ -179,7 +170,6 @@ export const convertRawCollection = <
         }
         case 'findOne': {
           return convert(
-            target,
             prop,
             (oldMethod) => (filter, options) =>
               oldMethod(filter, options).then((result) => (result ? postFind(result) : null))
@@ -187,35 +177,30 @@ export const convertRawCollection = <
         }
         case 'deleteOne': {
           return convert(
-            target,
             prop,
             (oldMethod) => (filter, options) => oldMethod(deleteFilter(filter), options)
           )
         }
         case 'deleteMany': {
           return convert(
-            target,
             prop,
             (oldMethod) => (filter, options) => oldMethod(deleteFilter(filter), options)
           )
         }
         case 'find': {
           return convert(
-            target,
             prop,
             (oldMethod) => (filter, options?) => oldMethod(filter, options).map(postFind)
           )
         }
         case 'findOneAndDelete': {
           return convert(
-            target,
             prop,
             (oldMethod) => (filter, options) => oldMethod(filter, options).then(convertModifyResult)
           )
         }
         case 'findOneAndReplace': {
           return convert(
-            target,
             prop,
             (oldMethod) => (filter, replacement, options) =>
               oldMethod(filter, preReplace(replacement), options).then(convertModifyResult)
@@ -223,7 +208,6 @@ export const convertRawCollection = <
         }
         case 'findOneAndUpdate': {
           return convert(
-            target,
             prop,
             (oldMethod) => (filter, update, options) =>
               oldMethod(filter, preUpdate(update), options).then(convertModifyResult)
@@ -231,21 +215,24 @@ export const convertRawCollection = <
         }
         case 'insert': {
           return convert(
-            target,
             prop,
             (oldMethod) => (docs, options) => oldMethod(docs.map(preInsert), options)
           )
         }
         case 'update': {
           return convert(
-            target,
             prop,
             (oldMethod) => (filter, update, options) =>
               oldMethod(filter, preUpdate(update), options)
           )
         }
-        default:
-          return target[prop as keyof typeof target]
+        default: {
+          const result = target[prop as keyof typeof target]
+          if (result instanceof Function) {
+            return result.bind(target)
+          }
+          return result
+        }
       }
     },
   })
