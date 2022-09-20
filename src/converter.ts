@@ -60,10 +60,10 @@ type Converter<
   preInsert: (
     obj: OptionalUnlessRequiredId<TInsertSchema1>
   ) => OptionalUnlessRequiredId<TInsertSchema0>
-  preUpdate: (obj: TsUpdate<TUpdateSchema1>) => TsUpdate<TUpdateSchema0>
-  preReplace: (obj: WithoutId<TReplaceSchema1>) => WithoutId<TReplaceSchema0>
-  postFind: (obj: TReturnSchema) => TReturnSchema
-  deleteFilter: (obj: TsFilter<TsFilterSchema>) => TsFilter<TsFilterSchema>
+  preUpdate: (_: TsUpdate<TUpdateSchema1>) => TsUpdate<TUpdateSchema0>
+  preReplace: (_: WithoutId<TReplaceSchema1>) => WithoutId<TReplaceSchema0>
+  postFind: (_: TReturnSchema) => TReturnSchema
+  preFilter: (_: TsFilter<TsFilterSchema>) => TsFilter<TsFilterSchema>
 }
 
 export const convertRawCollection = <
@@ -88,7 +88,7 @@ export const convertRawCollection = <
     preUpdate,
     preReplace,
     postFind,
-    deleteFilter,
+    preFilter,
   }: Converter<
     TInsertSchema0,
     TInsertSchema1,
@@ -151,66 +151,71 @@ export const convertRawCollection = <
           return convert(
             prop,
             (oldMethod) => (filter, update, options) =>
-              oldMethod(filter, preUpdate(update), options)
+              oldMethod(preFilter(filter), preUpdate(update), options)
           )
         }
         case 'updateMany': {
           return convert(
             prop,
             (oldMethod) => (filter, update, options) =>
-              oldMethod(filter, preUpdate(update), options)
+              oldMethod(preFilter(filter), preUpdate(update), options)
           )
         }
         case 'replaceOne': {
           return convert(
             prop,
             (oldMethod) => (filter, replacement, options) =>
-              oldMethod(filter, preReplace(replacement), options)
+              oldMethod(preFilter(filter), preReplace(replacement), options)
           )
         }
         case 'findOne': {
           return convert(
             prop,
             (oldMethod) => (filter, options) =>
-              oldMethod(filter, options).then((result) => (result ? postFind(result) : null))
+              oldMethod(preFilter(filter), options).then((result) =>
+                result ? postFind(result) : null
+              )
           )
         }
         case 'deleteOne': {
           return convert(
             prop,
-            (oldMethod) => (filter, options) => oldMethod(deleteFilter(filter), options)
+            (oldMethod) => (filter, options) => oldMethod(preFilter(filter), options)
           )
         }
         case 'deleteMany': {
           return convert(
             prop,
-            (oldMethod) => (filter, options) => oldMethod(deleteFilter(filter), options)
+            (oldMethod) => (filter, options) => oldMethod(preFilter(filter), options)
           )
         }
         case 'find': {
           return convert(
             prop,
-            (oldMethod) => (filter, options?) => oldMethod(filter, options).map(postFind)
+            (oldMethod) => (filter, options?) => oldMethod(preFilter(filter), options).map(postFind)
           )
         }
         case 'findOneAndDelete': {
           return convert(
             prop,
-            (oldMethod) => (filter, options) => oldMethod(filter, options).then(convertModifyResult)
+            (oldMethod) => (filter, options) =>
+              oldMethod(preFilter(filter), options).then(convertModifyResult)
           )
         }
         case 'findOneAndReplace': {
           return convert(
             prop,
             (oldMethod) => (filter, replacement, options) =>
-              oldMethod(filter, preReplace(replacement), options).then(convertModifyResult)
+              oldMethod(preFilter(filter), preReplace(replacement), options).then(
+                convertModifyResult
+              )
           )
         }
         case 'findOneAndUpdate': {
           return convert(
             prop,
             (oldMethod) => (filter, update, options) =>
-              oldMethod(filter, preUpdate(update), options).then(convertModifyResult)
+              oldMethod(preFilter(filter), preUpdate(update), options).then(convertModifyResult)
           )
         }
         case 'insert': {
@@ -223,7 +228,7 @@ export const convertRawCollection = <
           return convert(
             prop,
             (oldMethod) => (filter, update, options) =>
-              oldMethod(filter, preUpdate(update), options)
+              oldMethod(preFilter(filter), preUpdate(update), options)
           )
         }
         default: {

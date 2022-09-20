@@ -35,5 +35,5 @@ export const convertToTimeCollection = <TSchema extends Document>(
       throw Error('Does not support replace')
     },
     postFind: (obj) => obj,
-    deleteFilter: (obj) => obj,
+    preFilter: (obj) => obj,
   })
