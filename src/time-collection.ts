@@ -3,12 +3,10 @@ import { TsReadWriteCollection } from './collection'
 import { convertReadWriteCollection } from './converter'
 import { DocumentWithId, TsUpdate } from './types'
 
-export type WithTime<T extends Document> = T & {
+export type WithTime<T> = T & {
   createdAt: Date
   updatedAt: Date
 }
-
-export type WithIdTime<T extends Document> = WithTime<WithId<T>>
 
 export type DocumentWithIdTime = DocumentWithId & {
   createdAt: Date
@@ -16,9 +14,9 @@ export type DocumentWithIdTime = DocumentWithId & {
 }
 
 export const convertToTimeCollection = <TSchema extends Document>(
-  collection: TsReadWriteCollection<WithTime<TSchema>, WithIdTime<TSchema>>
+  collection: TsReadWriteCollection<WithTime<TSchema>, WithId<WithTime<TSchema>>>
 ) =>
-  convertReadWriteCollection<WithTime<TSchema>, TSchema, WithIdTime<TSchema>>(collection, {
+  convertReadWriteCollection<WithTime<TSchema>, TSchema, WithId<WithTime<TSchema>>>(collection, {
     preInsert: (
       obj: OptionalUnlessRequiredId<TSchema>
     ): OptionalUnlessRequiredId<WithTime<TSchema>> => {
