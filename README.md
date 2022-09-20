@@ -37,6 +37,9 @@ By default, we only allow you to select the 0'th element.  This solves the probl
 - As a concession, `Filter` takes an optional second argument (defaults to 0), which can be made `number` for those seeking the original promiscuous behavior.
 - In general, we believe it's not typesafe to select arbitrarily into an array so allowing an arbitrary number is probably not great programming practice.
 
+## Converter
+Many middleware functions are handled by the converter, which is like a type-safe middleware that can transform the type of the collection.  For example, `convertToTimeCollection` implements `createdAt` and `updatedAt` fields on a collection.  See `convertReadWriteCollection`.
+
 ## Roadmap
 - Aggregation (still incomplete)
 - Mapreduce
