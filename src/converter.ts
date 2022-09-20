@@ -1,6 +1,6 @@
 import { Document, OptionalUnlessRequiredId, WithoutId } from 'mongodb'
-import { TsRawCollection } from './collection'
-import { DocumentWithId, TsUpdate } from './types'
+import { TsRawCollection, TsReadWriteCollection } from './collection'
+import { DocumentWithId, TsFilter, TsUpdate } from './types'
 import { TsModifyResult } from './types/result'
 
 export const middlewareMethods = [
@@ -54,6 +54,7 @@ type Converter<
   TUpdateSchema1 extends Document,
   TReplaceSchema0 extends Document,
   TReplaceSchema1 extends Document,
+  TsFilterSchema extends DocumentWithId,
   TReturnSchema extends DocumentWithId
 > = {
   preInsert: (
@@ -62,9 +63,10 @@ type Converter<
   preUpdate: (obj: TsUpdate<TUpdateSchema1>) => TsUpdate<TUpdateSchema0>
   preReplace: (obj: WithoutId<TReplaceSchema1>) => WithoutId<TReplaceSchema0>
   postFind: (obj: TReturnSchema) => TReturnSchema
+  deleteFilter: (obj: TsFilter<TsFilterSchema>) => TsFilter<TsFilterSchema>
 }
 
-export const mkConvertedCollection = <
+export const convertRawCollection = <
   TInsertSchema0 extends Document,
   TInsertSchema1 extends Document,
   TUpdateSchema0 extends Document,
@@ -86,6 +88,7 @@ export const mkConvertedCollection = <
     preUpdate,
     preReplace,
     postFind,
+    deleteFilter,
   }: Converter<
     TInsertSchema0,
     TInsertSchema1,
@@ -93,6 +96,7 @@ export const mkConvertedCollection = <
     TUpdateSchema1,
     TReplaceSchema0,
     TReplaceSchema1,
+    TsFilterSchema,
     TReturnSchema
   >
 ): TsRawCollection<
@@ -102,6 +106,14 @@ export const mkConvertedCollection = <
   TsFilterSchema,
   TReturnSchema
 > => {
+  type InputType = TsRawCollection<
+    TInsertSchema0,
+    TUpdateSchema0,
+    TReplaceSchema0,
+    TsFilterSchema,
+    TReturnSchema
+  >
+
   type ReturnType = TsRawCollection<
     TInsertSchema1,
     TUpdateSchema1,
@@ -115,85 +127,142 @@ export const mkConvertedCollection = <
     ...result,
   })
 
-  return new Proxy(collection, {
+  const convert = <Prop extends MiddlewareMethods>(
+    target: InputType,
+    prop: Prop,
+    converter: (_: InputType[Prop]) => ReturnType[Prop]
+  ): ReturnType[Prop] => {
+    const oldMethod = target[prop]
+    return converter(oldMethod)
+  }
+
+  const proxy = new Proxy<InputType>(collection, {
     get: (target, prop) => {
       switch (prop) {
         case 'insertOne': {
-          const oldMethod = target[prop]
-          const newMethod: ReturnType['insertOne'] = (doc, options) =>
-            oldMethod(preInsert(doc), options)
-          return newMethod
+          return convert(
+            target,
+            prop,
+            (oldMethod) => (doc, options) => oldMethod(preInsert(doc), options)
+          )
         }
         case 'insertMany': {
-          const oldMethod = target[prop]
-          const newMethod: ReturnType['insertMany'] = (docs, options) =>
-            oldMethod(docs.map(preInsert), options)
-          return newMethod
+          return convert(
+            target,
+            prop,
+            (oldMethod) => (docs, options) => oldMethod(docs.map(preInsert), options)
+          )
         }
         case 'updateOne': {
-          const oldMethod = target[prop]
-          const newMethod: ReturnType['updateOne'] = (filter, update, options) =>
-            oldMethod(filter, preUpdate(update), options)
-          return newMethod
+          return convert(
+            target,
+            prop,
+            (oldMethod) => (filter, update, options) =>
+              oldMethod(filter, preUpdate(update), options)
+          )
         }
         case 'updateMany': {
-          const oldMethod = target[prop]
-          const newMethod: ReturnType['updateMany'] = (filter, update, options) =>
-            oldMethod(filter, preUpdate(update), options)
-          return newMethod
+          return convert(
+            target,
+            prop,
+            (oldMethod) => (filter, update, options) =>
+              oldMethod(filter, preUpdate(update), options)
+          )
         }
         case 'replaceOne': {
-          const oldMethod = target[prop]
-          const newMethod: ReturnType['replaceOne'] = (filter, replacement, options) =>
-            oldMethod(filter, preReplace(replacement), options)
-          return newMethod
+          return convert(
+            target,
+            prop,
+            (oldMethod) => (filter, replacement, options) =>
+              oldMethod(filter, preReplace(replacement), options)
+          )
         }
         case 'findOne': {
-          const oldMethod = target[prop]
-          const newMethod: ReturnType['findOne'] = (filter, options) =>
-            oldMethod(filter, options).then((result) => (result ? postFind(result) : null))
-          return newMethod
+          return convert(
+            target,
+            prop,
+            (oldMethod) => (filter, options) =>
+              oldMethod(filter, options).then((result) => (result ? postFind(result) : null))
+          )
+        }
+        case 'deleteOne': {
+          return convert(
+            target,
+            prop,
+            (oldMethod) => (filter, options) => oldMethod(deleteFilter(filter), options)
+          )
+        }
+        case 'deleteMany': {
+          return convert(
+            target,
+            prop,
+            (oldMethod) => (filter, options) => oldMethod(deleteFilter(filter), options)
+          )
         }
         case 'find': {
-          const oldMethod = target[prop]
-          const newMethod: ReturnType['find'] = (filter, options?) =>
-            oldMethod(filter, options).map(postFind)
-          return newMethod
+          return convert(
+            target,
+            prop,
+            (oldMethod) => (filter, options?) => oldMethod(filter, options).map(postFind)
+          )
         }
         case 'findOneAndDelete': {
-          const oldMethod = target[prop]
-          const newMethod: ReturnType['findOneAndDelete'] = (filter, options) =>
-            oldMethod(filter, options).then(convertModifyResult)
-          return newMethod
+          return convert(
+            target,
+            prop,
+            (oldMethod) => (filter, options) => oldMethod(filter, options).then(convertModifyResult)
+          )
         }
         case 'findOneAndReplace': {
-          const oldMethod = target[prop]
-          const newMethod: ReturnType['findOneAndReplace'] = (filter, replacement, options) =>
-            oldMethod(filter, preReplace(replacement), options).then(convertModifyResult)
-          return newMethod
+          return convert(
+            target,
+            prop,
+            (oldMethod) => (filter, replacement, options) =>
+              oldMethod(filter, preReplace(replacement), options).then(convertModifyResult)
+          )
         }
         case 'findOneAndUpdate': {
-          const oldMethod = target[prop]
-          const newMethod: ReturnType['findOneAndUpdate'] = (filter, update, options) =>
-            oldMethod(filter, preUpdate(update), options).then(convertModifyResult)
-          return newMethod
+          return convert(
+            target,
+            prop,
+            (oldMethod) => (filter, update, options) =>
+              oldMethod(filter, preUpdate(update), options).then(convertModifyResult)
+          )
         }
         case 'insert': {
-          const oldMethod = target[prop]
-          const newMethod: ReturnType['insert'] = (docs, options) =>
-            oldMethod(docs.map(preInsert), options)
-          return newMethod
+          return convert(
+            target,
+            prop,
+            (oldMethod) => (docs, options) => oldMethod(docs.map(preInsert), options)
+          )
         }
         case 'update': {
-          const oldMethod = target[prop]
-          const newMethod: ReturnType['update'] = (filter, update, options) =>
-            oldMethod(filter, preUpdate(update), options)
-          return newMethod
+          return convert(
+            target,
+            prop,
+            (oldMethod) => (filter, update, options) =>
+              oldMethod(filter, preUpdate(update), options)
+          )
         }
-        // Perhaps add deleteOne, deleteMany
         default:
           return target[prop as keyof typeof target]
       }
     },
-  }) as any
+  })
+
+  // HACK: proxy is not meant to change the object type but use it to tweak the type
+  return proxy as unknown as ReturnType
 }
+
+export const convertReadWriteCollection = <
+  TWrite0 extends Document,
+  TWrite1 extends Document,
+  TRead extends DocumentWithId
+>(
+  collection: TsReadWriteCollection<TWrite0, TRead>,
+  converter: Converter<TWrite0, TWrite1, TWrite0, TWrite1, TWrite0, TWrite1, TRead, TRead>
+): TsReadWriteCollection<TWrite1, TRead> =>
+  convertRawCollection<TWrite0, TWrite1, TWrite0, TWrite1, TWrite0, TWrite1, TRead, TRead>(
+    collection,
+    converter
+  )

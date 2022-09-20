@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb'
 import { z } from 'zod'
-import { ZodCollection } from '../src'
+import { convertToTimeCollection, mkTsCollection, WithTime } from '../src'
 import { setupDb } from './util'
 
 const delay = (ms: number) => {
@@ -13,16 +13,18 @@ const Example = z.object({
   a: z.string(),
   b: z.number().optional(),
 })
+type Example = z.infer<typeof Example>
 
-const initializeZodCollection = async () => {
+const initializeTimeCollection = async () => {
   const db = await setupDb()
-  const collection = new ZodCollection(db, 'collection', Example)
+
+  const collection = convertToTimeCollection(mkTsCollection<WithTime<Example>>(db, 'test'))
   await collection.deleteMany({})
   return collection
 }
 
 test('insertOne', async () => {
-  const collection = await initializeZodCollection()
+  const collection = await initializeTimeCollection()
   const result = await collection.insertOne({ a: 'a' })
   expect(result.acknowledged).toBeTruthy()
   expect(result.insertedId).toBeInstanceOf(ObjectId)
@@ -32,7 +34,7 @@ test('insertOne', async () => {
 })
 
 test('findOne', async () => {
-  const collection = await initializeZodCollection()
+  const collection = await initializeTimeCollection()
   await collection.insertOne({ a: 'a' })
 
   const date = new Date()
@@ -41,7 +43,7 @@ test('findOne', async () => {
 })
 
 test('updateOne', async () => {
-  const collection = await initializeZodCollection()
+  const collection = await initializeTimeCollection()
   await collection.insertOne({ a: 'a' })
 
   await delay(5)
