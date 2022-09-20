@@ -62,6 +62,7 @@ ta.assert<ta.Extends<{ $all: [{ a: 2 }] }, WithOperator<{ a: number }[]>>>()
 ta.assert<
   ta.Extends<{ $all: [{ $elemMatch: { a: { $gte: 4 } } }] }, WithOperator<{ a: number }[]>>
 >()
+ta.assert<ta.Extends<{ a: 2 }, WithOperator<{ a: number }>>>()
 
 // Test Filter equivalence
 // https://docs.mongodb.com/manual/reference/operator/query/all/
