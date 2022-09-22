@@ -13,9 +13,11 @@ const requiredValue = 'fixed'
 
 const initializeCollection = async () => {
   const db = await setupDb()
+  
+  const adminCollection = mkTsCollection<WithTime<Example>>(db, 'test-converter')
 
   const collection = convertReadWriteCollection(
-    mkTsCollection<WithTime<Example>>(db, 'test-converter'),
+    adminCollection,
     {
       preInsert: (obj) => {
         if (obj.a !== requiredValue) throw new Error('Error!')
@@ -24,19 +26,30 @@ const initializeCollection = async () => {
       preUpdate: (obj) => obj,
       preReplace: (obj) => obj,
       postFind: (obj) => obj,
-      preFilter: (obj) => obj,
+      preFilter: (obj) => {
+        if ((obj as WithTime<Example>).a !== requiredValue) throw new Error('Error!')
+        return obj
+      },
     }
   )
-  await collection.deleteMany({})
+  await adminCollection.deleteMany({})
   return collection
 }
 
-test('insertOne passes', async () => {
+test('insertOne', async () => {
   const collection = await initializeCollection()
   await expect(collection.insertOne({ a: requiredValue })).resolves.toBeTruthy()
+  expect(() => collection.insertOne({ a: 'another value' })).toThrow()
 })
 
-test('insertOne fails', async () => {
+test('findOne', async () => {
   const collection = await initializeCollection()
-  await expect(collection.insertOne({ a: 'another value' })).rejects.toThrow()
+  await expect(collection.findOne({ a: requiredValue })).resolves.toBeNull()
+  expect(() => collection.findOne({ a: 'another value' })).toThrow()
+})
+
+test('find', async () => {
+  const collection = await initializeCollection()
+  await expect(collection.find({ a: requiredValue }).toArray()).resolves.toEqual([])
+  expect(() => collection.find({ a: 'another value' })).toThrow()
 })
