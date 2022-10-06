@@ -1,4 +1,4 @@
-import { Document, WithId } from 'mongodb'
+import { Document, ObjectId, WithId } from 'mongodb'
 import { FlattenFilterPaths, FlattenFilterType } from './flatten'
 import { NonArrayObject, RecurPartial } from './util'
 
@@ -20,7 +20,7 @@ export type WithEqualityOperator<Field> = {
   $nin?: readonly Field[]
 }
 
-export type WithComparisonOperator<Field> = Field extends number | Date
+export type WithComparisonOperator<Field> = Field extends number | Date | ObjectId
   ? {
       $gt?: Field
       $lt?: Field
