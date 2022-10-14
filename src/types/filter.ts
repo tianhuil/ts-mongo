@@ -36,6 +36,7 @@ export type WithComparisonOperator<Field> = Field extends number | Date | Object
 export type WithStringOperator<Field> = Field extends string
   ? {
       $regex?: RegExp | string
+      $options?: string
       $text?: {
         $search: string
         $language?: string
