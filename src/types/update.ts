@@ -1,4 +1,4 @@
-import { Document, Timestamp } from 'mongodb'
+import { Document, ObjectId, Timestamp, UpdateResult } from 'mongodb'
 import { WithOperator } from './filter'
 import {
   FlattenFilterPaths,
@@ -104,3 +104,7 @@ export declare type ArrayAssignType<T extends Document> =
       $slice?: number
       $sort?: TsSort<T>
     }
+
+export declare interface TsUpdateResult extends Omit<UpdateResult, 'upsertedId'> {
+  upsertedId: ObjectId | null
+}

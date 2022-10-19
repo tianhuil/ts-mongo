@@ -5,6 +5,7 @@ import {
   PullTypes,
   SelectFlattenUpdatePaths,
   TsUpdate,
+  TsUpdateResult,
   UpdateFlattenArrayTypes,
   UpdateFlattenTypes,
 } from './update'
@@ -91,3 +92,6 @@ ta.assert<ta.Not<ta.Extends<{ z: string }, UpdateFlattenTypes<Example, ObjectId>
 ta.assert<ta.Not<ta.Extends<{ z: number }, UpdateFlattenArrayTypes<Example>>>>()
 ta.assert<ta.Not<ta.Extends<{ z: string }, PullTypes<Example>>>>()
 ta.assert<ta.Not<ta.Extends<{ z: string }, PullAllTypes<Example>>>>()
+
+// Testing upsertedId
+ta.assert<ta.Equal<null | ObjectId, TsUpdateResult['upsertedId']>>()
