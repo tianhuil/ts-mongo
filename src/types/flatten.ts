@@ -40,6 +40,12 @@ export declare type FlattenProjectionType<TSchema, Property extends string> = Fl
   ProjectionArrayHolder
 >
 
+export declare type FlattenSortType<TSchema, Property extends string> = FlattenType<
+  WithId<TSchema>,
+  Property,
+  never
+>
+
 declare type Join<T extends unknown[], D extends string> = T extends []
   ? ''
   : T extends [string | number]

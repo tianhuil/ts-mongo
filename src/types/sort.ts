@@ -1,6 +1,5 @@
 import { Document, ObjectId } from 'mongodb'
-import { FilterType } from './filter'
-import { FlattenFilterPaths } from './flatten'
+import { FlattenFilterPaths, FlattenSortType } from './flatten'
 
 declare type SortDirectionString =
   | SortDirection
@@ -12,13 +11,13 @@ export declare type SortDirection = 1 | -1 | 'asc' | 'desc' | 'ascending' | 'des
 
 // Needs to extends Document, not Doc because recursive structure of Doc will not work here
 export declare type TsSort<TSchema extends Document> = {
-  [Property in FlattenFilterPaths<TSchema>]?: FilterType<TSchema, Property> extends
+  [Property in FlattenFilterPaths<TSchema>]?: FlattenSortType<TSchema, Property> extends
     | number
     | boolean
     | Date
     | ObjectId
     ? SortDirection
-    : FilterType<TSchema, Property> extends string
+    : FlattenSortType<TSchema, Property> extends string
     ? SortDirectionString
     : never
 }
