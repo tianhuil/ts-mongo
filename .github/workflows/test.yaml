@@ -24,8 +24,8 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      # from https://github.com/pnpm/action-setup
-      - uses: pnpm/action-setup@v2.0.1
+      # from https://github.com/pnpm/action-setup#use-cache-to-reduce-installation-time
+      - uses: pnpm/action-setup@v2.2.4
         name: Install pnpm
         id: pnpm-install
         with:
