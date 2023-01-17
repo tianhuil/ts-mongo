@@ -11,13 +11,11 @@ export declare type SortDirection = 1 | -1 | 'asc' | 'desc' | 'ascending' | 'des
 
 // Needs to extends Document, not Doc because recursive structure of Doc will not work here
 export declare type TsSort<TSchema extends Document> = {
-  [Property in FlattenFilterPaths<TSchema>]?: FlattenSortType<TSchema, Property> extends
-    | number
-    | boolean
-    | Date
-    | ObjectId
+  [Property in FlattenFilterPaths<TSchema>]?: NonNullable<
+    FlattenSortType<TSchema, Property>
+  > extends number | boolean | Date | ObjectId
     ? SortDirection
-    : FlattenSortType<TSchema, Property> extends string
+    : NonNullable<FlattenSortType<TSchema, Property>> extends string
     ? SortDirectionString
     : never
 }

@@ -40,6 +40,15 @@ By default, we only allow you to select the 0'th element.  This solves the probl
 ## Converter
 Many middleware functions are handled by the converter, which is like a type-safe middleware that can transform the type of the collection.  For example, `convertToTimeCollection` implements `createdAt` and `updatedAt` fields on a collection.  See `convertReadWriteCollection`.
 
+## How to fix bugs in TsMongo
+When using the code, you may notice mistakes in TsMongo's typing behavior (e.g. https://github.com/tianhuil/aerial-app/pull/804).
+
+1. Look at the type for `.sort` (e.g. `TsSort`) 
+2. Build a test case in the assert file (e.g. `sort.assert.ts` where we added `.h` and `.i`).
+3. Then investigate the original file (e.g. `sort.ts`) and hack things until you pass testing.  Red underlines appear in VSCode to tell you if the typing doesn't work.
+
+This is solved in https://github.com/tianhuil/aerial-app/pull/805
+
 ## Roadmap
 - Aggregation (still incomplete)
 - Mapreduce
