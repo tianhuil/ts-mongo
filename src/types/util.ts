@@ -6,6 +6,7 @@ export declare type OptionalId<TSchema extends DocumentWithId> = Omit<TSchema, '
   Partial<Pick<TSchema, '_id'>>
 
 export declare type BaseTypes =
+  | null
   | string
   | number
   | boolean

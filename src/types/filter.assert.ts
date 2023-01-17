@@ -97,6 +97,8 @@ type Example = {
       e: boolean
     }
     f: ObjectId[]
+    g: null
+    h: number | null
   }
 }
 
@@ -119,6 +121,8 @@ ta.assert<
   >
 >()
 ta.assert<ta.Extends<ObjectId[], FilterType<Example, 'b.f'>>>()
+ta.assert<ta.Extends<null, FilterType<Example, 'b.g'>>>()
+ta.assert<ta.Extends<null | number, FilterType<Example, 'b.h'>>>()
 ta.assert<ta.Extends<{ $size: 2 }, FilterType<Example, 'b.f'>>>()
 
 // Test FilterType - with operators
