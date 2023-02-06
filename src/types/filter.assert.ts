@@ -83,6 +83,18 @@ ta.assert<ta.Extends<'a', WithOperator<string>>>()
 // Test WithLogicalOperators
 ta.assert<ta.Extends<{ a: { $gt: 2 } }, TsFilter<{ a: number }>>>()
 ta.assert<ta.Extends<{ $and: [{ a: { $gt: 2 } }, { a: { $lt: 5 } }] }, TsFilter<{ a: number }>>>()
+ta.assert<
+  ta.Extends<
+    {
+      $and: [
+        { $or: [{ a: { $gt: 2 } }, { a: { $lt: 5 } }] },
+        { $or: [{ a: { $gt: 2 } }, { a: { $lt: 5 } }] }
+      ]
+    },
+    TsFilter<{ a: number }>
+  >
+>()
+ta.assert<ta.Not<ta.Extends<{ $and: { a: { $gt: 3 } } }, TsFilter<{ a: number }>>>>()
 
 // Test $not operator
 ta.assert<ta.Extends<{ a: { $not: { $gt: 2 } } }, TsFilter<{ a: number }>>>()

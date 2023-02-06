@@ -91,12 +91,13 @@ export type WithOperator<Field, IndexType extends number = 0> =
 /**
  * https://docs.mongodb.com/manual/reference/operator/query-logical/
  */
+
 export type WithLogicalOperators<Field> =
   | Field
   | {
-      $and?: readonly Field[]
-      $or?: readonly Field[]
-      $nor?: readonly Field[]
+      $and?: readonly WithLogicalOperators<Field>[]
+      $or?: readonly WithLogicalOperators<Field>[]
+      $nor?: readonly WithLogicalOperators<Field>[]
     }
 
 /**
