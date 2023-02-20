@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /**
 
 Defines types for various GeoJSON objects used in geo-spatial queries.
@@ -11,6 +12,10 @@ Reference: https://www.mongodb.com/docs/manual/reference/geojson/#std-label-geos
 export type Coordinates = [number, number];
 
 // Base interface for all GeoJSON geometries, contains CRS (Coordinate Reference System) definition
+=======
+export type Coordinates = [number, number];
+
+>>>>>>> added Geo spatial Query
 interface Geometry {
   crs?: {
     type: string;
@@ -55,7 +60,10 @@ export interface GeoJSONGeometryCollection extends Geometry {
   geometries: GeoJSON[];
 }
 
+<<<<<<< HEAD
 // Union type that can represent any of the above GeoJSON objects
+=======
+>>>>>>> added Geo spatial Query
 export type GeoJSON =
   | GeoJSONPoint
   | GeoJSONLineString
