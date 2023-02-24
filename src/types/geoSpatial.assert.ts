@@ -1,6 +1,6 @@
 import * as ta from "type-assertions";
 import { GeoSpatialQueryWithSingleOption } from "./geoSpatial";
-import { type } from "os";
+
 
 type geoIntersectsExample = {
   $geoIntersects: {
