@@ -83,7 +83,7 @@ type geoWithinExample = {
       coordinates: Coordinates[][];
 =======
 import { GeoSpatialQueryWithSingleOption } from "./geoSpatial";
-import { type } from "os";
+
 
 type geoIntersectsExample = {
   $geoIntersects: {
