@@ -9,7 +9,7 @@ import { RemodelType } from './util'
 /**
  * This is an incomplete list but will do for now
  */
-export declare type Pipeline<TSchema extends Document, TSchemaOther extends Document, Field extends number> =
+export declare type Pipeline<TSchema extends Document, TSchemaOther extends Document> =
   | { $match: TsFilter<TSchema> }
   | { $project: TsProjection<TSchema> }
   | { $sort: TsSort<TSchema> }
@@ -22,7 +22,7 @@ export declare type Pipeline<TSchema extends Document, TSchemaOther extends Docu
    * 
    * https://www.mongodb.com/docs/manual/reference/operator/aggregation/limit/#mongodb-pipeline-pipe.-limit
    */ 
-    $limit: Field 
+    $limit: number
   }
   | {
    /**
