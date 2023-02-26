@@ -1,5 +1,16 @@
+/**
+
+Defines types for various GeoJSON objects used in geo-spatial queries.
+These definitions are sourced from the official MongoDB documentation.
+Reference: https://www.mongodb.com/docs/manual/reference/geojson/#std-label-geospatial-indexes-store-geojson.
+*/
+
+
+
+// A tuple containing longitude and latitude coordinates
 export type Coordinates = [number, number];
 
+// Base interface for all GeoJSON geometries, contains CRS (Coordinate Reference System) definition
 interface Geometry {
   crs?: {
     type: string;
@@ -44,6 +55,7 @@ export interface GeoJSONGeometryCollection extends Geometry {
   geometries: GeoJSON[];
 }
 
+// Union type that can represent any of the above GeoJSON objects
 export type GeoJSON =
   | GeoJSONPoint
   | GeoJSONLineString
