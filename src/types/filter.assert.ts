@@ -6,10 +6,22 @@ import { FilterType, TsFilter, WithOperator } from './filter'
 ta.assert<ta.Extends<'a20b', `a${number}b`>>()
 ta.assert<ta.Not<ta.Extends<'does-not-match-pattern', `a${number}b`>>>()
 ta.assert<ta.Extends<{ a20b: true }, { [x in `a${number}b`]: boolean }>>()
-ta.assert<ta.Extends<{ 'does-not-match-pattern': true }, { [x in `a${number}b`]: boolean }>>()
-ta.assert<ta.Extends<{ 'does-not-match-pattern': true }, Record<`a${number}b`, boolean>>>()
 ta.assert<
-  ta.Not<ta.Extends<{ 'does-not-match-pattern': true }, { [x in `a${1 | 2 | 3}b`]: boolean }>>
+  ta.Extends<
+    { 'does-not-match-pattern': true },
+    { [x in `a${number}b`]: boolean }
+  >
+>()
+ta.assert<
+  ta.Extends<{ 'does-not-match-pattern': true }, Record<`a${number}b`, boolean>>
+>()
+ta.assert<
+  ta.Not<
+    ta.Extends<
+      { 'does-not-match-pattern': true },
+      { [x in `a${1 | 2 | 3}b`]: boolean }
+    >
+  >
 >()
 
 // Test WithOperator number
@@ -60,7 +72,10 @@ ta.assert<ta.Not<ta.Extends<{ $all: 'a' }, WithOperator<string[]>>>>()
 ta.assert<ta.Extends<{ $size: 2 }, WithOperator<{ a: number }[]>>>()
 ta.assert<ta.Extends<{ $all: [{ a: 2 }] }, WithOperator<{ a: number }[]>>>()
 ta.assert<
-  ta.Extends<{ $all: [{ $elemMatch: { a: { $gte: 4 } } }] }, WithOperator<{ a: number }[]>>
+  ta.Extends<
+    { $all: [{ $elemMatch: { a: { $gte: 4 } } }] },
+    WithOperator<{ a: number }[]>
+  >
 >()
 ta.assert<ta.Extends<{ a: 2 }, WithOperator<{ a: number }>>>()
 
@@ -82,11 +97,21 @@ ta.assert<ta.Extends<'a', WithOperator<string>>>()
 
 // Test WithLogicalOperators
 ta.assert<ta.Extends<{ a: { $gt: 2 } }, TsFilter<{ a: number }>>>()
-ta.assert<ta.Extends<{ $and: [{ a: { $gt: 2 } }, { a: { $lt: 5 } }] }, TsFilter<{ a: number }>>>()
+ta.assert<
+  ta.Extends<
+    { $and: [{ a: { $gt: 2 } }, { a: { $lt: 5 } }] },
+    TsFilter<{ a: number }>
+  >
+>()
 
 // Test $not operator
 ta.assert<ta.Extends<{ a: { $not: { $gt: 2 } } }, TsFilter<{ a: number }>>>()
-ta.assert<ta.Extends<{ a: { $not: { $text: { $search: 'a' } } } }, TsFilter<{ a: string }>>>()
+ta.assert<
+  ta.Extends<
+    { a: { $not: { $text: { $search: 'a' } } } },
+    TsFilter<{ a: string }>
+  >
+>()
 
 // Test FlattenPaths / FlattenType
 type Example = {
@@ -123,7 +148,9 @@ ta.assert<ta.Extends<{ $size: 2 }, FilterType<Example, 'b.f'>>>()
 
 // Test FilterType - with operators
 ta.assert<ta.Extends<{ $lt: 2 }, FilterType<Example, 'a'>>>()
-ta.assert<ta.Extends<{ $text: { $search: 'hi' } }, FilterType<Example, 'b.c'>>>()
+ta.assert<
+  ta.Extends<{ $text: { $search: 'hi' } }, FilterType<Example, 'b.c'>>
+>()
 ta.assert<ta.Extends<{ $exists: true }, FilterType<Example, 'b.d'>>>()
 ta.assert<ta.Extends<{ e: { $eq: false } }, FilterType<Example, 'b.d'>>>()
 ta.assert<ta.Extends<{ $size: 2 }, FilterType<Example, 'b.f'>>>()

@@ -2,7 +2,10 @@ import { Document, ObjectId } from 'mongodb'
 
 export declare type DocumentWithId = Document & { _id: ObjectId }
 
-export declare type OptionalId<TSchema extends DocumentWithId> = Omit<TSchema, '_id'> &
+export declare type OptionalId<TSchema extends DocumentWithId> = Omit<
+  TSchema,
+  '_id'
+> &
   Partial<Pick<TSchema, '_id'>>
 
 export declare type BaseTypes =
@@ -36,7 +39,8 @@ export declare type NonArrayObject = {
   readonly [y: number]: never
 }
 
-export declare type RemodelType<NewType, OldType> = NewType & Omit<OldType, keyof NewType>
+export declare type RemodelType<NewType, OldType> = NewType &
+  Omit<OldType, keyof NewType>
 
 export declare type NonNeverKeys<TSchema extends NonArrayObject> = {
   [Key in keyof TSchema]: TSchema[Key] extends never ? never : Key

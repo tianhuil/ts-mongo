@@ -1,10 +1,10 @@
 import { WithId } from 'mongodb'
 import { BaseTypes, NonArrayObject } from './util'
 
-export declare type FlattenFilterPaths<Type, IndexType extends number = 0> = Join<
-  FlattenPaths<WithId<Type>, IndexType>,
-  '.'
->
+export declare type FlattenFilterPaths<
+  Type,
+  IndexType extends number = 0
+> = Join<FlattenPaths<WithId<Type>, IndexType>, '.'>
 
 // Do not allow numeric index because that weakens type-checking
 // (the resulting template literal does not check for extra keys)
@@ -22,23 +22,20 @@ export declare type FlattenProjectionPaths<Type> = Join<
   '.'
 >
 
-export declare type FlattenFilterType<TSchema, Property extends string> = FlattenType<
-  WithId<TSchema>,
-  Property,
-  `${number}`
->
+export declare type FlattenFilterType<
+  TSchema,
+  Property extends string
+> = FlattenType<WithId<TSchema>, Property, `${number}`>
 
-export declare type FlattenUpdateType<TSchema, Property extends string> = FlattenType<
-  WithId<TSchema>,
-  Property,
-  UpdateArrayHolder
->
+export declare type FlattenUpdateType<
+  TSchema,
+  Property extends string
+> = FlattenType<WithId<TSchema>, Property, UpdateArrayHolder>
 
-export declare type FlattenProjectionType<TSchema, Property extends string> = FlattenType<
-  WithId<TSchema>,
-  Property,
-  ProjectionArrayHolder
->
+export declare type FlattenProjectionType<
+  TSchema,
+  Property extends string
+> = FlattenType<WithId<TSchema>, Property, ProjectionArrayHolder>
 
 declare type Join<T extends unknown[], D extends string> = T extends []
   ? ''
@@ -60,7 +57,9 @@ declare type FlattenPaths<Type, ArrayIndexType> = Type extends BaseTypes
       | FlattenPaths<ArrayType, ArrayIndexType>
         | [ArrayIndexType, ...FlattenPaths<ArrayType, ArrayIndexType>]
         | [ArrayIndexType] // Can stop at array
-    : [ArrayIndexType, ...FlattenPaths<ArrayType, ArrayIndexType>] | [ArrayIndexType] // Can stop at array
+    :
+        | [ArrayIndexType, ...FlattenPaths<ArrayType, ArrayIndexType>]
+        | [ArrayIndexType] // Can stop at array
   : Type extends Map<string, unknown>
   ? [string]
   : Type extends object

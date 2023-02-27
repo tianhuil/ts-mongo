@@ -8,7 +8,13 @@ export declare type TsRawCollection<
   TFilterSchema extends DocumentWithId,
   TReturnSchema extends DocumentWithId
 > = RemodelType<
-  SafeCollection<TInsertSchema, TUpdateSchema, TReplaceSchema, TFilterSchema, TReturnSchema> & {
+  SafeCollection<
+    TInsertSchema,
+    TUpdateSchema,
+    TReplaceSchema,
+    TFilterSchema,
+    TReturnSchema
+  > & {
     unsafe: Collection<TReturnSchema>
   },
   Collection<TReturnSchema>
@@ -25,10 +31,8 @@ export declare type TsReadWriteCollection<
 /**
  * A simple collection supports filter and return values with id and insert, update, and replace operations without.
  */
-export declare type TsCollection<TSchema extends Document> = TsReadWriteCollection<
-  TSchema,
-  WithId<TSchema>
->
+export declare type TsCollection<TSchema extends Document> =
+  TsReadWriteCollection<TSchema, WithId<TSchema>>
 
 /**
  * Creates a type-safe collection

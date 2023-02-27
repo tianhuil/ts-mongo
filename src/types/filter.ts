@@ -50,7 +50,9 @@ export type WithStringOperator<Field> = Field extends string
  */
 export type WithArrayOperator<Field> = Field extends ReadonlyArray<infer T>
   ? {
-      $all?: T extends NonArrayObject ? (T | { $elemMatch: WithOperator<T> })[] : T[]
+      $all?: T extends NonArrayObject
+        ? (T | { $elemMatch: WithOperator<T> })[]
+        : T[]
       $size?: number
     }
   : {}
@@ -69,10 +71,10 @@ export type WithRecordOperator<
   IndexType extends number = 0
 > = TSchema extends NonArrayObject
   ? {
-      readonly [Property in FlattenFilterPaths<WithId<TSchema>, IndexType>]?: FilterType<
-        TSchema,
-        Property
-      >
+      readonly [Property in FlattenFilterPaths<
+        WithId<TSchema>,
+        IndexType
+      >]?: FilterType<TSchema, Property>
     }
   : {}
 
@@ -102,10 +104,12 @@ export type WithLogicalOperators<Field> =
  * The type for a given dot path into a json object
  * NB: must be maintained as a separate type function
  */
-export declare type FilterType<TSchema extends Document, Property extends string> = WithOperator<
-  FlattenFilterType<TSchema, Property>
->
+export declare type FilterType<
+  TSchema extends Document,
+  Property extends string
+> = WithOperator<FlattenFilterType<TSchema, Property>>
 
-export type TsFilter<TSchema extends Document, IndexType extends number = 0> = WithLogicalOperators<
-  WithOperator<TSchema, IndexType>
->
+export type TsFilter<
+  TSchema extends Document,
+  IndexType extends number = 0
+> = WithLogicalOperators<WithOperator<TSchema, IndexType>>

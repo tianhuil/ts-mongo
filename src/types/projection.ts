@@ -15,10 +15,12 @@ declare type _Projection<TSchema> =
     }
   | { [Property in FlattenProjectionPaths<TSchema>]?: 0 | false }
 
-type PositiveProjectionFlattenTypes<TSchema, Property extends string> = FlattenProjectionType<
+type PositiveProjectionFlattenTypes<
   TSchema,
-  Property
-> extends ReadonlyArray<infer ArrayType>
+  Property extends string
+> = FlattenProjectionType<TSchema, Property> extends ReadonlyArray<
+  infer ArrayType
+>
   ?
       | {
           $elemMatch?: WithOperator<ArrayType>
