@@ -53,9 +53,11 @@ export const middlewareMethods = [
   'stats',
 ] as const
 
-export type MiddlewareMethods = typeof middlewareMethods[number]
+export type MiddlewareMethods = (typeof middlewareMethods)[number]
 
-export const isMiddlewareMethod = (methodName: string): methodName is MiddlewareMethods => {
+export const isMiddlewareMethod = (
+  methodName: string
+): methodName is MiddlewareMethods => {
   return middlewareMethods.includes(methodName as MiddlewareMethods)
 }
 

@@ -14,9 +14,16 @@ export type DocumentWithIdTime = DocumentWithId & {
 }
 
 export const convertToTimeCollection = <TSchema extends Document>(
-  collection: TsReadWriteCollection<WithTime<TSchema>, WithId<WithTime<TSchema>>>
+  collection: TsReadWriteCollection<
+    WithTime<TSchema>,
+    WithId<WithTime<TSchema>>
+  >
 ) =>
-  convertReadWriteCollection<WithTime<TSchema>, TSchema, WithId<WithTime<TSchema>>>(collection, {
+  convertReadWriteCollection<
+    WithTime<TSchema>,
+    TSchema,
+    WithId<WithTime<TSchema>>
+  >(collection, {
     preInsert: (
       obj: OptionalUnlessRequiredId<TSchema>
     ): OptionalUnlessRequiredId<WithTime<TSchema>> => {
