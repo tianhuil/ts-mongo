@@ -9,5 +9,7 @@ test('set on dot notation', async () => {
   const _id = new ObjectId()
   const result = await col.insertOne({ a: 2, _id })
   expect(result.insertedId).toEqual(_id)
-  await expect(col.insertOne({ a: 2, _id })).rejects.toThrow(/E11000 duplicate key error dup key/)
+  await expect(col.insertOne({ a: 2, _id })).rejects.toThrow(
+    /E11000 duplicate key error dup key/
+  )
 })

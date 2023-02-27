@@ -14,7 +14,10 @@ const requiredValue = 'fixed'
 const initializeCollection = async () => {
   const db = await setupDb()
 
-  const adminCollection = mkTsCollection<WithTime<Example>>(db, 'test-converter')
+  const adminCollection = mkTsCollection<WithTime<Example>>(
+    db,
+    'test-converter'
+  )
 
   const collection = convertReadWriteCollection(adminCollection, {
     preInsert: (obj) => {
@@ -25,7 +28,8 @@ const initializeCollection = async () => {
     preReplace: (obj) => obj,
     postFind: (obj) => obj,
     preFilter: (obj) => {
-      if ((obj as WithTime<Example>).a !== requiredValue) throw new Error('Error!')
+      if ((obj as WithTime<Example>).a !== requiredValue)
+        throw new Error('Error!')
       return obj
     },
   })
@@ -47,6 +51,8 @@ test('findOne', async () => {
 
 test('find', async () => {
   const collection = await initializeCollection()
-  await expect(collection.find({ a: requiredValue }).toArray()).resolves.toEqual([])
+  await expect(
+    collection.find({ a: requiredValue }).toArray()
+  ).resolves.toEqual([])
   expect(() => collection.find({ a: 'another value' })).toThrow()
 })
