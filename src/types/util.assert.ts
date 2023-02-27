@@ -79,7 +79,9 @@ ta.assert<ta.Not<ta.Extends<HTMLAreaElement, _Doc>>>()
 ta.assert<ta.Not<ta.Extends<{ a: HTMLAreaElement }, Doc>>>()
 
 // Test RemoveNever
-ta.assert<ta.Equal<NonNeverKeys<{ a: number; b: never; c: { d: string } }>, 'a' | 'c'>>()
+ta.assert<
+  ta.Equal<NonNeverKeys<{ a: number; b: never; c: { d: string } }>, 'a' | 'c'>
+>()
 
 // Test Remove
 ta.assert<ta.Equal<RecurRemoveNever<{ a: number; b: never }>, { a: number }>>()

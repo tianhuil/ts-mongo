@@ -28,6 +28,8 @@ ta.assert<ta.Extends<{ f: { $slice: [2, 4] } }, TsProjection<Example>>>()
 ta.assert<ta.Extends<{ g: 1 }, TsProjection<Example>>>()
 ta.assert<ta.Extends<{ 'g.$': 1 }, TsProjection<Example>>>()
 ta.assert<ta.Extends<{ g: { $elemMatch: { h: 2 } } }, TsProjection<Example>>>()
-ta.assert<ta.Extends<{ g: { $elemMatch: { h: { $lt: 5 } } } }, TsProjection<Example>>>()
+ta.assert<
+  ta.Extends<{ g: { $elemMatch: { h: { $lt: 5 } } } }, TsProjection<Example>>
+>()
 ta.assert<ta.Not<ta.Extends<{ 'a.$': 1 }, TsProjection<Example>>>>()
 ta.assert<ta.Not<ta.Extends<{ 'a.b.$': 1 }, TsProjection<Example>>>>()
