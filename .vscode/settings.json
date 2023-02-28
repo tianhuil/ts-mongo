@@ -11,10 +11,7 @@
     "editor.formatOnPaste": true,
     "editor.codeActionsOnSave": {
       "source.organizeImports": true
-    }
-  },
-  "[json]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
   },
   "files.trimTrailingWhitespace": true,
   "files.exclude": {
