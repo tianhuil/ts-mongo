@@ -10,14 +10,14 @@ export type MapReduceOutput =
   | { reduce: string }
   | { merge: string }
 
-export type TsOmitMapReduction = Omit<
-  MapReduceOptions,
+export type TsOmitMapReduction<TResult, Key> = Omit<
+  MapReduceOptions<Key, TResult>,
   'out' | 'query' | 'sort'
 >
 
-export interface TsMapReduceOptions<TSchema extends Document, Key = ObjectId>
-  extends TsOmitMapReduction {
+export interface TsMapReduceOptions<TResult extends Document, Key = ObjectId>
+  extends TsOmitMapReduction<TResult, Key> {
   out?: MapReduceOutput
-  query?: TsFilter<TSchema>
-  sort?: TsSort<TSchema>
+  query?: TsFilter<TResult>
+  sort?: TsSort<TResult>
 }
