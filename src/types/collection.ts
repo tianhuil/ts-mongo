@@ -25,7 +25,7 @@ import {
   ListIndexesCursor,
   ListIndexesOptions,
   MapFunction,
-  MapReduceOptions,
+  ObjectId,
   OptionalUnlessRequiredId,
   OrderedBulkOperation,
   ReduceFunction,
@@ -34,7 +34,7 @@ import {
   UnorderedBulkOperation,
   UpdateOptions,
   UpdateResult,
-  WithoutId,
+  WithoutId
 } from 'mongodb'
 import { TsAggregationCursor } from './aggregation'
 import { TsFilter } from './filter'
@@ -43,8 +43,9 @@ import {
   TsFindOneAndDeleteOptions,
   TsFindOneAndReplaceOptions,
   TsFindOneAndUpdateOptions,
-  TsFindOptions,
+  TsFindOptions
 } from './find'
+import { TsMapReduceOptions } from './mapReduce'
 import { IndexSpecification } from './mongo-index'
 import { TsModifyResult } from './result'
 import { TsUpdate, TsUpdateResult } from './update'
@@ -465,10 +466,10 @@ export declare class SafeCollection<
    * @param options - Optional settings for the command
    * @param callback - An optional callback, a Promise will be returned if none is provided
    */
-  mapReduce<TKey = any, TValue = any>(
+  mapReduce<T extends Doc, TKey = ObjectId, TValue = any>(
     map: string | MapFunction<TReturnSchema>,
     reduce: string | ReduceFunction<TKey, TValue>,
-    options?: MapReduceOptions<TKey, TValue>
+    options?: TsMapReduceOptions<T, TValue>
   ): Promise<Document | Document[]>
   initializeUnorderedBulkOp(options?: BulkWriteOptions): UnorderedBulkOperation
   /** Initiate an In order bulk write operation. Operations will be serially executed in the order they are added, creating a new operation for each switch in types. */
