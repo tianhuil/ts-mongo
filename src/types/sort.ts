@@ -7,13 +7,7 @@ declare type SortDirectionString =
       $meta: 'textScore' | 'indexKey'
     }
 
-export declare type SortDirection =
-  | 1
-  | -1
-  | 'asc'
-  | 'desc'
-  | 'ascending'
-  | 'descending'
+export declare type SortDirection = 1 | -1 | 'asc' | 'desc' | 'ascending' | 'descending'
 
 // Needs to extends Document, not Doc because recursive structure of Doc will not work here
 export declare type TsSort<TSchema extends Document> = {
