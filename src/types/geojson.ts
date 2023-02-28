@@ -1,4 +1,4 @@
-export type TsGeoJSON<Type> = Type extends (TSGeoJSONTypes | "GeometryCollection")
+export type TsGeoJSON<Type> = Type extends TSGeoJSONTypes
   ? (Type extends "GeometryCollection"
     ? {
       type: Type,
