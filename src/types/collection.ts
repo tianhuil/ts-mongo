@@ -466,10 +466,10 @@ export declare class SafeCollection<
    * @param options - Optional settings for the command
    * @param callback - An optional callback, a Promise will be returned if none is provided
    */
-  mapReduce<T extends Doc, TKey = ObjectId, TValue = any>(
+  mapReduce<TKey = ObjectId, TValue = any>(
     map: string | MapFunction<TReturnSchema>,
     reduce: string | ReduceFunction<TKey, TValue>,
-    options?: TsMapReduceOptions<T, TValue>
+    options?: TsMapReduceOptions<Document, TKey>
   ): Promise<Document | Document[]>
   initializeUnorderedBulkOp(options?: BulkWriteOptions): UnorderedBulkOperation
   /** Initiate an In order bulk write operation. Operations will be serially executed in the order they are added, creating a new operation for each switch in types. */

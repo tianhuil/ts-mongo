@@ -10,13 +10,7 @@ type ExampleTSchema = {
   price: number
 }
 
-type MapReduceFinalResult = {
-  price: number
-  author_name: string
-  publish_year: string
-}
-
-// Output
+// Testing for Output
 ta.assert<
   ta.Extends<{ out: 'new_doc' }, TsMapReduceOptions<ExampleTSchema, ObjectId>>
 >()
@@ -57,7 +51,7 @@ ta.assert<
   >
 >()
 
-// Sort
+// Testing for Sort Param
 ta.assert<
   ta.Extends<
     { sort: { price: 1 } },
@@ -79,7 +73,7 @@ ta.assert<
   >
 >()
 
-// Testing Query
+// Testing For Query Param
 ta.assert<
   ta.Extends<
     { query: { price: { $gt: 50 } } },
@@ -96,7 +90,7 @@ ta.assert<
   >
 >()
 
-// Finalizse
+// Testing for finalize Param
 ta.assert<
   ta.Extends<{ finalize: 'test' }, TsMapReduceOptions<ExampleTSchema, ObjectId>>
 >()
