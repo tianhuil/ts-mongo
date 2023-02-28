@@ -1,19 +1,19 @@
 import {
-  GeoJSONPolygon,
-  GeoJSONPoint,
-  GeoJSONMultiPolygon,
   Coordinates,
-} from "./geometry";
+  GeoJSONMultiPolygon,
+  GeoJSONPoint,
+  GeoJSONPolygon,
+} from './geometry'
 
 /**
  * Options for $geoWithin.
  */
 interface GeoWithinQueryOptions {
-  $geometry: GeoJSONPolygon | GeoJSONMultiPolygon;
-  $box: [Coordinates, Coordinates];
-  $center: [Coordinates, number];
-  $centerSphere: [Coordinates, number];
-  $polygon: Coordinates[];
+  $geometry: GeoJSONPolygon | GeoJSONMultiPolygon
+  $box: [Coordinates, Coordinates]
+  $center: [Coordinates, number]
+  $centerSphere: [Coordinates, number]
+  $polygon: Coordinates[]
 }
 
 /**
@@ -23,10 +23,8 @@ interface GeoWithinQueryOptions {
 */
 
 type AllowOnlyOneOption<T, K> = {
-  [Property in keyof T as Exclude<Property, K>]?: never;
-};
-
-
+  [Property in keyof T as Exclude<Property, K>]?: never
+}
 
 /**
  * Type for $geoWithin query operator.
@@ -36,33 +34,33 @@ type AllowOnlyOneOption<T, K> = {
 type $geoWithin =
   | ({ $geometry: GeoJSONPolygon | GeoJSONMultiPolygon } & AllowOnlyOneOption<
       GeoWithinQueryOptions,
-      "$geometry"
+      '$geometry'
     >)
   | ({ $box: [Coordinates, Coordinates] } & AllowOnlyOneOption<
       GeoWithinQueryOptions,
-      "$box"
+      '$box'
     >)
   | ({ $center: [Coordinates, number] } & AllowOnlyOneOption<
       GeoWithinQueryOptions,
-      "$center"
+      '$center'
     >)
   | ({ $centerSphere: [Coordinates, number] } & AllowOnlyOneOption<
       GeoWithinQueryOptions,
-      "$centerSphere"
+      '$centerSphere'
     >)
   | ({ $polygon: Coordinates[] } & AllowOnlyOneOption<
       GeoWithinQueryOptions,
-      "$polygon"
-    >);
+      '$polygon'
+    >)
 
 /**
  * Options for $nearSphere query operator.
  * @see https://docs.mongodb.com/manual/reference/operator/query/nearSphere/
  */
 interface NearSphereGeometry {
-  $geometry: GeoJSONPoint;
-  $maxDistance?: number;
-  $minDistance?: number;
+  $geometry: GeoJSONPoint
+  $maxDistance?: number
+  $minDistance?: number
 }
 
 /**
@@ -73,23 +71,22 @@ interface NearSphereGeometry {
 
 interface GeoSpatialQueryOptions {
   $geoIntersects: {
-    $geometry: GeoJSONPolygon;
-  };
-  $geoWithin: $geoWithin;
+    $geometry: GeoJSONPolygon
+  }
+  $geoWithin: $geoWithin
   $near:
     | Coordinates
     | {
-        $geometry: GeoJSONPoint;
-      };
-  $nearSphere: NearSphereGeometry | Coordinates;
+        $geometry: GeoJSONPoint
+      }
+  $nearSphere: NearSphereGeometry | Coordinates
 }
-
 
 type GeoIntersects = {
   $geoIntersects: {
-    $geometry: GeoJSONPolygon;
-  };
-} & AllowOnlyOneOption<GeoSpatialQueryOptions, "$geoIntersects">;
+    $geometry: GeoJSONPolygon
+  }
+} & AllowOnlyOneOption<GeoSpatialQueryOptions, '$geoIntersects'>
 
 /**
  * The `GeoWithin` type describes a geospatial query option that uses the `$geoWithin` operator.
@@ -102,10 +99,10 @@ type GeoIntersects = {
  */
 
 type GeoWithin = {
-  $geoWithin: $geoWithin;
-  $maxDistance?: never;
-  $minDistance?: never;
-} & AllowOnlyOneOption<GeoSpatialQueryOptions, "$geoWithin">;
+  $geoWithin: $geoWithin
+  $maxDistance?: never
+  $minDistance?: never
+} & AllowOnlyOneOption<GeoSpatialQueryOptions, '$geoWithin'>
 
 /**
  * The $near operator is a geospatial query operator that searches for documents where a location field is within a specified distance (in meters) from a given point. It returns documents sorted by distance from the specified point.
@@ -128,26 +125,26 @@ type GeoWithin = {
 type Near =
   | ({
       $near: {
-        $geometry: GeoJSONPoint;
-        $maxDistance?: number;
-        $minDistance?: number;
-      };
-    } & AllowOnlyOneOption<GeoSpatialQueryOptions, "$near">)
+        $geometry: GeoJSONPoint
+        $maxDistance?: number
+        $minDistance?: number
+      }
+    } & AllowOnlyOneOption<GeoSpatialQueryOptions, '$near'>)
   | ({
-      $near: Coordinates;
-      $maxDistance?: number;
-      $minDistance?: never;
-    } & AllowOnlyOneOption<GeoSpatialQueryOptions, "$near">);
+      $near: Coordinates
+      $maxDistance?: number
+      $minDistance?: never
+    } & AllowOnlyOneOption<GeoSpatialQueryOptions, '$near'>)
 
 type NearSphere =
   | ({
-      $nearSphere?: NearSphereGeometry;
-    } & AllowOnlyOneOption<GeoSpatialQueryOptions, "$nearSphere">)
+      $nearSphere?: NearSphereGeometry
+    } & AllowOnlyOneOption<GeoSpatialQueryOptions, '$nearSphere'>)
   | ({
-      $nearSphere: Coordinates;
-      $maxDistance?: number;
-      $minDistance?: number;
-    } & AllowOnlyOneOption<GeoSpatialQueryOptions, "$nearSphere">);
+      $nearSphere: Coordinates
+      $maxDistance?: number
+      $minDistance?: number
+    } & AllowOnlyOneOption<GeoSpatialQueryOptions, '$nearSphere'>)
 
 /**
  * Type for geo-spatial queries with a single option.
@@ -180,4 +177,4 @@ type NearSphere =
 
 export type TsGeoSpatialQuery<Field> = Field extends Coordinates
   ? GeoIntersects | GeoWithin | Near | NearSphere
-  : {};
+  : {}

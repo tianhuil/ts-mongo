@@ -1,8 +1,8 @@
-import * as ta from "type-assertions";
-import { TsGeoSpatialQuery } from "./geoSpatial";
-import { Coordinates } from "./geometry";
+import * as ta from 'type-assertions'
+import { TsGeoSpatialQuery } from './geoSpatial'
+import { Coordinates } from './geometry'
 
-type location = [number, number];
+type location = [number, number]
 
 /**
  * Example of a geospatial query using the $near operator to find documents that are near a given location.
@@ -16,19 +16,19 @@ type location = [number, number];
 type geoNearExample = {
   $near: {
     $geometry: {
-      type: "Point";
-      coordinates: [number, number];
-    };
-    $maxDistance: number;
-  };
-};
+      type: 'Point'
+      coordinates: [number, number]
+    }
+    $maxDistance: number
+  }
+}
 
-ta.assert<ta.Extends<geoNearExample, TsGeoSpatialQuery<location>>>();
+ta.assert<ta.Extends<geoNearExample, TsGeoSpatialQuery<location>>>()
 /**
  * When specifying a legacy coordinate, you can use the optional $maxDistance specification to limit the $near
-  results by distance in radians. 
+  results by distance in radians.
   $maxDistance limits the results to those documents that are at most the specified distance from the center point.
-  @see https://docs.mongodb.com/manual/reference/operator/query/near/ 
+  @see https://docs.mongodb.com/manual/reference/operator/query/near/
   {
   $near: [ <x>, <y> ],
   $maxDistance: <distance in radians>
@@ -38,29 +38,29 @@ ta.assert<
   ta.Not<
     ta.Extends<
       {
-        $near: [123, 123];
-        $minDistance: number;
+        $near: [123, 123]
+        $minDistance: number
       },
       TsGeoSpatialQuery<location>
     >
   >
->();
-ta.assert<ta.Extends<geoNearExample, TsGeoSpatialQuery<location>>>();
+>()
+ta.assert<ta.Extends<geoNearExample, TsGeoSpatialQuery<location>>>()
 ta.assert<
   ta.Not<
     ta.Extends<
       {
         $near: {
           $geometry: {
-            type: "Polygon";
-            coordinates: Coordinates[][]; // should be a point
-          };
-        };
+            type: 'Polygon'
+            coordinates: Coordinates[][] // should be a point
+          }
+        }
       },
       TsGeoSpatialQuery<location>
     >
   >
->();
+>()
 
 /**
  * Example of a geospatial query using the $geoWithin operator to find documents that are within a given polygon.
@@ -78,84 +78,84 @@ ta.assert<
 type geoWithinExample = {
   $geoWithin: {
     $geometry: {
-      type: "Polygon";
-      coordinates: Coordinates[][];
-    };
-  };
-};
+      type: 'Polygon'
+      coordinates: Coordinates[][]
+    }
+  }
+}
 type geoWithinBoxExample = {
   $geoWithin: {
-    $box: [Coordinates, Coordinates];
-  };
-};
+    $box: [Coordinates, Coordinates]
+  }
+}
 type geoWithinCenterExample = {
   $geoWithin: {
-    $center: [Coordinates, number];
-  };
-};
+    $center: [Coordinates, number]
+  }
+}
 type geoWithinCenterSphereExample = {
   $geoWithin: {
-    $centerSphere: [Coordinates, number];
-  };
-};
-ta.assert<ta.Extends<geoWithinExample, TsGeoSpatialQuery<location>>>();
-ta.assert<ta.Extends<geoWithinExample, TsGeoSpatialQuery<location>>>();
+    $centerSphere: [Coordinates, number]
+  }
+}
+ta.assert<ta.Extends<geoWithinExample, TsGeoSpatialQuery<location>>>()
+ta.assert<ta.Extends<geoWithinExample, TsGeoSpatialQuery<location>>>()
 ta.assert<
   ta.Not<
     ta.Extends<
       {
         $geoWithin: {
           $geometry: {
-            type: "point";
-            coordinates: number;
-          };
-        };
+            type: 'point'
+            coordinates: number
+          }
+        }
       },
       TsGeoSpatialQuery<location>
     >
   >
->();
-ta.assert<ta.Extends<geoWithinBoxExample, TsGeoSpatialQuery<location>>>();
+>()
+ta.assert<ta.Extends<geoWithinBoxExample, TsGeoSpatialQuery<location>>>()
 ta.assert<
   ta.Not<
     ta.Extends<
       {
         $geoWithin: {
-          $box: Coordinates[]; // should be a tuple of 2 coordinates arrays [Coordinates, Coordinates]
-        };
+          $box: Coordinates[] // should be a tuple of 2 coordinates arrays [Coordinates, Coordinates]
+        }
       },
       TsGeoSpatialQuery<location>
     >
   >
->();
-ta.assert<ta.Extends<geoWithinCenterExample, TsGeoSpatialQuery<location>>>();
+>()
+ta.assert<ta.Extends<geoWithinCenterExample, TsGeoSpatialQuery<location>>>()
 ta.assert<
   ta.Not<
     ta.Extends<
       {
         $geoWithin: {
-          $center: [Coordinates]; // should be a tuple of 2 elements [Coordinates, radius]
-        };
+          $center: [Coordinates] // should be a tuple of 2 elements [Coordinates, radius]
+        }
       },
       TsGeoSpatialQuery<location>
     >
   >
->();
+>()
 ta.assert<
   ta.Extends<geoWithinCenterSphereExample, TsGeoSpatialQuery<location>>
->();
+>()
 ta.assert<
   ta.Not<
     ta.Extends<
       {
         $geoWithin: {
-          $center: [Coordinates]; // should be a tuple of 2 elements [Coordinates, radius]
-        };
+          $center: [Coordinates] // should be a tuple of 2 elements [Coordinates, radius]
+        }
       },
       TsGeoSpatialQuery<location>
     >
   >
->();
+>()
 
 /**
 
@@ -168,32 +168,32 @@ The $nearSphere operator returns documents in order of proximity to the specifie
 type nearSphereExample = {
   $nearSphere: {
     $geometry: {
-      type: "Point";
-      coordinates: Coordinates;
-    };
-    $minDistance: number;
-    $maxDistance: number;
-  };
-};
+      type: 'Point'
+      coordinates: Coordinates
+    }
+    $minDistance: number
+    $maxDistance: number
+  }
+}
 
-ta.assert<ta.Extends<nearSphereExample, TsGeoSpatialQuery<location>>>();
+ta.assert<ta.Extends<nearSphereExample, TsGeoSpatialQuery<location>>>()
 ta.assert<
   ta.Not<
     ta.Extends<
       {
         $nearSphere: {
           $geometry: {
-            type: "Point";
-            coordinates: number;
-          };
-          $minDistance: number;
-          $maxDistance: number;
-        };
+            type: 'Point'
+            coordinates: number
+          }
+          $minDistance: number
+          $maxDistance: number
+        }
       },
       TsGeoSpatialQuery<location>
     >
   >
->();
+>()
 
 /**
  * Example of a geospatial query using the $geoIntersects operator to find documents that intersect with a given shape.
@@ -206,25 +206,25 @@ ta.assert<
 type geoIntersectsExample = {
   $geoIntersects: {
     $geometry: {
-      type: "Polygon";
-      coordinates: Coordinates[][];
-    };
-  };
-};
+      type: 'Polygon'
+      coordinates: Coordinates[][]
+    }
+  }
+}
 
-ta.assert<ta.Extends<geoIntersectsExample, TsGeoSpatialQuery<location>>>();
+ta.assert<ta.Extends<geoIntersectsExample, TsGeoSpatialQuery<location>>>()
 ta.assert<
   ta.Not<
     ta.Extends<
       {
         $geoIntersects: {
           $geometry: {
-            type: "Polygon";
-            coordinates: number;
-          };
-        };
+            type: 'Polygon'
+            coordinates: number
+          }
+        }
       },
       TsGeoSpatialQuery<location>
     >
   >
->();
+>()

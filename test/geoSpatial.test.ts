@@ -1,47 +1,47 @@
-import { Coordinates } from "../src/types/geometry";
-import { mkTsTestCollection } from "./util";
+import { Coordinates } from '../src/types/geometry'
+import { mkTsTestCollection } from './util'
 
 type Example = {
-  Name: string;
-  City: string;
+  Name: string
+  City: string
   location: {
-    type: "Point";
-    coordinates: Coordinates;
-  };
-};
+    type: 'Point'
+    coordinates: Coordinates
+  }
+}
 
 const locations: Example[] = [
   {
-    Name: "Houston Garden Center",
-    City: "LeagueCity",
+    Name: 'Houston Garden Center',
+    City: 'LeagueCity',
     location: {
-      type: "Point",
+      type: 'Point',
       coordinates: [-73.856077, 40.848447],
     },
   },
   {
-    Name: "Lowes Garden Center",
-    City: "LeagueCity",
+    Name: 'Lowes Garden Center',
+    City: 'LeagueCity',
     location: {
-      type: "Point",
+      type: 'Point',
       coordinates: [-74.856077, 40.848447],
     },
   },
-];
+]
 const initializeData = async () => {
-  const col = await mkTsTestCollection<Example>();
-  const result = await col.insertMany(locations);
-  col.unsafe.createIndex({ "location.coordinates": "2dsphere" });
-  return [col, result.insertedIds] as const;
-};
+  const col = await mkTsTestCollection<Example>()
+  const result = await col.insertMany(locations)
+  col.unsafe.createIndex({ 'location.coordinates': '2dsphere' })
+  return [col, result.insertedIds] as const
+}
 
-test("geoWithin", async () => {
-  const [col, id] = await initializeData();
+test('geoWithin', async () => {
+  const [col, id] = await initializeData()
   const result = await col.findOne({
-    "location.coordinates": {
+    'location.coordinates': {
       $geoWithin: {
         $geometry: {
-          type: "Polygon",
+          type: 'Polygon',
           coordinates: [
             [
               [-74.856077, 40.848447],
@@ -54,26 +54,26 @@ test("geoWithin", async () => {
         },
       },
     },
-  });
-  expect(result).toStrictEqual(locations[0]);
-});
+  })
+  expect(result).toStrictEqual(locations[0])
+})
 
-describe("Near", () => {
-  it("should find the closest location", async () => {
-    const [col, id] = await initializeData();
+describe('Near', () => {
+  it('should find the closest location', async () => {
+    const [col, id] = await initializeData()
 
     const result = await col
       .find({
-        "location.coordinates": {
+        'location.coordinates': {
           $near: {
             $geometry: {
-              type: "Point",
+              type: 'Point',
               coordinates: [-74.356077, 40.848447],
             },
           },
         },
       })
-      .toArray();
-    expect(result[0]).toStrictEqual(locations[1]);
-  });
-});
+      .toArray()
+    expect(result[0]).toStrictEqual(locations[1])
+  })
+})
