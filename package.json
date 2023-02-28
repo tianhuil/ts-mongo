@@ -9,7 +9,8 @@
     "typecheck": "tsc --noEmit",
     "jest": "jest",
     "jest:watch": "jest --watch",
-    "lint": "eslint -c .eslintrc.js "
+    "lint": "eslint -c .eslintrc.js",
+    "prettier:fix": "prettier src --write",
   },
   "keywords": [],
   "author": "",
