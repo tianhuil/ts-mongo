@@ -25,11 +25,11 @@ export type WithComparisonOperator<Field> = Field extends
   | Date
   | ObjectId
   ? {
-      $gt?: Field
-      $lt?: Field
-      $gte?: Field
-      $lte?: Field
-    }
+    $gt?: Field
+    $lt?: Field
+    $gte?: Field
+    $lte?: Field
+  }
   : {}
 
 /**
@@ -38,27 +38,34 @@ export type WithComparisonOperator<Field> = Field extends
  */
 export type WithStringOperator<Field> = Field extends string
   ? {
-      $regex?: RegExp | string
-      $options?: string
-      $text?: {
-        $search: string
-        $language?: string
-        $caseSensitive?: boolean
-        $diacriticSensitive?: boolean
-      }
-    }
+    $regex?: RegExp | string
+    $options?: string
+  }
   : {}
+
+/***
+ * https://www.mongodb.com/docs/manual/reference/operator/query/text/
+ * Text Search functionality
+ */
+export type WithTextSearchOperator = {
+  $text?: {
+    $search: string
+    $language?: string
+    $caseSensitive?: boolean
+    $diacriticSensitive?: boolean
+  }
+}
 
 /**
  * https://docs.mongodb.com/manual/reference/operator/query/all/
  */
 export type WithArrayOperator<Field> = Field extends ReadonlyArray<infer T>
   ? {
-      $all?: T extends NonArrayObject
-        ? (T | { $elemMatch: WithOperator<T> })[]
-        : T[]
-      $size?: number
-    }
+    $all?: T extends NonArrayObject
+    ? (T | { $elemMatch: WithOperator<T> })[]
+    : T[]
+    $size?: number
+  }
   : {}
 
 /**
@@ -66,8 +73,8 @@ export type WithArrayOperator<Field> = Field extends ReadonlyArray<infer T>
  */
 export type WithNegatableOperator<Expr> =
   | {
-      $not: Expr
-    }
+    $not: Expr
+  }
   | Expr
 
 export type WithRecordOperator<
@@ -75,23 +82,24 @@ export type WithRecordOperator<
   IndexType extends number = 0
 > = TSchema extends NonArrayObject
   ? {
-      readonly [Property in FlattenFilterPaths<
-        WithId<TSchema>,
-        IndexType
-      >]?: FilterType<TSchema, Property>
-    }
+    readonly [Property in FlattenFilterPaths<
+      WithId<TSchema>,
+      IndexType
+    >]?: FilterType<TSchema, Property>
+  }
   : {}
 
 export type WithOperator<Field, IndexType extends number = 0> =
   | RecurPartial<Field>
   | WithNegatableOperator<
-      WithElementOperator &
-        WithRecordOperator<Field, IndexType> &
-        WithComparisonOperator<Field> &
-        WithStringOperator<Field> &
-        WithEqualityOperator<Field> &
-        WithArrayOperator<Field>
-    >
+    WithElementOperator &
+    WithRecordOperator<Field, IndexType> &
+    WithComparisonOperator<Field> &
+    WithStringOperator<Field> &
+    WithTextSearchOperator &
+    WithEqualityOperator<Field> &
+    WithArrayOperator<Field>
+  >
 
 /**
  * https://docs.mongodb.com/manual/reference/operator/query-logical/
@@ -100,10 +108,10 @@ export type WithOperator<Field, IndexType extends number = 0> =
 export type WithLogicalOperators<Field> =
   | Field
   | {
-      $and?: readonly WithLogicalOperators<Field>[]
-      $or?: readonly WithLogicalOperators<Field>[]
-      $nor?: readonly WithLogicalOperators<Field>[]
-    }
+    $and?: readonly WithLogicalOperators<Field>[]
+    $or?: readonly WithLogicalOperators<Field>[]
+    $nor?: readonly WithLogicalOperators<Field>[]
+  }
 
 /**
  * The type for a given dot path into a json object
