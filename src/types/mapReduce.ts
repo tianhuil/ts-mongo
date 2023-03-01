@@ -1,6 +1,7 @@
 import { Document, MapReduceOptions, ObjectId } from 'mongodb'
 import { TsFilter } from './filter'
 import { TsSort } from './sort'
+import { RemodelType } from './util'
 
 // MapReduceOptions output type contains inline, which probably should be string?
 export type MapReduceOutput =
@@ -10,14 +11,14 @@ export type MapReduceOutput =
   | { reduce: string }
   | { merge: string }
 
-export type TsOmitMapReduction<TResult, Key> = Omit<
-  MapReduceOptions<Key, TResult>,
-  'out' | 'query' | 'sort'
+export declare type TsMapReduceOptions<
+  TSchema extends Document,
+  key = ObjectId
+> = RemodelType<
+  {
+    out?: MapReduceOutput
+    sort?: TsSort<TSchema>
+    query?: TsFilter<TSchema>
+  },
+  MapReduceOptions<key, TSchema>
 >
-
-export interface TsMapReduceOptions<TResult extends Document, Key = ObjectId>
-  extends TsOmitMapReduction<TResult, Key> {
-  out?: MapReduceOutput
-  query?: TsFilter<TResult>
-  sort?: TsSort<TResult>
-}
