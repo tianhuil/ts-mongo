@@ -40,14 +40,21 @@ export type WithStringOperator<Field> = Field extends string
   ? {
       $regex?: RegExp | string
       $options?: string
-      $text?: {
-        $search: string
-        $language?: string
-        $caseSensitive?: boolean
-        $diacriticSensitive?: boolean
-      }
     }
   : {}
+
+/***
+ * https://www.mongodb.com/docs/manual/reference/operator/query/text/
+ * Text Search functionality
+ */
+export type WithTextSearchOperator = {
+  $text?: {
+    $search: string
+    $language?: string
+    $caseSensitive?: boolean
+    $diacriticSensitive?: boolean
+  }
+}
 
 /**
  * https://docs.mongodb.com/manual/reference/operator/query/all/
@@ -89,6 +96,7 @@ export type WithOperator<Field, IndexType extends number = 0> =
         WithRecordOperator<Field, IndexType> &
         WithComparisonOperator<Field> &
         WithStringOperator<Field> &
+        WithTextSearchOperator &
         WithEqualityOperator<Field> &
         WithArrayOperator<Field>
     >
