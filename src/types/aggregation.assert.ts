@@ -2,10 +2,11 @@ import * as ta from 'type-assertions'
 import { Pipeline } from './aggregation'
 import type { Collstats } from './colstats'
 import { Coordinates, GeoNear } from './geoNear'
+import { Limit } from './limit'
+import { Skip } from './skip'
 
-type LimitExample = {
-    limit: number
-}
+type CorrectExample = number
+type IncorrectExample = string
 
 type CorrectCollStatsExample = {
     latencyStats: { histograms: boolean },
@@ -38,14 +39,15 @@ ta.assert<ta.Extends<CorrectCollStatsExample, Collstats>>()
 ta.assert<ta.Not<ta.Extends<IncorrectCollStatsExample, Collstats>>>()
 
 // geoNear example
-ta.assert<ta.Extends<geoNear, Pick<GeoNear,'near'>>>()
+ta.assert<ta.Equal<geoNear, Pick<GeoNear,'near'>>>()
+// ta.assert<ta.Not<ta.Equal<geoNear, Pick<GeoNear,'near'>>>()
 
 
 // Limit example
-ta.assert<ta.Extends<{$limit: 3}, Pipeline<LimitExample, LimitExample>>>()
-ta.assert<ta.Not<ta.Extends<{$limit: '3'}, Pipeline<LimitExample, LimitExample>>>>()
+ta.assert<ta.Extends<CorrectExample, Limit>>()
+ta.assert<ta.Not<ta.Extends<IncorrectExample, Limit>>>()
 
 // Skip example
-ta.assert<ta.Extends<{$skip: 3}, Pipeline<LimitExample, LimitExample>>>()
-ta.assert<ta.Not<ta.Extends<{$kip: '3'}, Pipeline<LimitExample, LimitExample>>>>()
+ta.assert<ta.Extends<CorrectExample, Skip>>()
+ta.assert<ta.Not<ta.Extends<IncorrectExample, Skip>>>()
 
