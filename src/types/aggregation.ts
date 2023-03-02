@@ -2,6 +2,7 @@ import { AggregationCursor, Document } from 'mongodb'
 import type { Collstats } from './colstats'
 import { TsFilter } from './filter'
 import { FlattenFilterPaths } from './flatten'
+import { GeoNear } from './geoNear'
 import { TsProjection } from './projection'
 import { TsSort } from './sort'
 import { RemodelType } from './util'
@@ -45,6 +46,13 @@ export declare type Pipeline<
     * https://www.mongodb.com/docs/manual/reference/operator/aggregation/skip/#mongodb-pipeline-pipe.-skip
     */ 
      $skip: Field
+   }|{
+    /**
+     * Outputs documents in order of nearest to farthest from a specified point.
+     * - Starting in version 4.2, MongoDB removes the limit and num options for the $geoNear stage as well as the default limit of 100 documents. To limit the results of $geoNear, use the $geoNear stage with the $limit stage.
+     * https://www.mongodb.com/docs/manual/reference/operator/aggregation/geoNear/#mongodb-pipeline-pipe.-geoNear 
+     */
+    $geoNear: GeoNear<TsFilter<TSchema>>
    }
 
 export declare type TsLookup<
