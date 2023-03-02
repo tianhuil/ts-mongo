@@ -11,7 +11,7 @@ import { RemodelType } from './util'
  */
 export declare type Pipeline<
   TSchema extends Document,
-  TSchemaOther extends Document
+  TSchemaOther extends Document, Field extends number = 0 | Readonly<number>
 > =
   | { $match: TsFilter<TSchema> }
   | { $project: TsProjection<TSchema> }
@@ -25,7 +25,7 @@ export declare type Pipeline<
    * 
    * https://www.mongodb.com/docs/manual/reference/operator/aggregation/limit/#mongodb-pipeline-pipe.-limit
    */ 
-    $limit: number
+    $limit: Field
   }
   | {
    /**
@@ -35,7 +35,17 @@ export declare type Pipeline<
    * https://www.mongodb.com/docs/manual/reference/operator/aggregation/collStats/#mongodb-pipeline-pipe.-collStats
    */ 
     $collStats: Collstats 
-  }
+  } |
+  {
+    /**
+    * Skips over the specified number of documents that pass into the stage and passes the remaining documents to the next stage in the pipeline.
+    * it takes a positive integer that specifies the maximum number of documents to skip.
+    * 
+    * Starting in MongoDB 5.0, the $skip pipeline aggregation has a 64-bit integer limit. Values passed to the pipeline which exceed this limit will return a invalid argument error.
+    * https://www.mongodb.com/docs/manual/reference/operator/aggregation/skip/#mongodb-pipeline-pipe.-skip
+    */ 
+     $skip: Field
+   }
 
 export declare type TsLookup<
   TSchema extends Document,
