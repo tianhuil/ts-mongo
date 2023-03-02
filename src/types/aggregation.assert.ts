@@ -1,29 +1,51 @@
 import * as ta from 'type-assertions'
 import { Pipeline } from './aggregation'
 import type { Collstats } from './colstats'
+import { Coordinates, GeoNear } from './geoNear'
 
 type LimitExample = {
     limit: number
 }
 
 type CorrectCollStatsExample = {
-    latencyStats: { histograms: true },
-    storageStats: { scale: 1 },
+    latencyStats: { histograms: boolean },
+    storageStats: { scale: number },
     count: {},
     queryExecStats: {}
 }
 
 type IncorrectCollStatsExample = {
-    latencyStats: { histograms: 2 },
-    storageStats: { scale: '1' },
+    latencyStats: { histograms: number },
+    storageStats: { scale: string },
     count: {},
     queryExecStats: {}
 }
+
+type geoNear = {
+    near:{
+        type: 'Point'
+        coordinates: [number, number]
+    }
+    maxDistance?: number
+    minDistance?:number
+    spherical?: boolean
+    includeLocs?: string
+    distanceMultiplier?: number
+}
+
+// Coll stats example
+ta.assert<ta.Extends<CorrectCollStatsExample, Collstats>>()
+ta.assert<ta.Not<ta.Extends<IncorrectCollStatsExample, Collstats>>>()
+
+// geoNear example
+ta.assert<ta.Extends<geoNear, Pick<GeoNear,'near'>>>()
+
 
 // Limit example
 ta.assert<ta.Extends<{$limit: 3}, Pipeline<LimitExample, LimitExample>>>()
 ta.assert<ta.Not<ta.Extends<{$limit: '3'}, Pipeline<LimitExample, LimitExample>>>>()
 
-// Coll stats example
-ta.assert<ta.Extends<{$collStats: CorrectCollStatsExample}, Pipeline<Collstats, Collstats>>>()
-ta.assert<ta.Not<ta.Extends<{$collStats: IncorrectCollStatsExample}, Pipeline<Collstats, Collstats>>>>()
+// Skip example
+ta.assert<ta.Extends<{$skip: 3}, Pipeline<LimitExample, LimitExample>>>()
+ta.assert<ta.Not<ta.Extends<{$kip: '3'}, Pipeline<LimitExample, LimitExample>>>>()
+

@@ -1,13 +1,13 @@
 
 // A tuple containing longitude and latitude coordinates
- type Coordinates = [number, number]
+ export type Coordinates = [number, number]
 
 interface Near {
     type: 'Point'
     coordinates: Coordinates
 }
 
-export interface GeoNear<T>{
+export interface GeoNear<T = never>{
     /**
      * The point for which to find the closest documents.
      * - If using a 2dsphere index, you can specify the point as either a GeoJSON point or legacy coordinate pair.
