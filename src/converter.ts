@@ -45,7 +45,7 @@ export const middlewareMethods = [
   'stats',
 ] as const
 
-export type MiddlewareMethods = typeof middlewareMethods[number]
+export type MiddlewareMethods = (typeof middlewareMethods)[number]
 
 type Converter<
   TInsertSchema0 extends Document,
@@ -122,7 +122,10 @@ export const convertRawCollection = <
     TReturnSchema
   >
 
-  const convertModifyResult = ({ value, ...result }: TsModifyResult<TReturnSchema>) => ({
+  const convertModifyResult = ({
+    value,
+    ...result
+  }: TsModifyResult<TReturnSchema>) => ({
     value: value ? postFind(value) : value,
     ...result,
   })
@@ -133,18 +136,22 @@ export const convertRawCollection = <
         prop_: Prop,
         converter: (_: InputType[Prop]) => ReturnType[Prop]
       ): ReturnType[Prop] => {
-        const oldMethod = target[prop_].bind(target) as typeof target[Prop]
+        const oldMethod = target[prop_].bind(target) as (typeof target)[Prop]
         return converter(oldMethod)
       }
 
       switch (prop) {
         case 'insertOne': {
-          return convert(prop, (oldMethod) => (doc, options) => oldMethod(preInsert(doc), options))
+          return convert(
+            prop,
+            (oldMethod) => (doc, options) => oldMethod(preInsert(doc), options)
+          )
         }
         case 'insertMany': {
           return convert(
             prop,
-            (oldMethod) => (docs, options) => oldMethod(docs.map(preInsert), options)
+            (oldMethod) => (docs, options) =>
+              oldMethod(docs.map(preInsert), options)
           )
         }
         case 'updateOne': {
@@ -180,19 +187,22 @@ export const convertRawCollection = <
         case 'deleteOne': {
           return convert(
             prop,
-            (oldMethod) => (filter, options) => oldMethod(preFilter(filter), options)
+            (oldMethod) => (filter, options) =>
+              oldMethod(preFilter(filter), options)
           )
         }
         case 'deleteMany': {
           return convert(
             prop,
-            (oldMethod) => (filter, options) => oldMethod(preFilter(filter), options)
+            (oldMethod) => (filter, options) =>
+              oldMethod(preFilter(filter), options)
           )
         }
         case 'find': {
           return convert(
             prop,
-            (oldMethod) => (filter, options?) => oldMethod(preFilter(filter), options).map(postFind)
+            (oldMethod) => (filter, options?) =>
+              oldMethod(preFilter(filter), options).map(postFind)
           )
         }
         case 'findOneAndDelete': {
@@ -206,22 +216,27 @@ export const convertRawCollection = <
           return convert(
             prop,
             (oldMethod) => (filter, replacement, options) =>
-              oldMethod(preFilter(filter), preReplace(replacement), options).then(
-                convertModifyResult
-              )
+              oldMethod(
+                preFilter(filter),
+                preReplace(replacement),
+                options
+              ).then(convertModifyResult)
           )
         }
         case 'findOneAndUpdate': {
           return convert(
             prop,
             (oldMethod) => (filter, update, options) =>
-              oldMethod(preFilter(filter), preUpdate(update), options).then(convertModifyResult)
+              oldMethod(preFilter(filter), preUpdate(update), options).then(
+                convertModifyResult
+              )
           )
         }
         case 'insert': {
           return convert(
             prop,
-            (oldMethod) => (docs, options) => oldMethod(docs.map(preInsert), options)
+            (oldMethod) => (docs, options) =>
+              oldMethod(docs.map(preInsert), options)
           )
         }
         case 'update': {
@@ -252,9 +267,24 @@ export const convertReadWriteCollection = <
   TRead extends DocumentWithId
 >(
   collection: TsReadWriteCollection<TWrite0, TRead>,
-  converter: Converter<TWrite0, TWrite1, TWrite0, TWrite1, TWrite0, TWrite1, TRead, TRead>
+  converter: Converter<
+    TWrite0,
+    TWrite1,
+    TWrite0,
+    TWrite1,
+    TWrite0,
+    TWrite1,
+    TRead,
+    TRead
+  >
 ): TsReadWriteCollection<TWrite1, TRead> =>
-  convertRawCollection<TWrite0, TWrite1, TWrite0, TWrite1, TWrite0, TWrite1, TRead, TRead>(
-    collection,
-    converter
-  )
+  convertRawCollection<
+    TWrite0,
+    TWrite1,
+    TWrite0,
+    TWrite1,
+    TWrite0,
+    TWrite1,
+    TRead,
+    TRead
+  >(collection, converter)

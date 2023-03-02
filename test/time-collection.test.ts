@@ -18,7 +18,9 @@ type Example = z.infer<typeof Example>
 const initializeTimeCollection = async () => {
   const db = await setupDb()
 
-  const collection = convertToTimeCollection(mkTsCollection<WithTime<Example>>(db, 'test'))
+  const collection = convertToTimeCollection(
+    mkTsCollection<WithTime<Example>>(db, 'test')
+  )
   await collection.deleteMany({})
   return collection
 }
@@ -38,7 +40,9 @@ test('findOne', async () => {
   await collection.insertOne({ a: 'a' })
 
   const date = new Date()
-  expect((await collection.findOne({ createdAt: { $lte: date } }))?.a).toEqual('a')
+  expect((await collection.findOne({ createdAt: { $lte: date } }))?.a).toEqual(
+    'a'
+  )
   expect(await collection.findOne({ createdAt: { $gt: date } })).toBeFalsy()
 })
 

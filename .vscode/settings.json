@@ -1,0 +1,41 @@
+{
+  "[javscript]": {
+    "editor.formatOnSave": true,
+    "editor.formatOnPaste": true,
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": true
+    }
+  },
+  "[typescript]": {
+    "editor.formatOnSave": true,
+    "editor.formatOnPaste": true,
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": true
+    },
+  },
+  "files.trimTrailingWhitespace": true,
+  "files.exclude": {
+      "**/node_modules": true,
+  },
+  "search.exclude": {
+      "**/node_modules": true,
+  },
+  "editor.tabSize": 2,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "javascript.suggest.autoImports": true,
+  "typescript.suggest.autoImports": true,
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "javascript.autoClosingTags": true,
+  "typescript.autoClosingTags": true,
+  "javascript.format.semicolons": "ignore",
+  "typescript.format.semicolons": "ignore",
+  // VSCode uses local version of ts
+  // See https://code.visualstudio.com/docs/typescript/typescript-compiling#_using-newer-typescript-versions
+  "typescript.tsdk": "node_modules/typescript/lib",
+  // Allow comments in JSON
+  // See https://www.techiediaries.com/enable-json-comments-vs-code
+  "files.associations": {
+    "*.json": "jsonc"
+  }
+}

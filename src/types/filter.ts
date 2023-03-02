@@ -1,6 +1,7 @@
 import { Document, ObjectId, WithId } from 'mongodb'
 import { FlattenFilterPaths, FlattenFilterType } from './flatten'
 import { NonArrayObject, RecurPartial } from './util'
+import {WithBitwiseOperator} from "./bitwise";
 
 /**
  * https://docs.mongodb.com/manual/reference/operator/query-element/
@@ -20,7 +21,10 @@ export type WithEqualityOperator<Field> = {
   $nin?: readonly Field[]
 }
 
-export type WithComparisonOperator<Field> = Field extends number | Date | ObjectId
+export type WithComparisonOperator<Field> = Field extends
+  | number
+  | Date
+  | ObjectId
   ? {
       $gt?: Field
       $lt?: Field
@@ -37,21 +41,30 @@ export type WithStringOperator<Field> = Field extends string
   ? {
       $regex?: RegExp | string
       $options?: string
-      $text?: {
-        $search: string
-        $language?: string
-        $caseSensitive?: boolean
-        $diacriticSensitive?: boolean
-      }
     }
   : {}
+
+/***
+ * https://www.mongodb.com/docs/manual/reference/operator/query/text/
+ * Text Search functionality
+ */
+export type WithTextSearchOperator = {
+  $text?: {
+    $search: string
+    $language?: string
+    $caseSensitive?: boolean
+    $diacriticSensitive?: boolean
+  }
+}
 
 /**
  * https://docs.mongodb.com/manual/reference/operator/query/all/
  */
 export type WithArrayOperator<Field> = Field extends ReadonlyArray<infer T>
   ? {
-      $all?: T extends NonArrayObject ? (T | { $elemMatch: WithOperator<T> })[] : T[]
+      $all?: T extends NonArrayObject
+        ? (T | { $elemMatch: WithOperator<T> })[]
+        : T[]
       $size?: number
     }
   : {}
@@ -70,10 +83,10 @@ export type WithRecordOperator<
   IndexType extends number = 0
 > = TSchema extends NonArrayObject
   ? {
-      readonly [Property in FlattenFilterPaths<WithId<TSchema>, IndexType>]?: FilterType<
-        TSchema,
-        Property
-      >
+      readonly [Property in FlattenFilterPaths<
+        WithId<TSchema>,
+        IndexType
+      >]?: FilterType<TSchema, Property>
     }
   : {}
 
@@ -84,8 +97,10 @@ export type WithOperator<Field, IndexType extends number = 0> =
         WithRecordOperator<Field, IndexType> &
         WithComparisonOperator<Field> &
         WithStringOperator<Field> &
+        WithTextSearchOperator &
         WithEqualityOperator<Field> &
-        WithArrayOperator<Field>
+        WithArrayOperator<Field> &
+        WithBitwiseOperator<Field>
     >
 
 /**
@@ -104,10 +119,12 @@ export type WithLogicalOperators<Field> =
  * The type for a given dot path into a json object
  * NB: must be maintained as a separate type function
  */
-export declare type FilterType<TSchema extends Document, Property extends string> = WithOperator<
-  FlattenFilterType<TSchema, Property>
->
+export declare type FilterType<
+  TSchema extends Document,
+  Property extends string
+> = WithOperator<FlattenFilterType<TSchema, Property>>
 
-export type TsFilter<TSchema extends Document, IndexType extends number = 0> = WithLogicalOperators<
-  WithOperator<TSchema, IndexType>
->
+export type TsFilter<
+  TSchema extends Document,
+  IndexType extends number = 0
+> = WithLogicalOperators<WithOperator<TSchema, IndexType>>

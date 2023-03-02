@@ -22,7 +22,10 @@ test('exclude with dot notation', async () => {
   const col = await mkTsTestCollection<Example>()
 
   await col.insertOne({ a: { b: 2, c: 's' }, d: true })
-  const result = await col.unsafe.findOne({}, { projection: { 'a.b': 0, 'a.c': 0 } })
+  const result = await col.unsafe.findOne(
+    {},
+    { projection: { 'a.b': 0, 'a.c': 0 } }
+  )
 
   delete (result as any)._id
 

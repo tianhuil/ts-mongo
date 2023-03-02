@@ -9,7 +9,10 @@ import { RemodelType } from './util'
 /**
  * This is an incomplete list but will do for now
  */
-export declare type Pipeline<TSchema extends Document, TSchemaOther extends Document> =
+export declare type Pipeline<
+  TSchema extends Document,
+  TSchemaOther extends Document
+> =
   | { $match: TsFilter<TSchema> }
   | { $project: TsProjection<TSchema> }
   | { $sort: TsSort<TSchema> }
@@ -34,7 +37,10 @@ export declare type Pipeline<TSchema extends Document, TSchemaOther extends Docu
     $collStats: Collstats 
   }
 
-export declare type TsLookup<TSchema extends Document, TSchemaOther extends Document> = {
+export declare type TsLookup<
+  TSchema extends Document,
+  TSchemaOther extends Document
+> = {
   from: string
   localField: FlattenFilterPaths<TSchema>
   foreignField: FlattenFilterPaths<TSchemaOther>
