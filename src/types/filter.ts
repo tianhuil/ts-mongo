@@ -2,6 +2,7 @@ import { Document, ObjectId, WithId } from 'mongodb'
 import { FlattenFilterPaths, FlattenFilterType } from './flatten'
 import { TsGeoSpatialQuery } from './geoSpatial'
 import { NonArrayObject, RecurPartial } from './util'
+import {WithBitwiseOperator} from "./bitwise";
 
 /**
  * https://docs.mongodb.com/manual/reference/operator/query-element/
@@ -41,14 +42,21 @@ export type WithStringOperator<Field> = Field extends string
   ? {
       $regex?: RegExp | string
       $options?: string
-      $text?: {
-        $search: string
-        $language?: string
-        $caseSensitive?: boolean
-        $diacriticSensitive?: boolean
-      }
     }
   : {}
+
+/***
+ * https://www.mongodb.com/docs/manual/reference/operator/query/text/
+ * Text Search functionality
+ */
+export type WithTextSearchOperator = {
+  $text?: {
+    $search: string
+    $language?: string
+    $caseSensitive?: boolean
+    $diacriticSensitive?: boolean
+  }
+}
 
 /**
  * https://docs.mongodb.com/manual/reference/operator/query/all/
@@ -86,13 +94,16 @@ export type WithRecordOperator<
 export type WithOperator<Field, IndexType extends number = 0> =
   | RecurPartial<Field>
   | WithNegatableOperator<
-      | WithElementOperator &
-          WithRecordOperator<Field, IndexType> &
-          WithComparisonOperator<Field> &
-          WithStringOperator<Field> &
-          WithEqualityOperator<Field> &
-          WithArrayOperator<Field> &
-          TsGeoSpatialQuery<Field>
+
+      WithElementOperator &
+        WithRecordOperator<Field, IndexType> &
+        WithComparisonOperator<Field> &
+        WithStringOperator<Field> &
+        WithTextSearchOperator &
+        WithEqualityOperator<Field> &
+        WithArrayOperator<Field> &
+        TsGeoSpatialQuery<Field> &
+        WithBitwiseOperator<Field>
     >
 
 /**
