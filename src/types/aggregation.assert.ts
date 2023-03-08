@@ -3,8 +3,6 @@ import { Pipeline, TsLookup } from './aggregation'
 import { Collstats } from './colstats'
 import { GeoNear } from './geoNear'
 
-type LimitExample = number
-type SkipExample = number
 type queryExample = {
   category: string
 }
@@ -181,10 +179,7 @@ ta.assert<
 
 // Test $limit pipeline
 ta.assert<
-  ta.Extends<
-    { $limit: LimitExample },
-    Pipeline<ExampleTSchema, ExampleTSchemaOther>
-  >
+  ta.Extends<{ $limit: number }, Pipeline<ExampleTSchema, ExampleTSchemaOther>>
 >()
 ta.assert<
   ta.Not<
@@ -197,10 +192,7 @@ ta.assert<
 
 // Test $skip pipeline
 ta.assert<
-  ta.Extends<
-    { $skip: SkipExample },
-    Pipeline<ExampleTSchema, ExampleTSchemaOther>
-  >
+  ta.Extends<{ $skip: number }, Pipeline<ExampleTSchema, ExampleTSchemaOther>>
 >()
 ta.assert<
   ta.Not<
