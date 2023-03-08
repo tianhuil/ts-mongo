@@ -1,25 +1,12 @@
 import * as ta from 'type-assertions'
 import { Pipeline, TsLookup } from './aggregation'
-import type { Collstats } from './colstats'
+import { Collstats } from './colstats'
 import { GeoNear } from './geoNear'
-import { Limit } from './limit'
-import { Skip } from './skip'
 
-type CorrectExample = number
-type IncorrectExample = string
-
-type CorrectCollStatsExample = {
-  latencyStats: { histograms: boolean }
-  storageStats: { scale: number }
-  count: {}
-  queryExecStats: {}
-}
-
-type IncorrectCollStatsExample = {
-  latencyStats: { histograms: number }
-  storageStats: { scale: string }
-  count: {}
-  queryExecStats: {}
+type LimitExample = number
+type SkipExample = number
+type queryExample = {
+  category: string
 }
 
 type geoNear = {
@@ -27,28 +14,7 @@ type geoNear = {
     type: 'Point'
     coordinates: [number, number]
   }
-  maxDistance?: number
-  minDistance?: number
-  spherical?: boolean
-  includeLocs?: string
-  distanceMultiplier?: number
 }
-
-// Coll stats example
-ta.assert<ta.Extends<CorrectCollStatsExample, Collstats>>()
-ta.assert<ta.Not<ta.Extends<IncorrectCollStatsExample, Collstats>>>()
-
-// geoNear example
-ta.assert<ta.Equal<geoNear, Pick<GeoNear, 'near'>>>()
-// ta.assert<ta.Not<ta.Equal<geoNear, Pick<GeoNear,'near'>>>()
-
-// Limit example
-ta.assert<ta.Extends<CorrectExample, Limit>>()
-ta.assert<ta.Not<ta.Extends<IncorrectExample, Limit>>>()
-
-// Skip example
-ta.assert<ta.Extends<CorrectExample, Skip>>()
-ta.assert<ta.Not<ta.Extends<IncorrectExample, Skip>>>()
 
 type ExampleTSchema = {
   a: number[]
@@ -170,5 +136,74 @@ ta.assert<
       { $lookup: IncorrectLookupExample },
       Pipeline<ExampleTSchema, ExampleTSchemaOther>
     >
+  >
+>()
+
+// Test $collstats pipeline
+ta.assert<
+  ta.Extends<
+    { latencyStats?: { histograms: boolean } },
+    Pick<Collstats, 'latencyStats'>
+  >
+>()
+ta.assert<
+  ta.Extends<
+    { storageStats: { scale: number } },
+    Pick<Collstats, 'storageStats'>
+  >
+>()
+ta.assert<ta.Extends<{ count: {} }, Pick<Collstats, 'count'>>>()
+ta.assert<
+  ta.Extends<{ queryExecStats: {} }, Pick<Collstats, 'queryExecStats'>>
+>()
+
+// Test $geoNear pipeline
+ta.assert<ta.Extends<geoNear, Pick<GeoNear, 'near'>>>()
+ta.assert<ta.Extends<{ maxDistance: number }, Pick<GeoNear, 'maxDistance'>>>()
+ta.assert<
+  ta.Extends<{ distanceField: string }, Pick<GeoNear, 'distanceField'>>
+>()
+ta.assert<ta.Extends<{ minDistance: number }, Pick<GeoNear, 'minDistance'>>>()
+ta.assert<ta.Extends<{ spherical: boolean }, Pick<GeoNear, 'spherical'>>>()
+ta.assert<ta.Extends<{ includeLocs: string }, Pick<GeoNear, 'includeLocs'>>>()
+ta.assert<
+  ta.Extends<
+    { distanceMultiplier: number },
+    Pick<GeoNear, 'distanceMultiplier'>
+  >
+>()
+ta.assert<
+  ta.Extends<
+    { query: { category: string } },
+    Pick<GeoNear<queryExample>, 'query'>
+  >
+>()
+
+// Test $limit pipeline
+ta.assert<
+  ta.Extends<
+    { $limit: LimitExample },
+    Pipeline<ExampleTSchema, ExampleTSchemaOther>
+  >
+>()
+ta.assert<
+  ta.Not<
+    ta.Extends<
+      { $limit: string },
+      Pipeline<ExampleTSchema, ExampleTSchemaOther>
+    >
+  >
+>()
+
+// Test $skip pipeline
+ta.assert<
+  ta.Extends<
+    { $skip: SkipExample },
+    Pipeline<ExampleTSchema, ExampleTSchemaOther>
+  >
+>()
+ta.assert<
+  ta.Not<
+    ta.Extends<{ $kip: string }, Pipeline<ExampleTSchema, ExampleTSchemaOther>>
   >
 >()
