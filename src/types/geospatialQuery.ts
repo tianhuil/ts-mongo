@@ -1,4 +1,4 @@
-import { TsGeoJSON, TsLegacyCoordinates, TSGeoJSONTypes } from "./geojson"
+import { TsGeoJSON, TSGeoJSONTypes, TsLegacyCoordinates } from "./geojson"
 
 export type WithGeoSpatialQueryOperator<Field> = Field extends (TsGeoJSON<TSGeoJSONTypes> | TsLegacyCoordinates)
   ? {
@@ -30,8 +30,8 @@ export type WithGeoWithInPointOperators<Field> = Field extends (TsGeoJSON<"Point
 
 export declare type TsGeoNear = {
   $geometry: TsGeoJSON<"Point">,
-  $maxDistance: number,
-  $minDistance: number
+  $maxDistance?: number,
+  $minDistance?: number
 }
 
 export type TsGeoBox = [TsLegacyCoordinates, TsLegacyCoordinates]
