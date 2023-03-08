@@ -1,5 +1,5 @@
 import * as ta from 'type-assertions'
-import { Pipeline, TsLookup } from './aggregation'
+import { TsLookup, Pipeline } from './aggregation'
 
 type ExampleTSchema = {
   a: number[]
