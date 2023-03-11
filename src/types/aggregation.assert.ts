@@ -1,5 +1,6 @@
+import { ResumeToken } from 'mongodb'
 import * as ta from 'type-assertions'
-import { TsLookup, Pipeline } from './aggregation'
+import { Pipeline, TsLookup } from './aggregation'
 
 type ExampleTSchema = {
   a: number[]
@@ -119,6 +120,35 @@ ta.assert<
   ta.Not<
     ta.Extends<
       { $lookup: IncorrectLookupExample },
+      Pipeline<ExampleTSchema, ExampleTSchemaOther>
+    >
+  >
+>()
+
+// Test Pipelink $changeStream
+ta.assert<
+  ta.Extends<
+    { $changeStream: { fullDocument: 'updateLookup' } },
+    Pipeline<ExampleTSchema, ExampleTSchemaOther>
+  >
+>()
+ta.assert<
+  ta.Not<
+    ta.Extends<
+      {
+        $changeStream: {
+          resumeAfter: ResumeToken
+          startAfter: ResumeToken
+        }
+      },
+      Pipeline<ExampleTSchema, ExampleTSchemaOther>
+    >
+  >
+>()
+ta.assert<
+  ta.Not<
+    ta.Extends<
+      { $changeStream: { startAtOperationTime: number } },
       Pipeline<ExampleTSchema, ExampleTSchemaOther>
     >
   >

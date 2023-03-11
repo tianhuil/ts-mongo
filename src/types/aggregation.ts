@@ -1,4 +1,5 @@
 import { AggregationCursor, Document } from 'mongodb'
+import { TsChangeStreamOptions } from './changeStream'
 import { TsFilter } from './filter'
 import { FlattenFilterPaths } from './flatten'
 import { TsProjection } from './projection'
@@ -16,6 +17,7 @@ export declare type Pipeline<
   | { $project: TsProjection<TSchema> }
   | { $sort: TsSort<TSchema> }
   | { $lookup: TsLookup<TSchema, TSchemaOther> }
+  | { $changeStream: TsChangeStreamOptions }
 
 export declare type TsLookup<
   TSchema extends Document,
