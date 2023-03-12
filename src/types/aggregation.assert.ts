@@ -125,7 +125,7 @@ ta.assert<
   >
 >()
 
-// Test Pipelink $changeStream
+// Test Pipeline $changeStream
 ta.assert<
   ta.Extends<
     { $changeStream: { fullDocument: 'updateLookup' } },
@@ -154,7 +154,7 @@ ta.assert<
   >
 >()
 
-// Test Pipelink $unionWith
+// Test Pipeline $unionWith
 ta.assert<
   ta.Extends<
     { $unionWith: { coll: string; pipeline: [{ $match: { a: [1, 2] } }] } },

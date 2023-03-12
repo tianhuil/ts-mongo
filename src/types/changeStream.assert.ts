@@ -2,7 +2,7 @@ import { ResumeToken, Timestamp } from 'mongodb'
 import * as ta from 'type-assertions'
 import { TsChangeStreamOptions } from './changeStream'
 
-// Test all options are optional
+// Test all fields are optional
 ta.assert<ta.Extends<{}, TsChangeStreamOptions>>()
 
 // Test ChageStreamOptions equivalence
