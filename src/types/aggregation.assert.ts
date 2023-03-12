@@ -12,6 +12,11 @@ type ExampleTSchemaOther = {
   x: number
 }
 
+type ExampleTSchemaUnionWith = {
+  a: number[]
+  b: string
+}
+
 type CorrectLookupExample = {
   from: ''
   localField: 'a'
@@ -158,7 +163,7 @@ ta.assert<
 ta.assert<
   ta.Extends<
     { $unionWith: { coll: string; pipeline: [{ $match: { a: [1, 2] } }] } },
-    Pipeline<ExampleTSchema, ExampleTSchemaOther>
+    Pipeline<ExampleTSchema, ExampleTSchemaOther, ExampleTSchemaUnionWith>
   >
 >()
 ta.assert<
@@ -170,7 +175,7 @@ ta.assert<
           pipeline: [{ $match: { a: [1, 2] } }, { $merge: { into: string } }]
         }
       },
-      Pipeline<ExampleTSchema, ExampleTSchemaOther>
+      Pipeline<ExampleTSchema, ExampleTSchemaOther, ExampleTSchemaUnionWith>
     >
   >
 >()
