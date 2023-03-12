@@ -4,6 +4,7 @@ import { TsFilter } from './filter'
 import { FlattenFilterPaths } from './flatten'
 import { TsProjection } from './projection'
 import { TsSort } from './sort'
+import { TsUnionWith } from './unionWith'
 import { RemodelType } from './util'
 
 /**
@@ -18,6 +19,7 @@ export declare type Pipeline<
   | { $sort: TsSort<TSchema> }
   | { $lookup: TsLookup<TSchema, TSchemaOther> }
   | { $changeStream: TsChangeStreamOptions }
+  | { $unionWith: TsUnionWith<TSchema, TSchemaOther> }
 
 export declare type TsLookup<
   TSchema extends Document,

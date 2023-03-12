@@ -153,3 +153,24 @@ ta.assert<
     >
   >
 >()
+
+// Test Pipelink $unionWith
+ta.assert<
+  ta.Extends<
+    { $unionWith: { coll: string; pipeline: [{ $match: { a: [1, 2] } }] } },
+    Pipeline<ExampleTSchema, ExampleTSchemaOther>
+  >
+>()
+ta.assert<
+  ta.Not<
+    ta.Extends<
+      {
+        $unionWith: {
+          coll: string
+          pipeline: [{ $match: { a: [1, 2] } }, { $merge: { into: string } }]
+        }
+      },
+      Pipeline<ExampleTSchema, ExampleTSchemaOther>
+    >
+  >
+>()
