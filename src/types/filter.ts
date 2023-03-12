@@ -1,8 +1,8 @@
 import { Document, ObjectId, WithId } from 'mongodb'
 import { FlattenFilterPaths, FlattenFilterType } from './flatten'
-import { TsGeoSpatialQuery } from './geoSpatial'
 import { NonArrayObject, RecurPartial } from './util'
-import {WithBitwiseOperator} from "./bitwise";
+import { WithGeoSpatialQueryOperator } from './geospatialQuery'
+import { WithBitwiseOperator } from './bitwise'
 
 /**
  * https://docs.mongodb.com/manual/reference/operator/query-element/
@@ -94,7 +94,6 @@ export type WithRecordOperator<
 export type WithOperator<Field, IndexType extends number = 0> =
   | RecurPartial<Field>
   | WithNegatableOperator<
-
       WithElementOperator &
         WithRecordOperator<Field, IndexType> &
         WithComparisonOperator<Field> &
@@ -102,7 +101,7 @@ export type WithOperator<Field, IndexType extends number = 0> =
         WithTextSearchOperator &
         WithEqualityOperator<Field> &
         WithArrayOperator<Field> &
-        TsGeoSpatialQuery<Field> &
+        WithGeoSpatialQueryOperator<Field> &
         WithBitwiseOperator<Field>
     >
 

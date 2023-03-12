@@ -36,7 +36,7 @@ import {
   UpdateResult,
   WithoutId,
 } from 'mongodb'
-import { TsAggregationCursor } from './aggregation'
+import { Pipeline, TsAggregationCursor } from './aggregation/aggregation'
 import { TsFilter } from './filter'
 import {
   TsFindCursor,
@@ -441,10 +441,16 @@ export declare class SafeCollection<
    * @param pipeline - An array of aggregation pipelines to execute
    * @param options - Optional settings for the command
    */
-  aggregate<T extends Doc>(
-    pipeline?: Document[],
+  aggregate<
+    TSchema extends Doc,
+    TSchemaLookup extends Doc = Document,
+    TSchemaUnionWith extends Doc = Document
+  >(
+    pipeline?:
+      | Pipeline<TSchema, TSchemaLookup, TSchemaUnionWith>[]
+      | Document[],
     options?: AggregateOptions
-  ): TsAggregationCursor<T>
+  ): TsAggregationCursor<TSchema>
   /**
    * Create a new Change Stream, watching for new changes (insertions, updates, replacements, deletions, and invalidations) in this collection.
    *
