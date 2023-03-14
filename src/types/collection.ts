@@ -24,7 +24,7 @@ import {
   InsertOneResult,
   ListIndexesCursor,
   ListIndexesOptions,
-  MapFunction, ObjectId,
+  MapFunction,
   OptionalUnlessRequiredId,
   OrderedBulkOperation,
   ReduceFunction,
@@ -465,7 +465,7 @@ export declare class SafeCollection<
    * @param options - Optional settings for the command
    * @param callback - An optional callback, a Promise will be returned if none is provided
    */
-  mapReduce<TKey extends ObjectId, TValue = any>(
+  mapReduce<TKey = any, TValue = any>(
     map: string | MapFunction<TReturnSchema>,
     reduce: string | ReduceFunction<TKey, TValue>,
     options?: TsMapReduceOptions<TKey, TReturnSchema>
