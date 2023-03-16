@@ -27,13 +27,12 @@ import {
   MapFunction,
   OptionalUnlessRequiredId,
   OrderedBulkOperation,
-  ReduceFunction,
   RenameOptions,
   ReplaceOptions,
   UnorderedBulkOperation,
   UpdateOptions,
   UpdateResult,
-  WithoutId
+  WithoutId,
 } from 'mongodb'
 import { TsAggregationCursor } from './aggregation'
 import { TsFilter } from './filter'
@@ -42,9 +41,9 @@ import {
   TsFindOneAndDeleteOptions,
   TsFindOneAndReplaceOptions,
   TsFindOneAndUpdateOptions,
-  TsFindOptions
+  TsFindOptions,
 } from './find'
-import { TsMapReduceOptions } from './mapReduce'
+import { TsMapReduceOptions, TsReduceFunction } from './mapReduce'
 import { IndexSpecification } from './mongo-index'
 import { TsModifyResult } from './result'
 import { TsUpdate, TsUpdateResult } from './update'
@@ -467,7 +466,7 @@ export declare class SafeCollection<
    */
   mapReduce<TKey = any, TValue = any>(
     map: string | MapFunction<TReturnSchema>,
-    reduce: string | ReduceFunction<TKey, TValue>,
+    reduce: string | TsReduceFunction<TKey, TValue>,
     options?: TsMapReduceOptions<TKey, TReturnSchema>
   ): Promise<Document | Document[]>
   initializeUnorderedBulkOp(options?: BulkWriteOptions): UnorderedBulkOperation
