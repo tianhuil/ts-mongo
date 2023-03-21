@@ -1,7 +1,11 @@
-import * as ta from 'type-assertions';
-import { FilterType, TsFilter } from './filter';
-import { TsGeoJSON, TsLegacyCoordinates } from './geojson';
-import { WithGeoSpatialQueryOperator, WithGeoWithInPointOperators, WithNearOperators } from './geospatialQuery';
+import * as ta from 'type-assertions'
+import { FilterType, TsFilter } from './filter'
+import { TsGeoJSON, TsLegacyCoordinates } from './geojson'
+import {
+  WithGeoSpatialQueryOperator,
+  WithGeoWithInPointOperators,
+  WithNearOperators,
+} from './geospatialQuery'
 
 // Test WithGeoWithInPointOperators
 // Should accept all properties
@@ -12,7 +16,7 @@ ta.assert<
     },
     WithGeoWithInPointOperators<TsLegacyCoordinates>
   >
->();
+>()
 
 ta.assert<
   ta.Extends<
@@ -21,7 +25,7 @@ ta.assert<
     },
     WithGeoWithInPointOperators<TsLegacyCoordinates>
   >
->();
+>()
 
 ta.assert<
   ta.Extends<
@@ -30,16 +34,21 @@ ta.assert<
     },
     WithGeoWithInPointOperators<TsLegacyCoordinates>
   >
->();
+>()
 
 ta.assert<
   ta.Extends<
     {
-      $polygon: [[number, number], [number, number], [number, number], [number, number]]
+      $polygon: [
+        [number, number],
+        [number, number],
+        [number, number],
+        [number, number]
+      ]
     },
     WithGeoWithInPointOperators<TsLegacyCoordinates>
   >
->();
+>()
 
 // $center is only valid for LegacyCoordinates Field
 ta.assert<
@@ -48,9 +57,10 @@ ta.assert<
       {
         $center: [[number, number], number]
       },
-      WithGeoWithInPointOperators<TsGeoJSON<"Point">>
-    >>
->();
+      WithGeoWithInPointOperators<TsGeoJSON<'Point'>>
+    >
+  >
+>()
 
 // $polygon is only valid for LegacyCoordinates Field
 ta.assert<
@@ -59,47 +69,55 @@ ta.assert<
       {
         $polygon: [[number, number], number]
       },
-      WithGeoWithInPointOperators<TsGeoJSON<"Point">>
-    >>
->();
+      WithGeoWithInPointOperators<TsGeoJSON<'Point'>>
+    >
+  >
+>()
 
 ta.assert<
   ta.Not<
     ta.Extends<
       {
-        $near: "Not Valid"
+        $near: 'Not Valid'
         $maxDistance: 5
       },
-      WithNearOperators<TsGeoJSON<"Point">>
+      WithNearOperators<TsGeoJSON<'Point'>>
     >
   >
->();
+>()
 
 ta.assert<
   ta.Not<
     ta.Extends<
       {
-        $near: "Not Valid"
+        $near: 'Not Valid'
         $maxDistance: 5
       },
-      WithNearOperators<TsGeoJSON<"Point">>
+      WithNearOperators<TsGeoJSON<'Point'>>
     >
   >
->();
+>()
 
 ta.assert<
   ta.Extends<
     {
       $geoIntersects: {
         $geometry: {
-          type: "Polygon",
-          coordinates: [[[number, number], [number, number], [number, number], [number, number]]]
+          type: 'Polygon'
+          coordinates: [
+            [
+              [number, number],
+              [number, number],
+              [number, number],
+              [number, number]
+            ]
+          ]
         }
       }
     },
     WithGeoSpatialQueryOperator<TsLegacyCoordinates>
   >
->();
+>()
 
 // Only should accept Polygon & Multiline Polygon
 ta.assert<
@@ -108,29 +126,45 @@ ta.assert<
       {
         $geoIntersects: {
           $geometry: {
-            type: "MultilineString",
-            coordinates: [[[number, number], [number, number], [number, number], [number, number]]]
+            type: 'MultilineString'
+            coordinates: [
+              [
+                [number, number],
+                [number, number],
+                [number, number],
+                [number, number]
+              ]
+            ]
           }
         }
       },
       WithGeoSpatialQueryOperator<TsLegacyCoordinates>
     >
   >
->();
+>()
 
 ta.assert<
   ta.Extends<
     {
       $geoIntersects: {
         $geometry: {
-          type: "MultiPolygon",
-          coordinates: [[[[number, number], [number, number], [number, number], [number, number]]]]
+          type: 'MultiPolygon'
+          coordinates: [
+            [
+              [
+                [number, number],
+                [number, number],
+                [number, number],
+                [number, number]
+              ]
+            ]
+          ]
         }
       }
     },
-    WithGeoSpatialQueryOperator<TsGeoJSON<"GeometryCollection">>
+    WithGeoSpatialQueryOperator<TsGeoJSON<'GeometryCollection'>>
   >
->();
+>()
 
 // geoWithinGeometry test,
 ta.assert<
@@ -139,85 +173,102 @@ ta.assert<
       {
         $geoWithin: {
           $geometry: {
-            type: "LineString",
-            coordinates: [[number, number], [number, number], [number, number], [number, number]]
+            type: 'LineString'
+            coordinates: [
+              [number, number],
+              [number, number],
+              [number, number],
+              [number, number]
+            ]
           }
         }
       },
-      WithGeoSpatialQueryOperator<TsGeoJSON<"Polygon">>
+      WithGeoSpatialQueryOperator<TsGeoJSON<'Polygon'>>
     >
   >
->();
+>()
 
 ta.assert<
   ta.Extends<
     {
       $geoWithin: {
         $geometry: {
-          type: "Polygon",
-          coordinates: [[[number, number], [number, number], [number, number], [number, number]]]
+          type: 'Polygon'
+          coordinates: [
+            [
+              [number, number],
+              [number, number],
+              [number, number],
+              [number, number]
+            ]
+          ]
         }
       }
     },
-    WithGeoSpatialQueryOperator<TsGeoJSON<"Polygon">>
+    WithGeoSpatialQueryOperator<TsGeoJSON<'Polygon'>>
   >
->();
-
+>()
 
 // Test Filter
 type Example = {
-  a: TsGeoJSON<"Polygon">
+  a: TsGeoJSON<'Polygon'>
   b: {
     c: TsLegacyCoordinates
-  },
+  }
   d: TsLegacyCoordinates
-  e: TsGeoJSON<"Point">
+  e: TsGeoJSON<'Point'>
 }
 
-ta.assert<
-  ta.Extends<TsLegacyCoordinates, FilterType<Example, 'b.c'>>
->();
+ta.assert<ta.Extends<TsLegacyCoordinates, FilterType<Example, 'b.c'>>>()
 
 ta.assert<
-  ta.Extends<{
-    a: {
-      $geoIntersects: {
-        $geometry: {
-          type: "Polygon",
-          coordinates: [[[0, 1], [0, 1], [0, 1], [0, 1]]]
+  ta.Extends<
+    {
+      a: {
+        $geoIntersects: {
+          $geometry: {
+            type: 'Polygon'
+            coordinates: [[[0, 1], [0, 1], [0, 1], [0, 1]]]
+          }
         }
       }
-    }
-  }, TsFilter<Example>>
->();
+    },
+    TsFilter<Example>
+  >
+>()
 
 ta.assert<
-  ta.Extends<{
-    a: {
-      $geoWithin: {
-        $geometry: {
-          type: "Polygon",
-          coordinates: [[[0, 1], [0, 1], [0, 1], [0, 1]]]
+  ta.Extends<
+    {
+      a: {
+        $geoWithin: {
+          $geometry: {
+            type: 'Polygon'
+            coordinates: [[[0, 1], [0, 1], [0, 1], [0, 1]]]
+          }
         }
       }
-    }
-  }, TsFilter<Example>>
->();
+    },
+    TsFilter<Example>
+  >
+>()
 
 // Flatten path, works for both any GeoJON & legacy points
 ta.assert<
-  ta.Extends<{
-    'b.c': {
-      $geoIntersects: {
-        $geometry: {
-          type: "Polygon",
-          coordinates: [[[0, 1], [0, 1], [0, 1], [0, 1]]]
+  ta.Extends<
+    {
+      'b.c': {
+        $geoIntersects: {
+          $geometry: {
+            type: 'Polygon'
+            coordinates: [[[0, 1], [0, 1], [0, 1], [0, 1]]]
+          }
         }
       }
-    }
-  }, TsFilter<Example>>
->();
-
+    },
+    TsFilter<Example>
+  >
+>()
 
 ta.assert<
   ta.Extends<
@@ -230,7 +281,7 @@ ta.assert<
     },
     TsFilter<Example>
   >
->();
+>()
 
 // $center is only appliable to legacy coordinates, but 'e' is GeoJSON Point, so this should not work
 ta.assert<
@@ -243,9 +294,10 @@ ta.assert<
           }
         }
       },
-      TsFilter<Example>>
+      TsFilter<Example>
+    >
   >
->();
+>()
 
 // $box should only work with GeoJSON Point and Legacy Coordinates
 ta.assert<
@@ -258,10 +310,10 @@ ta.assert<
           }
         }
       },
-      TsFilter<Example>>
+      TsFilter<Example>
+    >
   >
->();
-
+>()
 
 // $centerSphere should only work with GeoJSON Point and Legacy Coordinates, But `a` is GeoJSON Polygon
 ta.assert<
@@ -274,6 +326,7 @@ ta.assert<
           }
         }
       },
-      TsFilter<Example>>
+      TsFilter<Example>
+    >
   >
->();
+>()

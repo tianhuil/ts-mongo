@@ -1,63 +1,67 @@
-import * as ta from "type-assertions";
-import { TsGeoJSON, TSGeoJSONTypes, TsGeoJSONTypesNoGeometryCollection } from "./geojson";
+import * as ta from 'type-assertions'
+import {
+  TsGeoJSON,
+  TSGeoJSONTypes,
+  TsGeoJSONTypesNoGeometryCollection,
+} from './geojson'
 
 // Test Geometry
 ta.assert<
   ta.Extends<
     {
-      type: "Point";
-      coordinates: [number, number];
+      type: 'Point'
+      coordinates: [number, number]
     },
-    TsGeoJSON<"Point">
+    TsGeoJSON<'Point'>
   >
->();
+>()
 
 ta.assert<
   ta.Extends<
     {
-      type: "LineString";
-      coordinates: [[number, number], [number, number]];
+      type: 'LineString'
+      coordinates: [[number, number], [number, number]]
     },
-    TsGeoJSON<"LineString">
+    TsGeoJSON<'LineString'>
   >
->();
+>()
 
 ta.assert<
   ta.Extends<
     {
-      type: "Polygon";
+      type: 'Polygon'
       coordinates: [
         [[number, number], [number, number], [number, number], [number, number]]
-      ];
+      ]
     },
-    TsGeoJSON<"Polygon">
+    TsGeoJSON<'Polygon'>
   >
->();
+>()
 
 ta.assert<
   ta.Extends<
     {
-      type: "MultiPoint";
-      coordinates: [[number, number], [number, number]];
+      type: 'MultiPoint'
+      coordinates: [[number, number], [number, number]]
     },
-    TsGeoJSON<"MultiPoint">
+    TsGeoJSON<'MultiPoint'>
   >
->();
+>()
 
 ta.assert<
   ta.Extends<
     {
-      type: "MultiLineString";
-      coordinates: [[[number, number], [number, number]]];
+      type: 'MultiLineString'
+      coordinates: [[[number, number], [number, number]]]
     },
-    TsGeoJSON<"MultiLineString">
+    TsGeoJSON<'MultiLineString'>
   >
->();
+>()
 
 ta.assert<
   ta.Extends<
     {
-      type: "MultiPolygon";
+      type: 'MultiPolygon'
       coordinates: [
         [
           [
@@ -67,19 +71,19 @@ ta.assert<
             [number, number]
           ]
         ]
-      ];
+      ]
     },
-    TsGeoJSON<"MultiPolygon">
+    TsGeoJSON<'MultiPolygon'>
   >
->();
+>()
 
 ta.assert<
   ta.Extends<
     {
-      type: "GeometryCollection";
+      type: 'GeometryCollection'
       geometries: [
         {
-          type: "MultiPolygon";
+          type: 'MultiPolygon'
           coordinates: [
             [
               [
@@ -89,22 +93,22 @@ ta.assert<
                 [number, number]
               ]
             ]
-          ];
+          ]
         }
-      ];
+      ]
     },
-    TsGeoJSON<"GeometryCollection">
+    TsGeoJSON<'GeometryCollection'>
   >
->();
+>()
 
 ta.assert<
   ta.Extends<
     TsGeoJSONTypesNoGeometryCollection<TSGeoJSONTypes>,
-    | "Point"
-    | "MultiPoint"
-    | "LineString"
-    | "MultiLineString"
-    | "Polygon"
-    | "MultiPolygon"
+    | 'Point'
+    | 'MultiPoint'
+    | 'LineString'
+    | 'MultiLineString'
+    | 'Polygon'
+    | 'MultiPolygon'
   >
->();
+>()

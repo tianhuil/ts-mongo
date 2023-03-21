@@ -2,7 +2,7 @@ import { Document, ObjectId, WithId } from 'mongodb'
 import { FlattenFilterPaths, FlattenFilterType } from './flatten'
 import { NonArrayObject, RecurPartial } from './util'
 import { WithGeoSpatialQueryOperator } from './geospatialQuery'
-import {WithBitwiseOperator} from "./bitwise";
+import { WithBitwiseOperator } from './bitwise'
 
 /**
  * https://docs.mongodb.com/manual/reference/operator/query-element/
@@ -94,7 +94,6 @@ export type WithRecordOperator<
 export type WithOperator<Field, IndexType extends number = 0> =
   | RecurPartial<Field>
   | WithNegatableOperator<
-
       WithElementOperator &
         WithRecordOperator<Field, IndexType> &
         WithComparisonOperator<Field> &
