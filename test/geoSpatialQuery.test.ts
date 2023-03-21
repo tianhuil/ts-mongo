@@ -1,4 +1,4 @@
-import { Coordinates } from '../src/types/geometry'
+import { TsLegacyCoordinates } from '../src/types/geojson'
 import { mkTsTestCollection } from './util'
 
 type Example = {
@@ -6,7 +6,7 @@ type Example = {
   City: string
   location: {
     type: 'Point'
-    coordinates: Coordinates
+    coordinates: TsLegacyCoordinates
   }
 }
 

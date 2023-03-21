@@ -1,7 +1,7 @@
 import { Document, ObjectId, WithId } from 'mongodb'
 import { FlattenFilterPaths, FlattenFilterType } from './flatten'
-import { TsGeoSpatialQuery } from './geoSpatial'
 import { NonArrayObject, RecurPartial } from './util'
+import { WithGeoSpatialQueryOperator } from './geospatialQuery'
 import {WithBitwiseOperator} from "./bitwise";
 
 /**
@@ -102,7 +102,7 @@ export type WithOperator<Field, IndexType extends number = 0> =
         WithTextSearchOperator &
         WithEqualityOperator<Field> &
         WithArrayOperator<Field> &
-        TsGeoSpatialQuery<Field> &
+        WithGeoSpatialQueryOperator<Field> &
         WithBitwiseOperator<Field>
     >
 
