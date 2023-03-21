@@ -49,4 +49,5 @@ jobs:
       - run: pnpm run typecheck
       - run: pnpm run assert
       - run: pnpm run lint
+      - run: pnpm run prettier
       - run: pnpm run jest
