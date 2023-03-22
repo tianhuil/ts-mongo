@@ -10,7 +10,7 @@ import { RemodelType } from './util'
 /**
  * This is an incomplete list but will do for now
  */
-export declare type Pipeline<
+export declare type TsPipeline<
   TSchema extends Document,
   TSchemaLookup extends Document,
   TSchemaUnionWith extends Document = Document

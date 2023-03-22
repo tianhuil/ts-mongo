@@ -1,6 +1,6 @@
 import { ResumeToken } from 'mongodb'
 import * as ta from 'type-assertions'
-import { Pipeline, TsLookup } from './aggregation'
+import { TsLookup, TsPipeline } from './aggregation'
 
 type ExampleTSchema = {
   a: number[]
@@ -50,14 +50,14 @@ ta.assert<
 ta.assert<
   ta.Extends<
     { $match: { a: [1, 2] } },
-    Pipeline<ExampleTSchema, ExampleTSchemaOther>
+    TsPipeline<ExampleTSchema, ExampleTSchemaOther>
   >
 >()
 ta.assert<
   ta.Not<
     ta.Extends<
       { $match: { a: '' } },
-      Pipeline<ExampleTSchema, ExampleTSchemaOther>
+      TsPipeline<ExampleTSchema, ExampleTSchemaOther>
     >
   >
 >()
@@ -65,7 +65,7 @@ ta.assert<
   ta.Not<
     ta.Extends<
       { $match: { x: [1, 2] } },
-      Pipeline<ExampleTSchema, ExampleTSchemaOther>
+      TsPipeline<ExampleTSchema, ExampleTSchemaOther>
     >
   >
 >()
@@ -74,20 +74,20 @@ ta.assert<
 ta.assert<
   ta.Extends<
     { $project: { a: 1 } },
-    Pipeline<ExampleTSchema, ExampleTSchemaOther>
+    TsPipeline<ExampleTSchema, ExampleTSchemaOther>
   >
 >()
 ta.assert<
   ta.Extends<
     { $project: { b: 1 } },
-    Pipeline<ExampleTSchema, ExampleTSchemaOther>
+    TsPipeline<ExampleTSchema, ExampleTSchemaOther>
   >
 >()
 ta.assert<
   ta.Not<
     ta.Extends<
       { $project: { a: '1' } },
-      Pipeline<ExampleTSchema, ExampleTSchemaOther>
+      TsPipeline<ExampleTSchema, ExampleTSchemaOther>
     >
   >
 >()
@@ -95,7 +95,7 @@ ta.assert<
   ta.Not<
     ta.Extends<
       { $project: { x: 1 } },
-      Pipeline<ExampleTSchema, ExampleTSchemaOther>
+      TsPipeline<ExampleTSchema, ExampleTSchemaOther>
     >
   >
 >()
@@ -104,13 +104,13 @@ ta.assert<
 ta.assert<
   ta.Extends<
     { $sort: { c: -1 } },
-    Pipeline<ExampleTSchema, ExampleTSchemaOther>
+    TsPipeline<ExampleTSchema, ExampleTSchemaOther>
   >
 >()
 ta.assert<
   ta.Extends<
     { $sort: { b: -1 } },
-    Pipeline<ExampleTSchema, ExampleTSchemaOther>
+    TsPipeline<ExampleTSchema, ExampleTSchemaOther>
   >
 >()
 
@@ -118,14 +118,14 @@ ta.assert<
 ta.assert<
   ta.Extends<
     { $lookup: CorrectLookupExample },
-    Pipeline<ExampleTSchema, ExampleTSchemaOther>
+    TsPipeline<ExampleTSchema, ExampleTSchemaOther>
   >
 >()
 ta.assert<
   ta.Not<
     ta.Extends<
       { $lookup: IncorrectLookupExample },
-      Pipeline<ExampleTSchema, ExampleTSchemaOther>
+      TsPipeline<ExampleTSchema, ExampleTSchemaOther>
     >
   >
 >()
@@ -134,7 +134,7 @@ ta.assert<
 ta.assert<
   ta.Extends<
     { $changeStream: { fullDocument: 'updateLookup' } },
-    Pipeline<ExampleTSchema, ExampleTSchemaOther>
+    TsPipeline<ExampleTSchema, ExampleTSchemaOther>
   >
 >()
 ta.assert<
@@ -146,7 +146,7 @@ ta.assert<
           startAfter: ResumeToken
         }
       },
-      Pipeline<ExampleTSchema, ExampleTSchemaOther>
+      TsPipeline<ExampleTSchema, ExampleTSchemaOther>
     >
   >
 >()
@@ -154,7 +154,7 @@ ta.assert<
   ta.Not<
     ta.Extends<
       { $changeStream: { startAtOperationTime: number } },
-      Pipeline<ExampleTSchema, ExampleTSchemaOther>
+      TsPipeline<ExampleTSchema, ExampleTSchemaOther>
     >
   >
 >()
@@ -163,7 +163,7 @@ ta.assert<
 ta.assert<
   ta.Extends<
     { $unionWith: { coll: string; pipeline: [{ $match: { a: [1, 2] } }] } },
-    Pipeline<ExampleTSchema, ExampleTSchemaOther, ExampleTSchemaUnionWith>
+    TsPipeline<ExampleTSchema, ExampleTSchemaOther, ExampleTSchemaUnionWith>
   >
 >()
 ta.assert<
@@ -175,7 +175,7 @@ ta.assert<
           pipeline: [{ $match: { a: [1, 2] } }, { $merge: { into: string } }]
         }
       },
-      Pipeline<ExampleTSchema, ExampleTSchemaOther, ExampleTSchemaUnionWith>
+      TsPipeline<ExampleTSchema, ExampleTSchemaOther, ExampleTSchemaUnionWith>
     >
   >
 >()
