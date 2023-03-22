@@ -36,7 +36,7 @@ import {
   UpdateResult,
   WithoutId,
 } from 'mongodb'
-import { Pipeline, TsAggregationCursor } from './aggregation/aggregation'
+import { TsAggregationCursor, TsPipeline } from './aggregation/aggregation'
 import { TsFilter } from './filter'
 import {
   TsFindCursor,
@@ -447,7 +447,7 @@ export declare class SafeCollection<
     TSchemaUnionWith extends Doc = Document
   >(
     pipeline?:
-      | Pipeline<TSchema, TSchemaLookup, TSchemaUnionWith>[]
+      | TsPipeline<TSchema, TSchemaLookup, TSchemaUnionWith>[]
       | Document[],
     options?: AggregateOptions
   ): TsAggregationCursor<TSchema>
