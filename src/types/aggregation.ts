@@ -1,23 +1,25 @@
 import { AggregationCursor, Document } from 'mongodb'
+import { TsChangeStreamOptions } from './changeStream'
 import type { Collstats } from './colstats'
 import { TsFilter } from './filter'
 import { FlattenFilterPaths } from './flatten'
 import { GeoNear } from './geoNear'
 import { TsProjection } from './projection'
 import { TsSort } from './sort'
+import { TsUnionWith } from './unionWith'
 import { RemodelType } from './util'
 
 /**
  * This is an incomplete list but will do for now
  */
-export declare type Pipeline<
+export declare type TsPipeline<
   TSchema extends Document,
-  TSchemaOther extends Document
+  TSchemaLookup extends Document,
+  TSchemaUnionWith extends Document = Document
 > =
   | { $match: TsFilter<TSchema> }
   | { $project: TsProjection<TSchema> }
   | { $sort: TsSort<TSchema> }
-  | { $lookup: TsLookup<TSchema, TSchemaOther> }
   | {
       /**
        * Limits the number of documents passed to the next stage in the pipeline and takes a positive integer that specifies the maximum number of documents to pass along.
@@ -55,14 +57,17 @@ export declare type Pipeline<
        */
       $geoNear: GeoNear<TsFilter<TSchema>>
     }
+  | { $lookup: TsLookup<TSchema, TSchemaLookup> }
+  | { $changeStream: TsChangeStreamOptions }
+  | { $unionWith: TsUnionWith<TSchemaUnionWith> }
 
 export declare type TsLookup<
   TSchema extends Document,
-  TSchemaOther extends Document
+  TSchemaLookup extends Document
 > = {
   from: string
   localField: FlattenFilterPaths<TSchema>
-  foreignField: FlattenFilterPaths<TSchemaOther>
+  foreignField: FlattenFilterPaths<TSchemaLookup>
   as: string
 }
 

@@ -54,3 +54,11 @@ export declare type RecurRemoveNever<TSchema> = TSchema extends BaseTypes
   : TSchema extends ReadonlyArray<infer ArrayType>
   ? Array<RecurRemoveNever<ArrayType>>
   : never
+
+/**
+ * Allow only one of the keys in `Keys` to be present in `T`
+ */
+export type AllowOnlyOne<T, Keys extends keyof T = keyof T> = Omit<T, Keys> &
+  {
+    [K in keyof T]: Pick<T, K> & Partial<Record<Exclude<Keys, K>, never>>
+  }[Keys]

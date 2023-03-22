@@ -1,7 +1,7 @@
-import { Coordinates } from './geometry'
+import { TsLegacyCoordinates } from '.'
 interface Near {
   type: 'Point'
-  coordinates: Coordinates
+  coordinates: TsLegacyCoordinates
 }
 
 export interface GeoNear<T = never> {

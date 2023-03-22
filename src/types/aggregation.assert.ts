@@ -1,5 +1,6 @@
+import { ResumeToken } from 'mongodb'
 import * as ta from 'type-assertions'
-import { Pipeline, TsLookup } from './aggregation'
+import { TsLookup, TsPipeline } from './aggregation'
 import { Collstats } from './colstats'
 import { GeoNear } from './geoNear'
 
@@ -22,6 +23,11 @@ type ExampleTSchema = {
 
 type ExampleTSchemaOther = {
   x: number
+}
+
+type ExampleTSchemaUnionWith = {
+  a: number[]
+  b: string
 }
 
 type CorrectLookupExample = {
@@ -57,14 +63,14 @@ ta.assert<
 ta.assert<
   ta.Extends<
     { $match: { a: [1, 2] } },
-    Pipeline<ExampleTSchema, ExampleTSchemaOther>
+    TsPipeline<ExampleTSchema, ExampleTSchemaOther>
   >
 >()
 ta.assert<
   ta.Not<
     ta.Extends<
       { $match: { a: '' } },
-      Pipeline<ExampleTSchema, ExampleTSchemaOther>
+      TsPipeline<ExampleTSchema, ExampleTSchemaOther>
     >
   >
 >()
@@ -72,7 +78,7 @@ ta.assert<
   ta.Not<
     ta.Extends<
       { $match: { x: [1, 2] } },
-      Pipeline<ExampleTSchema, ExampleTSchemaOther>
+      TsPipeline<ExampleTSchema, ExampleTSchemaOther>
     >
   >
 >()
@@ -81,20 +87,20 @@ ta.assert<
 ta.assert<
   ta.Extends<
     { $project: { a: 1 } },
-    Pipeline<ExampleTSchema, ExampleTSchemaOther>
+    TsPipeline<ExampleTSchema, ExampleTSchemaOther>
   >
 >()
 ta.assert<
   ta.Extends<
     { $project: { b: 1 } },
-    Pipeline<ExampleTSchema, ExampleTSchemaOther>
+    TsPipeline<ExampleTSchema, ExampleTSchemaOther>
   >
 >()
 ta.assert<
   ta.Not<
     ta.Extends<
       { $project: { a: '1' } },
-      Pipeline<ExampleTSchema, ExampleTSchemaOther>
+      TsPipeline<ExampleTSchema, ExampleTSchemaOther>
     >
   >
 >()
@@ -102,7 +108,7 @@ ta.assert<
   ta.Not<
     ta.Extends<
       { $project: { x: 1 } },
-      Pipeline<ExampleTSchema, ExampleTSchemaOther>
+      TsPipeline<ExampleTSchema, ExampleTSchemaOther>
     >
   >
 >()
@@ -111,13 +117,13 @@ ta.assert<
 ta.assert<
   ta.Extends<
     { $sort: { c: -1 } },
-    Pipeline<ExampleTSchema, ExampleTSchemaOther>
+    TsPipeline<ExampleTSchema, ExampleTSchemaOther>
   >
 >()
 ta.assert<
   ta.Extends<
     { $sort: { b: -1 } },
-    Pipeline<ExampleTSchema, ExampleTSchemaOther>
+    TsPipeline<ExampleTSchema, ExampleTSchemaOther>
   >
 >()
 
@@ -125,14 +131,64 @@ ta.assert<
 ta.assert<
   ta.Extends<
     { $lookup: CorrectLookupExample },
-    Pipeline<ExampleTSchema, ExampleTSchemaOther>
+    TsPipeline<ExampleTSchema, ExampleTSchemaOther>
   >
 >()
 ta.assert<
   ta.Not<
     ta.Extends<
       { $lookup: IncorrectLookupExample },
-      Pipeline<ExampleTSchema, ExampleTSchemaOther>
+      TsPipeline<ExampleTSchema, ExampleTSchemaOther>
+    >
+  >
+>()
+
+// Test Pipeline $changeStream
+ta.assert<
+  ta.Extends<
+    { $changeStream: { fullDocument: 'updateLookup' } },
+    TsPipeline<ExampleTSchema, ExampleTSchemaOther>
+  >
+>()
+ta.assert<
+  ta.Not<
+    ta.Extends<
+      {
+        $changeStream: {
+          resumeAfter: ResumeToken
+          startAfter: ResumeToken
+        }
+      },
+      TsPipeline<ExampleTSchema, ExampleTSchemaOther>
+    >
+  >
+>()
+ta.assert<
+  ta.Not<
+    ta.Extends<
+      { $changeStream: { startAtOperationTime: number } },
+      TsPipeline<ExampleTSchema, ExampleTSchemaOther>
+    >
+  >
+>()
+
+// Test Pipeline $unionWith
+ta.assert<
+  ta.Extends<
+    { $unionWith: { coll: string; pipeline: [{ $match: { a: [1, 2] } }] } },
+    TsPipeline<ExampleTSchema, ExampleTSchemaOther, ExampleTSchemaUnionWith>
+  >
+>()
+ta.assert<
+  ta.Not<
+    ta.Extends<
+      {
+        $unionWith: {
+          coll: string
+          pipeline: [{ $match: { a: [1, 2] } }, { $merge: { into: string } }]
+        }
+      },
+      TsPipeline<ExampleTSchema, ExampleTSchemaOther, ExampleTSchemaUnionWith>
     >
   >
 >()
@@ -179,23 +235,29 @@ ta.assert<
 
 // Test $limit pipeline
 ta.assert<
-  ta.Extends<{ $limit: number }, Pipeline<ExampleTSchema, ExampleTSchemaOther>>
+  ta.Extends<
+    { $limit: number },
+    TsPipeline<ExampleTSchema, ExampleTSchemaOther>
+  >
 >()
 ta.assert<
   ta.Not<
     ta.Extends<
       { $limit: string },
-      Pipeline<ExampleTSchema, ExampleTSchemaOther>
+      TsPipeline<ExampleTSchema, ExampleTSchemaOther>
     >
   >
 >()
 
 // Test $skip pipeline
 ta.assert<
-  ta.Extends<{ $skip: number }, Pipeline<ExampleTSchema, ExampleTSchemaOther>>
+  ta.Extends<{ $skip: number }, TsPipeline<ExampleTSchema, ExampleTSchemaOther>>
 >()
 ta.assert<
   ta.Not<
-    ta.Extends<{ $kip: string }, Pipeline<ExampleTSchema, ExampleTSchemaOther>>
+    ta.Extends<
+      { $kip: string },
+      TsPipeline<ExampleTSchema, ExampleTSchemaOther>
+    >
   >
 >()
