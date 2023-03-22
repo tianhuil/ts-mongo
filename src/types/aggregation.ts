@@ -1,8 +1,10 @@
 import { AggregationCursor, Document } from 'mongodb'
+import { TsChangeStreamOptions } from './changeStream'
 import { TsFilter } from './filter'
 import { FlattenFilterPaths } from './flatten'
 import { TsProjection } from './projection'
 import { TsSort } from './sort'
+import { TsUnionWith } from './unionWith'
 import { RemodelType } from './util'
 
 /**
@@ -10,20 +12,23 @@ import { RemodelType } from './util'
  */
 export declare type Pipeline<
   TSchema extends Document,
-  TSchemaOther extends Document
+  TSchemaLookup extends Document,
+  TSchemaUnionWith extends Document = Document
 > =
   | { $match: TsFilter<TSchema> }
   | { $project: TsProjection<TSchema> }
   | { $sort: TsSort<TSchema> }
-  | { $lookup: TsLookup<TSchema, TSchemaOther> }
+  | { $lookup: TsLookup<TSchema, TSchemaLookup> }
+  | { $changeStream: TsChangeStreamOptions }
+  | { $unionWith: TsUnionWith<TSchemaUnionWith> }
 
 export declare type TsLookup<
   TSchema extends Document,
-  TSchemaOther extends Document
+  TSchemaLookup extends Document
 > = {
   from: string
   localField: FlattenFilterPaths<TSchema>
-  foreignField: FlattenFilterPaths<TSchemaOther>
+  foreignField: FlattenFilterPaths<TSchemaLookup>
   as: string
 }
 
