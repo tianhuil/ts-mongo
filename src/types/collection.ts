@@ -36,7 +36,7 @@ import {
   UpdateResult,
   WithoutId,
 } from 'mongodb'
-import { TsAggregationCursor, TsPipeline } from './aggregation/aggregation'
+import { TsAggregationCursor, TsPipeline } from './aggregation'
 import { TsFilter } from './filter'
 import {
   TsFindCursor,

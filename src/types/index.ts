@@ -1,4 +1,4 @@
-export * from './aggregation/aggregation'
+export * from './aggregation'
 export * from './collection'
 export * from './filter'
 export * from './find'
