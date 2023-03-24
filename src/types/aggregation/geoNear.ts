@@ -1,4 +1,4 @@
-import { TsLegacyCoordinates } from '.'
+import { TsLegacyCoordinates } from '..'
 interface Near {
   type: 'Point'
   coordinates: TsLegacyCoordinates

@@ -1,7 +1,7 @@
 import { ResumeToken } from 'mongodb'
 import * as ta from 'type-assertions'
-import { Collstats } from '../colstats'
-import { GeoNear } from '../geoNear'
+import type { Collstats } from '.'
+import { GeoNear } from '.'
 import { TsPipeline } from './aggregation'
 
 type queryExample = {
