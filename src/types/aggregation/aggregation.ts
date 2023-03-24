@@ -1,13 +1,13 @@
 import { AggregationCursor, Document } from 'mongodb'
+import type { Collstats } from '../colstats'
+import { TsFilter } from '../filter'
+import { GeoNear } from '../geoNear'
+import { TsProjection } from '../projection'
+import { TsSort } from '../sort'
+import { RemodelType } from '../util'
 import { TsChangeStreamOptions } from './changeStream'
-import type { Collstats } from './colstats'
-import { TsFilter } from './filter'
-import { FlattenFilterPaths } from './flatten'
-import { GeoNear } from './geoNear'
-import { TsProjection } from './projection'
-import { TsSort } from './sort'
+import { TsLookup } from './lookup'
 import { TsUnionWith } from './unionWith'
-import { RemodelType } from './util'
 
 /**
  * This is an incomplete list but will do for now
@@ -60,16 +60,6 @@ export declare type TsPipeline<
   | { $lookup: TsLookup<TSchema, TSchemaLookup> }
   | { $changeStream: TsChangeStreamOptions }
   | { $unionWith: TsUnionWith<TSchemaUnionWith> }
-
-export declare type TsLookup<
-  TSchema extends Document,
-  TSchemaLookup extends Document
-> = {
-  from: string
-  localField: FlattenFilterPaths<TSchema>
-  foreignField: FlattenFilterPaths<TSchemaLookup>
-  as: string
-}
 
 export declare type TsAggregationCursor<TSchema extends Document> = RemodelType<
   {

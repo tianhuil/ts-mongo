@@ -1,5 +1,5 @@
 import { OperationTime, ResumeToken } from 'mongodb'
-import { AllowOnlyOne } from './util'
+import { AllowOnlyOne } from '../util'
 
 type ChangeStreamOptions = {
   allChangesForCluster?: boolean
