@@ -1,8 +1,8 @@
 import { Document, ObjectId, WithId } from 'mongodb'
-import { FlattenFilterPaths, FlattenFilterType } from './flatten'
-import { NonArrayObject, RecurPartial } from './util'
-import { WithGeoSpatialQueryOperator } from './geospatialQuery'
 import { WithBitwiseOperator } from './bitwise'
+import { FlattenFilterPaths, FlattenFilterType } from './flatten'
+import { WithGeoSpatialQueryOperator } from './geospatialQuery'
+import { NonArrayObject, RecurPartial } from './util'
 
 /**
  * https://docs.mongodb.com/manual/reference/operator/query-element/
@@ -124,7 +124,7 @@ export type WithLogicalOperators<Field> =
 export declare type FilterType<
   TSchema extends Document,
   Property extends string
-> = WithOperator<FlattenFilterType<TSchema, Property>>
+> = WithLogicalOperators<WithOperator<FlattenFilterType<TSchema, Property>>>
 
 export type TsFilter<
   TSchema extends Document,

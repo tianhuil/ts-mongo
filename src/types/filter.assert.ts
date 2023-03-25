@@ -176,6 +176,9 @@ ta.assert<ta.Extends<{ $exists: true }, FilterType<Example, 'b.d'>>>()
 ta.assert<ta.Extends<{ e: { $eq: false } }, FilterType<Example, 'b.d'>>>()
 ta.assert<ta.Extends<{ $size: 2 }, FilterType<Example, 'b.f'>>>()
 ta.assert<ta.Extends<{ $in: number[] }, FilterType<Example, 'a'>>>()
+ta.assert<
+  ta.Extends<{ $and: [{ $lt: 2 }, { $gt: 0 }] }, FilterType<Example, 'a'>>
+>()
 
 // These use to be wrong, keeping as regression testing
 ta.assert<ta.Not<ta.Extends<{ a: 2 }, WithOperator<{ a: number }[]>>>>()
