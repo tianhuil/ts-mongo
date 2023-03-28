@@ -82,7 +82,7 @@ export type WithNegatableOperator<Expr> =
 export type WithRecordOperator<
   TSchema,
   IndexType extends number = 0
-> = TSchema extends NonArrayObject
+> = [TSchema] extends [NonArrayObject]
   ? {
       readonly [Property in FlattenFilterPaths<
         WithId<TSchema>,
@@ -95,14 +95,14 @@ export type WithOperator<Field, IndexType extends number = 0> =
   | RecurPartial<Field>
   | WithNegatableOperator<
       WithElementOperator &
-        WithRecordOperator<Field, IndexType> &
-        WithComparisonOperator<Field> &
-        WithStringOperator<Field> &
-        WithTextSearchOperator &
-        WithEqualityOperator<Field> &
-        WithArrayOperator<Field> &
-        WithGeoSpatialQueryOperator<Field> &
-        WithBitwiseOperator<Field>
+      WithRecordOperator<Field, IndexType> &
+      WithComparisonOperator<Field> &
+      WithStringOperator<Field> &
+      WithTextSearchOperator &
+      WithEqualityOperator<Field> &
+      WithArrayOperator<Field> &
+      WithGeoSpatialQueryOperator<Field> &
+      WithBitwiseOperator<Field>
     >
 
 /**

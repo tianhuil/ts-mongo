@@ -186,3 +186,77 @@ ta.assert<ta.Not<ta.Extends<{ a: 2 }, WithOperator<{ a: number }[]>>>>()
 // Disallow extraneous fields, except when index supports number
 ta.assert<ta.Not<ta.Extends<{ z: 2 }, TsFilter<{ a: number; b: string[] }>>>>()
 ta.assert<ta.Extends<{ z: 2 }, TsFilter<{ a: number; b: string[] }, number>>>()
+
+
+// Test WithRecordOperator with unions
+type ExampleUnion = {
+  type: 'a' | 'b' | 'c' | 'd',
+  nested: { a: 1 | 2 | 3 } | { b: 4 | 5 | 6 }
+}
+
+ta.assert<
+  ta.Extends<{ type: { $in: ['a', 'c'] } }, WithRecordOperator<ExampleUnion>>
+>()
+ta.assert<
+  ta.Not<ta.Extends<{ type: { $in: ['d', 'f'] } }, WithRecordOperator<ExampleUnion>>>
+>()
+
+ta.assert<
+  ta.Extends<{ 'nested.a': { $in: [1, 2] } }, WithRecordOperator<ExampleUnion>>
+>()
+ta.assert<
+  ta.Extends<{ 'nested.b': { $in: [4, 6] } }, WithRecordOperator<ExampleUnion>>
+>()
+ta.assert<
+  ta.Not<ta.Extends<{ 'nested.b': { $in: [1, 7] } }, WithRecordOperator<ExampleUnion>>>
+>()
+
+ta.assert<
+  ta.Extends<
+    { 'nested': { $in: [{ a: 1 }, { b: 5 }] } },
+    WithRecordOperator<ExampleUnion>
+  >
+>()
+ta.assert<
+  ta.Not<ta.Extends<
+    { 'nested': { $in: [{ a: 0 }, { b: 7 }] } },
+    WithRecordOperator<ExampleUnion>
+  >>
+>()
+
+ta.assert<
+  ta.Extends<{ type: { $in: ['a', 'c'] } }, TsFilter<ExampleUnion>>
+>()
+ta.assert<
+  ta.Not<ta.Extends<{ type: { $in: ['d', 'f'] } }, TsFilter<ExampleUnion>>>
+>()
+
+
+type ExampleDiscriminatedUnion =
+  | { type: 'a'; bar: string }
+  | { type: 'b'; baz: number }
+  | { type: 'c'; foo: { subtype: 'a' } | { subtype: 'b' } | { subtype: 'c' }}
+
+ta.assert<
+  ta.Extends<{ type: { $in: ['a', 'b'] } }, WithRecordOperator<ExampleDiscriminatedUnion>>
+>()
+ta.assert<
+  ta.Not<ta.Extends<{ type: { $in: ['c', 'd'] } }, WithRecordOperator<ExampleDiscriminatedUnion>>>
+>()
+ta.assert<
+  ta.Extends<{ baz: { $in: [1, 2] }, bar: { $in: ["test1", "test2"] }}, WithRecordOperator<ExampleDiscriminatedUnion>>
+>()
+
+ta.assert<
+  ta.Extends<{ 'foo.subtype': { $in: ['a', 'b'] } }, WithRecordOperator<ExampleDiscriminatedUnion>>
+>()
+ta.assert<
+  ta.Not<ta.Extends<{ 'foo.subtype': { $in: ['c', 'd'] } }, WithRecordOperator<ExampleDiscriminatedUnion>>>
+>()
+
+ta.assert<
+  ta.Extends<{ type: { $in: ['a', 'b'] } }, TsFilter<ExampleDiscriminatedUnion>>
+>()
+ta.assert<
+  ta.Not<ta.Extends<{ 'foo.subtype': { $in: ['c', 'd'] } }, TsFilter<ExampleDiscriminatedUnion>>>
+>()
