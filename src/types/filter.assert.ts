@@ -193,6 +193,8 @@ type ExampleObjectUnion =
   | { type: 'b'; bar: string }
   | { type: 'c'; baz: boolean }
   | { type: 'd'; zod: ObjectId }
+  | { type: {}; fed: object}
+
 
 ta.assert<
   ta.Extends<{ $in: ['a', 'b'] }, FilterType<ExampleObjectUnion, 'type'>>
