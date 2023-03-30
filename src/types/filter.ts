@@ -82,6 +82,8 @@ export type WithNegatableOperator<Expr> =
 export type WithRecordOperator<
   TSchema,
   IndexType extends number = 0
+  // HACK: wrapping into [] here to disable distributive behavior of conditional type and make it work with discriminated unions
+  // source of hack https://stackoverflow.com/questions/55542332/typescript-conditional-type-with-discriminated-union/55542463#55542463
 > = [TSchema] extends [NonArrayObject]
   ? {
       readonly [Property in FlattenFilterPaths<
