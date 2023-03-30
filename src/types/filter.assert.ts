@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb'
 import * as ta from 'type-assertions'
-import { FilterType, TsFilter, WithOperator } from './filter'
+import { FilterType, TsFilter, WithOperator, WithRecordOperator } from './filter'
 
 // cannot use `number` in template type of object key; works if you use specific numbers
 ta.assert<ta.Extends<'a20b', `a${number}b`>>()
