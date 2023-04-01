@@ -3,6 +3,7 @@
       "sourceMap": true,
       "outDir": "dist",
       "strict": true,
+      "declaration": true /* Generates corresponding '.d.ts' file. */,
       "target": "ES2019",
       "module": "commonJS",
       "moduleResolution": "node",
@@ -11,4 +12,3 @@
       "types": ["node", "jest"]
     }
   }
-  
