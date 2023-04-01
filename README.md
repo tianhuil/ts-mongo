@@ -8,6 +8,19 @@ Mongodb's node-native driver and mongoose both provide poor typescript support. 
 
 We re-type the node-native driver to provide uptight type-safety.  We choose to have type-safety disallow queries that are hard to type or which we deem poor practice.  While there are plenty of valid mongo queries our type checking disallows, our aim is to minimize bad queries that pass type checking.
 
+### Installation
+With npm
+```sh
+$ npm install @tianhuil/ts-mongo
+```
+With pnpm
+```sh
+$ pnpm install @tianhuil/ts-mongo
+```
+With yarn
+```sh
+$ yarn add @tianhuil/ts-mongo
+```
 ### Getting Started
 To create a type-safe drop-in replacement
 ```ts
@@ -43,7 +56,7 @@ Many middleware functions are handled by the converter, which is like a type-saf
 ## How to fix bugs in TsMongo
 When using the code, you may notice mistakes in TsMongo's typing behavior (e.g. https://github.com/tianhuil/aerial-app/pull/804).
 
-1. Look at the type for `.sort` (e.g. `TsSort`) 
+1. Look at the type for `.sort` (e.g. `TsSort`)
 2. Build a test case in the assert file (e.g. `sort.assert.ts` where we added `.h` and `.i`).
 3. Then investigate the original file (e.g. `sort.ts`) and hack things until you pass testing.  Red underlines appear in VSCode to tell you if the typing doesn't work.
 
