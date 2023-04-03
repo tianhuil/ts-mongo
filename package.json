@@ -4,6 +4,9 @@
   "description": "Strongly-typed Mongo native driver",
   "main":"./dist/index.js",
   "types": "./dist/index.d.ts",
+  "engines": {
+    "pnpm": ">=8.0.0"
+  },
   "files": [
     "dist/**/*"
   ],
