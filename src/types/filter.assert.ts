@@ -189,16 +189,16 @@ ta.assert<ta.Extends<{ z: 2 }, TsFilter<{ a: number; b: string[] }, number>>>()
 
 // Challenge
 type ExampleObjectUnion =
-  | { name: 'a'; foo: number }
-  | { name: 'b'; bar: string }
-  | { name: 'c'; baz: boolean }
-  | { name: 'd'; zod: ObjectId }
+  | { type: 'a'; foo: number }
+  | { type: 'b'; bar: string }
+  | { type: 'c'; baz: boolean }
+  | { type: 'd'; zod: ObjectId }
 
 ta.assert<
-  ta.Extends<{ $in: ['a', 'b'] }, FilterType<ExampleObjectUnion, 'name'>>
+  ta.Extends<{ $in: ['a', 'b'] }, FilterType<ExampleObjectUnion, 'type'>>
 >()
 ta.assert<
-  ta.Extends<{ name: { $in: ['a', 'b'] } }, TsFilter<ExampleObjectUnion>>
+  ta.Extends<{ type: { $in: ['a', 'b'] } }, TsFilter<ExampleObjectUnion>>
 >()
 
 type ExampleTypeUnion = {
