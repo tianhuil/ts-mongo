@@ -186,3 +186,28 @@ ta.assert<ta.Not<ta.Extends<{ a: 2 }, WithOperator<{ a: number }[]>>>>()
 // Disallow extraneous fields, except when index supports number
 ta.assert<ta.Not<ta.Extends<{ z: 2 }, TsFilter<{ a: number; b: string[] }>>>>()
 ta.assert<ta.Extends<{ z: 2 }, TsFilter<{ a: number; b: string[] }, number>>>()
+
+// Challenge
+type ExampleObjectUnion =
+  | { type: 'a'; foo: number }
+  | { type: 'b'; bar: string }
+  | { type: 'c'; baz: boolean }
+  | { type: 'd'; zod: ObjectId }
+
+ta.assert<
+  ta.Extends<{ $in: ['a', 'b'] }, FilterType<ExampleObjectUnion, 'type'>>
+>()
+ta.assert<
+  ta.Extends<{ type: { $in: ['a', 'b'] } }, TsFilter<ExampleObjectUnion>>
+>()
+
+type ExampleTypeUnion = {
+  type: 'a' | 'b' | 'c' | 'd'
+}
+
+ta.assert<
+  ta.Extends<{ $in: ['a', 'b'] }, FilterType<ExampleTypeUnion, 'type'>>
+>()
+ta.assert<
+  ta.Extends<{ type: { $in: ['a', 'b'] } }, TsFilter<ExampleTypeUnion>>
+>()
