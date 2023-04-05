@@ -15,12 +15,19 @@ export type WithElementOperator = {
 /**
  * https://docs.mongodb.com/manual/reference/operator/query-comparison/
  */
-export type WithEqualityOperator<Field> = {
-  $eq?: Field
-  $ne?: Field
-  $in?: readonly Field[]
-  $nin?: readonly Field[]
-}
+export type WithEqualityOperator<Field> = Field extends string
+  ? {
+      $eq?: Field
+      $ne?: Field
+      $in?: readonly (Field | string)[]
+      $nin?: readonly (Field | string)[]
+    }
+  : {
+      $eq?: Field
+      $ne?: Field
+      $in?: readonly Field[]
+      $nin?: readonly Field[]
+    }
 
 export type WithComparisonOperator<Field> = Field extends
   | number
