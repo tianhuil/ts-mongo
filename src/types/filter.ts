@@ -18,7 +18,7 @@ export type WithElementOperator = {
 export type WithEqualityOperator<Field> = {
   $eq?: Field
   $ne?: Field
-  $in?: readonly Field[]
+  $in?: Field extends string ? readonly string[] : readonly Field[]
   $nin?: readonly Field[]
 }
 
