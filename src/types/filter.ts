@@ -2,7 +2,7 @@ import { Document, ObjectId, WithId } from 'mongodb'
 import { WithBitwiseOperator } from './bitwise'
 import { FlattenFilterPaths, FlattenFilterType } from './flatten'
 import { WithGeoSpatialQueryOperator } from './geospatialQuery'
-import { NonArrayObject, RecurPartial } from './util'
+import { NonArrayObject, RecurFlattenUnion, RecurPartial } from './util'
 
 /**
  * https://docs.mongodb.com/manual/reference/operator/query-element/
@@ -129,4 +129,8 @@ export declare type FilterType<
 export type TsFilter<
   TSchema extends Document,
   IndexType extends number = 0
-> = WithLogicalOperators<WithOperator<TSchema, IndexType>>
+> = RecurFlattenUnion<TSchema> extends TSchema // This checks if the schema does not contain a discriminated union
+  ? WithLogicalOperators<WithOperator<TSchema, IndexType>>
+  // If it does contain a discriminated union, we evaluate once more, only with the common properties og the union
+  // Because some operators rely on discriminated unions, we can't simply skip evaluating the whole expression
+  : WithLogicalOperators<WithOperator<TSchema, IndexType>> | WithLogicalOperators<WithOperator<RecurFlattenUnion<TSchema>, IndexType>>
