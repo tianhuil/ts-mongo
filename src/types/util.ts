@@ -65,7 +65,8 @@ export type AllowOnlyOne<T, Keys extends keyof T = keyof T> = Omit<T, Keys> &
 
 /**
  * Extract what is common in all elements of a union. In discriminated type unions, it will only keep the discriminator,
- * and it will be narrowly typed. For example: { type: 'a'; foo: number } | { type: 'b'; bar: string } => { type: 'a' | 'b }
+ * and it will be narrowly typed. Should not be used in base types or arrays.
+ * For example: { type: 'a'; foo: number } | { type: 'b'; bar: string } => { type: 'a' | 'b }
  */
 export type FlattenUnion<T> = Pick<T, keyof T>
 
@@ -77,8 +78,10 @@ export declare type RecurFlattenUnion<
   F = FlattenUnion<T>
 > = T extends BaseTypes
   ? T
+  : T extends Array<infer ArrayType>
+  ? Array<RecurFlattenUnion<ArrayType>>
   : T extends ReadonlyArray<infer ArrayType>
   ? ReadonlyArray<RecurFlattenUnion<ArrayType>>
   : T extends Record<string, unknown>
-  ? { readonly [P in keyof F]?: RecurFlattenUnion<F[P]> }
+  ? { readonly [P in keyof F]: RecurFlattenUnion<F[P]> }
   : never
