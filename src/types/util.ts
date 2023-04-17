@@ -72,7 +72,10 @@ export type FlattenUnion<T> = Pick<T, keyof T>
 /**
  * Apply the FlattenUnion type recursively, extracting  what is common in all elements of all unions.
  */
-export declare type RecurFlattenUnion<T, F = FlattenUnion<T>> = T extends BaseTypes
+export declare type RecurFlattenUnion<
+  T,
+  F = FlattenUnion<T>
+> = T extends BaseTypes
   ? T
   : T extends ReadonlyArray<infer ArrayType>
   ? ReadonlyArray<RecurFlattenUnion<ArrayType>>

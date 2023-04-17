@@ -131,6 +131,9 @@ export type TsFilter<
   IndexType extends number = 0
 > = RecurFlattenUnion<TSchema> extends TSchema // This checks if the schema does not contain a discriminated union
   ? WithLogicalOperators<WithOperator<TSchema, IndexType>>
-  // If it does contain a discriminated union, we evaluate once more, only with the common properties og the union
-  // Because some operators rely on discriminated unions, we can't simply skip evaluating the whole expression
-  : WithLogicalOperators<WithOperator<TSchema, IndexType>> | WithLogicalOperators<WithOperator<RecurFlattenUnion<TSchema>, IndexType>>
+  : // If it does contain a discriminated union, we evaluate once more, only with the common properties og the union
+    // Because some operators rely on discriminated unions, we can't simply skip evaluating the whole expression
+    | WithLogicalOperators<WithOperator<TSchema, IndexType>>
+      | WithLogicalOperators<
+          WithOperator<RecurFlattenUnion<TSchema>, IndexType>
+        >
