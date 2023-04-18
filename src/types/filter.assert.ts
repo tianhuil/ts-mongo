@@ -187,7 +187,6 @@ ta.assert<ta.Not<ta.Extends<{ a: 2 }, WithOperator<{ a: number }[]>>>>()
 ta.assert<ta.Not<ta.Extends<{ z: 2 }, TsFilter<{ a: number; b: string[] }>>>>()
 ta.assert<ta.Extends<{ z: 2 }, TsFilter<{ a: number; b: string[] }, number>>>()
 
-// Challenge
 type ExampleObjectUnion =
   | { type: 'a'; foo: number }
   | { type: 'b'; bar: string }
@@ -200,6 +199,14 @@ ta.assert<
 ta.assert<
   ta.Extends<{ type: { $in: ['a', 'b'] } }, TsFilter<ExampleObjectUnion>>
 >()
+ta.assert<
+  ta.Not<
+    ta.Extends<
+      { type: { $in: ['a', 'b', 'not-type'] } },
+      TsFilter<ExampleObjectUnion>
+    >
+  >
+>()
 
 type ExampleTypeUnion = {
   type: 'a' | 'b' | 'c' | 'd'
@@ -207,6 +214,14 @@ type ExampleTypeUnion = {
 
 ta.assert<
   ta.Extends<{ $in: ['a', 'b'] }, FilterType<ExampleTypeUnion, 'type'>>
+>()
+ta.assert<
+  ta.Not<
+    ta.Extends<
+      { $in: ['a', 'b', 'not-type'] },
+      FilterType<ExampleTypeUnion, 'type'>
+    >
+  >
 >()
 ta.assert<
   ta.Extends<{ type: { $in: ['a', 'b'] } }, TsFilter<ExampleTypeUnion>>
