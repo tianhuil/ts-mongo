@@ -9,6 +9,8 @@ import {
   RecurPartial,
   RecurRemoveNever,
   _Doc,
+  RecurFlattenUnion,
+  FlattenUnion,
 } from './util'
 
 // Test DocumentWithId
@@ -95,5 +97,51 @@ ta.assert<
   ta.Equal<
     RecurRemoveNever<{ a: number[]; b: { c: string; d: never }[] }>,
     { a: number[]; b: { c: string }[] }
+  >
+>()
+
+// Test FlattenUnion
+// Should not affect normal objects
+ta.assert<
+  ta.Equal<
+    FlattenUnion<{ foo: number; bar: string }>,
+    { foo: number; bar: string }
+  >
+>()
+// Should flatten unions
+ta.assert<
+  ta.Equal<
+    FlattenUnion<{ type: 'a'; foo: number } | { type: 'b'; bar: string }>,
+    { type: 'a' | 'b' }
+  >
+>()
+
+// Test RecurFlattenUnion
+// Should not affect base types
+ta.assert<ta.Equal<RecurFlattenUnion<string>, string>>()
+// Should not affect arrays
+ta.assert<ta.Equal<RecurFlattenUnion<number[]>, number[]>>()
+// Should not affect normal objects
+ta.assert<
+  ta.Equal<
+    RecurFlattenUnion<{ foo: number; bar: string }>,
+    { foo: number; bar: string }
+  >
+>()
+// Should flatten unions
+ta.assert<
+  ta.Equal<
+    RecurFlattenUnion<{ type: 'a'; foo: number } | { type: 'b'; bar: string }>,
+    { type: 'a' | 'b' }
+  >
+>()
+// Should flatten unions in objects
+ta.assert<
+  ta.Equal<
+    RecurFlattenUnion<
+      | { deep: { type: 'a'; foo: number } }
+      | { deep: { type: 'b'; bar: string } }
+    >,
+    { deep: { type: 'a' | 'b' } }
   >
 >()
