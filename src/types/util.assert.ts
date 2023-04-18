@@ -9,7 +9,8 @@ import {
   RecurPartial,
   RecurRemoveNever,
   _Doc,
-  RecurFlattenUnion, FlattenUnion,
+  RecurFlattenUnion,
+  FlattenUnion,
 } from './util'
 
 // Test DocumentWithId
@@ -114,7 +115,6 @@ ta.assert<
     { type: 'a' | 'b' }
   >
 >()
-
 
 // Test RecurFlattenUnion
 // Should not affect base types
