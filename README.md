@@ -3,6 +3,14 @@
 # TS Mongo
 Strongly-typed Mongo native driver.
 
+## Getting Started
+To install, run one of the following
+```sh
+npm install @tianhuil/ts-mongo
+yarn add @tianhuil/ts-mongo
+pnpm add @tianhuil/ts-mongo
+```
+
 ## Philosophy
 Mongodb's node-native driver and mongoose both provide poor typescript support.  They need to support every query and update that is allowed by the spec, which is difficult to encapsulate in typescript.  The result is promiscuous typesafety that allows even unsafe queries and input values to pass typecheck.
 
@@ -11,6 +19,8 @@ We re-type the node-native driver to provide uptight type-safety.  We choose to 
 ### Getting Started
 To create a type-safe drop-in replacement
 ```ts
+import { mkTsCollection } from '@tianhuil/ts-mongo'
+
 const collection = mkTsCollection<TSchema>(db, 'collection-name')
 const result = await collection.findOne(...) // now with better type safety
 const unsafeResult = await collection.unsafe.findOne(...) // with old types
@@ -41,16 +51,8 @@ By default, we only allow you to select the 0'th element.  This solves the probl
 Many middleware functions are handled by the converter, which is like a type-safe middleware that can transform the type of the collection.  For example, `convertToTimeCollection` implements `createdAt` and `updatedAt` fields on a collection.  See `convertReadWriteCollection`.
 
 ## How to fix bugs in TsMongo
-When using the code, you may notice mistakes in TsMongo's typing behavior (e.g. https://github.com/tianhuil/aerial-app/pull/804).
+When using the code, you may notice mistakes in TsMongo's typing behavior, use the corresponding assert file (which is like unit testing for types) and add an assert case to cover your newly-discovered bug or new feature.  For example:
 
-1. Look at the type for `.sort` (e.g. `TsSort`) 
-2. Build a test case in the assert file (e.g. `sort.assert.ts` where we added `.h` and `.i`).
-3. Then investigate the original file (e.g. `sort.ts`) and hack things until you pass testing.  Red underlines appear in VSCode to tell you if the typing doesn't work.
-
-This is solved in https://github.com/tianhuil/aerial-app/pull/805
-
-## Roadmap
-- Aggregation (still incomplete)
-- Mapreduce
-- Geography Operators
-- Bit Operators
+1. A bug in `.sort` will be in the type `TsSort`.
+2. Build a test case in the assert file `sort.assert.ts`.
+3. Then investigate the original file `sort.ts` and hack things until you pass testing.  Red underlines appear in VSCode to tell you if the typing doesn't work.
