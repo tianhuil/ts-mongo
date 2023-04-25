@@ -12,7 +12,7 @@
     "prettier:fix": "prettier src --write",
     "clean": "rm -rf ./lib",
     "build": "npm run clean clean && npm run build:esm && npm run build:cjs",
-    "build:esm": "tsc -p ./pkg-tsconfig/tsconfig.esm.json && mv lib/esm/index.js lib/esm/index.mjs",
+    "build:esm": "tsc -p ./pkg-tsconfig/tsconfig.esm.json",
     "build:cjs": "tsc -p ./pkg-tsconfig/tsconfig.cjs.json",
     "prepack": "npm run prettier && npm run lint && npm run typecheck && npm run assert && npm run jest && npm run build"
   },
@@ -45,7 +45,7 @@
     ".": {
       "import": {
         "types": "./lib/esm/index.d.ts",
-        "default": "./lib/esm/index.mjs"
+        "default": "./lib/esm/index.js"
       },
       "require": {
         "types": "./lib/cjs/index.d.ts",
