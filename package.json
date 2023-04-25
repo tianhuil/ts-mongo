@@ -57,5 +57,11 @@
   "main": "./lib/cjs/index.js",
   "files": [
     "lib/**/*"
-  ]
+  ],
+  "release": {
+    "branches": ["main"]
+  },
+  "publishConfig": {
+    "access": "public"
+  }
 }
