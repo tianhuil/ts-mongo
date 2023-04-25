@@ -1,0 +1,12 @@
+{
+    "compilerOptions": {
+      "strict": true,
+      "esModuleInterop": true,
+      "skipLibCheck": true,
+      "declaration": true,
+      "declarationMap": true,
+      "sourceMap": true,
+    },
+    "include": ["../src/**/*.ts", "../src/*.ts"],
+    "exclude": ["**/*.assert.ts"]
+}

@@ -1,14 +1,13 @@
 {
-    "compilerOptions": {
-      "sourceMap": true,
-      "outDir": "dist",
-      "strict": true,
-      "target": "ES2019",
-      "module": "commonJS",
-      "moduleResolution": "node",
-      "lib": ["esnext", "dom"],
-      "esModuleInterop": true,
-      "types": ["node", "jest"]
-    }
+  "compilerOptions": {
+    "sourceMap": true,
+    "outDir": "dist",
+    "strict": true,
+    "target": "ES2019",
+    "module": "commonJS",
+    "moduleResolution": "node",
+    "lib": ["esnext", "dom"],
+    "esModuleInterop": true,
+    "types": ["node", "jest"]
   }
-  
+}

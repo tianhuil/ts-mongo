@@ -1,4 +1,5 @@
 export * from './collection'
+export * from './converter'
 export * from './middleware'
 export * from './time-collection'
 export * from './types'

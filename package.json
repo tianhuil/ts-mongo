@@ -1,20 +1,23 @@
 {
-  "name": "ts-mongo",
+  "name": "@tianhuil/ts-mongo",
   "version": "1.1.0",
   "description": "",
-  "main": "index.js",
   "scripts": {
     "assert": ". ./assert.sh",
-    "build": "tsc",
     "typecheck": "tsc --noEmit",
     "jest": "jest",
     "jest:watch": "jest --watch",
     "lint": "eslint -c .eslintrc.js",
     "prettier": "prettier src --check",
-    "prettier:fix": "prettier src --write"
+    "prettier:fix": "prettier src --write",
+    "clean": "rm -rf ./lib",
+    "build": "npm run clean clean && npm run build:esm && npm run build:cjs",
+    "build:esm": "tsc -p ./pkg-tsconfig/tsconfig.esm.json && mv lib/esm/index.js lib/esm/index.mjs",
+    "build:cjs": "tsc -p ./pkg-tsconfig/tsconfig.cjs.json",
+    "prepack": "npm run prettier && npm run lint && npm run typecheck && npm run assert && npm run jest && npm run build"
   },
   "keywords": [],
-  "author": "",
+  "author": "Tianhui Michael Li",
   "license": "ISC",
   "devDependencies": {
     "@shelf/jest-mongodb": "^4.1.0",
@@ -37,5 +40,22 @@
     "typescript": "^4.8.2",
     "zod": "^3.19.0",
     "eslint-plugin-unused-imports": "^2.0.0"
-  }
+  },
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./lib/esm/index.d.ts",
+        "default": "./lib/esm/index.mjs"
+      },
+      "require": {
+        "types": "./lib/cjs/index.d.ts",
+        "default": "./lib/cjs/index.js"
+      }
+    }
+  },
+  "types": "./lib/cjs/index.d.ts",
+  "main": "./lib/cjs/index.js",
+  "files": [
+    "lib/**/*"
+  ]
 }
