@@ -1,51 +1,8 @@
 import { Document, OptionalUnlessRequiredId, WithoutId } from 'mongodb'
 import { TsRawCollection, TsReadWriteCollection } from './collection'
+import { type MiddlewareMethods } from './middleware'
 import { DocumentWithId, TsFilter, TsUpdate } from './types'
 import { TsModifyResult } from './types/result'
-
-export const middlewareMethods = [
-  // Database operations
-  'insertOne',
-  'insertMany',
-  'bulkWrite',
-  'updateOne',
-  'replaceOne',
-  'updateMany',
-  'deleteOne',
-  'deleteMany',
-  'rename',
-  'drop',
-  'findOne',
-  'find',
-  'estimatedDocumentCount',
-  'countDocuments',
-  'distinct',
-  'findOneAndDelete',
-  'findOneAndReplace',
-  'findOneAndUpdate',
-  'aggregate',
-  'watch',
-  'mapReduce',
-  'initializeUnorderedBulkOp',
-  'initializeOrderedBulkOp',
-  'insert',
-  'update',
-  'remove',
-  'count',
-
-  // house-keeping operations
-  'createIndex',
-  'createIndexes',
-  'dropIndex',
-  'dropIndexes',
-  'listIndexes',
-  'indexExists',
-  'indexInformation',
-  'indexes',
-  'stats',
-] as const
-
-export type MiddlewareMethods = (typeof middlewareMethods)[number]
 
 type Converter<
   TInsertSchema0 extends Document,
