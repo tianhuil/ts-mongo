@@ -46,8 +46,9 @@ jobs:
             ${{ runner.os }}-pnpm-store-
 
       - run: pnpm install
+      - run: pnpm run prettier
+      - run: pnpm run lint
       - run: pnpm run typecheck
       - run: pnpm run assert
-      - run: pnpm run lint
-      - run: pnpm run prettier
       - run: pnpm run jest
+      - run: pnpm run build
