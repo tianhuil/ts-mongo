@@ -92,7 +92,7 @@ To release, run the following to check:
 
 ```bash
 # commit all your changes
-pnpm run build # runs checks on prebuild and builds package
+npm run build # runs checks on prebuild and builds package (must use npm)
 pnpm np --no-tests --any-branch --preview # make sure this is what you want
 pnpm np --no-tests # deploy
 ```
