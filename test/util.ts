@@ -18,3 +18,5 @@ export const mkTsTestCollection = async <TSchema extends Document>() => {
   const db = await setupDb()
   return mkTsCollection<TSchema>(db, Math.random().toString())
 }
+
+afterAll(async () => await client?.close())
