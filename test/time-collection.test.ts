@@ -1,7 +1,7 @@
 import { ObjectId } from 'mongodb'
 import { z } from 'zod'
 import { convertToTimeCollection, mkTsCollection, WithTime } from '../src'
-import { setupDb } from './util'
+import { closeDb, setupDb } from './util'
 
 const delay = (ms: number) => {
   return new Promise((resolve) => {
@@ -58,3 +58,5 @@ test('updateOne', async () => {
   expect(result?.createdAt.getTime()).toBeLessThan(time)
   expect(result?.updatedAt.getTime()).toBeGreaterThan(time)
 })
+
+afterAll(() => closeDb())

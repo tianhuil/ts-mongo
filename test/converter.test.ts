@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { mkTsCollection, WithTime } from '../src'
 import { convertReadWriteCollection } from '../src/converter'
-import { setupDb } from './util'
+import { closeDb, setupDb } from './util'
 
 const Example = z.object({
   a: z.string(),
@@ -56,3 +56,5 @@ test('find', async () => {
   ).resolves.toEqual([])
   expect(() => collection.find({ a: 'another value' })).toThrow()
 })
+
+afterAll(() => closeDb())

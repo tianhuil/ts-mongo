@@ -1,5 +1,5 @@
 import { addMiddleware } from '../src'
-import { mkTsTestCollection } from './util'
+import { closeDb, mkTsTestCollection } from './util'
 
 type Example = { a: number }
 
@@ -43,3 +43,5 @@ test('listening on find', async () => {
   expect(before).toHaveBeenCalledWith([{}])
   expect(after).toHaveBeenCalledTimes(1)
 })
+
+afterAll(() => closeDb())

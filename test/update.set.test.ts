@@ -1,4 +1,4 @@
-import { mkTsTestCollection } from './util'
+import { closeDb, mkTsTestCollection } from './util'
 
 type Example = { a: { b: number; c?: string }; d: number }
 
@@ -34,3 +34,5 @@ test('set other key', async () => {
   const result3 = await col.findOne({ _id: id })
   expect(result3).toStrictEqual({ _id: id, a: { b: 2, c: 'hi' }, d: 10 })
 })
+
+afterAll(() => closeDb())
