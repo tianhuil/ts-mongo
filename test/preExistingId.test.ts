@@ -1,5 +1,5 @@
 import { ObjectId } from 'mongodb'
-import { mkTsTestCollection } from './util'
+import { closeDb, mkTsTestCollection } from './util'
 
 type Example = { a: number; _id: ObjectId }
 
@@ -13,3 +13,5 @@ test('set on dot notation', async () => {
     /E11000 duplicate key error dup key/
   )
 })
+
+afterAll(() => closeDb())

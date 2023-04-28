@@ -1,5 +1,5 @@
 import { TsLegacyCoordinates } from '../src/types/geojson'
-import { mkTsTestCollection } from './util'
+import { closeDb, mkTsTestCollection } from './util'
 
 type Example = {
   Name: string
@@ -77,3 +77,5 @@ describe('Near', () => {
     expect(result[0]).toStrictEqual(locations[1])
   })
 })
+
+afterAll(() => closeDb())

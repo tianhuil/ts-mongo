@@ -14,9 +14,9 @@ export const setupDb = async (): Promise<Db> => {
   return client.db() as Db
 }
 
+export const closeDb = async (): Promise<void> => await client?.close()
+
 export const mkTsTestCollection = async <TSchema extends Document>() => {
   const db = await setupDb()
   return mkTsCollection<TSchema>(db, Math.random().toString())
 }
-
-afterAll(async () => await client?.close())

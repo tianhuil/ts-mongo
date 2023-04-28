@@ -1,5 +1,5 @@
 import z from 'zod'
-import { mkTsTestCollection } from './util'
+import { closeDb, mkTsTestCollection } from './util'
 
 const Example = z.object({
   a: z.object({ b: z.number(), c: z.string() }),
@@ -42,3 +42,5 @@ test('exclude without dot notation', async () => {
 
   expect(result).toEqual({ a: { b: 2, c: 's' } })
 })
+
+afterAll(() => closeDb())
