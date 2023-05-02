@@ -269,11 +269,12 @@ export const convertToZodCollection = <TSchema extends Document>(
       let parsedObj: UpdateObjType = {}
 
       /**
-       * Note: The goal was to make all the fields in the schema optional
-       * not make the whole object optional. Since the caller must be able to
-       * update a subset of all the fields/keys in the schema.
+       * Note: The goal was to make all the fields in the schema optional,
+       * since the caller must be able to update a subset of the fields/keys
+       * in the schema.
        */
       const updateSchema = schema.optional()
+
       for (key in obj) {
         if (silentError) {
           const result = updateSchema.safeParse(obj[key])
