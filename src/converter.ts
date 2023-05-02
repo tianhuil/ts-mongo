@@ -254,16 +254,49 @@ export const convertToZodCollection = <TSchema extends Document>(
 ): TsReadWriteCollection<TSchema, WithId<TSchema>> =>
   convertReadWriteCollection(collection, {
     preInsert: (obj) => {
-      silentError ? schema.safeParse(obj) : schema.parse(obj)
-      return obj
+      if (silentError) {
+        const result = schema.safeParse(obj)
+        if (result.success)
+          return result.data as OptionalUnlessRequiredId<TSchema>
+        else return obj
+      } else {
+        return schema.parse(obj) as OptionalUnlessRequiredId<TSchema>
+      }
     },
     preUpdate: (obj) => {
-      silentError ? schema.safeParse(obj) : schema.parse(obj)
-      return obj
+      type UpdateObjType = typeof obj
+      let key: keyof UpdateObjType
+      let parsedObj: UpdateObjType = {}
+
+      /**
+       * The goal was to make all the fields in the schema optional
+       * not make the whole object optional. Since caller must be able to
+       * update a subset of all the fields/keys in the schema.
+       */
+      const updateSchema = schema.optional()
+      for (key in obj) {
+        if (silentError) {
+          const result = updateSchema.safeParse(obj[key])
+          if (result.success) {
+            parsedObj[key] = result.data
+          } else {
+            parsedObj[key] = obj[key] as any
+          }
+        } else {
+          parsedObj[key] = updateSchema.parse(obj[key])
+        }
+      }
+      return parsedObj
     },
     preReplace: (obj) => {
-      silentError ? schema.safeParse(obj) : schema.parse(obj)
-      return obj
+      if (silentError) {
+        const result = schema.safeParse(obj)
+        if (result.success)
+          return result.data as OptionalUnlessRequiredId<TSchema>
+        else return obj
+      } else {
+        return schema.parse(obj) as OptionalUnlessRequiredId<TSchema>
+      }
     },
     postFind: (obj) => obj,
     preFilter: (obj) => obj,
