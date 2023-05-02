@@ -1,6 +1,9 @@
 import { z } from 'zod'
 import { mkTsCollection, WithTime } from '../src'
-import { convertReadWriteCollection } from '../src/converter'
+import {
+  convertReadWriteCollection,
+  convertToZodCollection,
+} from '../src/converter'
 import { closeDb, setupDb } from './util'
 
 const Example = z.object({
@@ -55,6 +58,37 @@ test('find', async () => {
     collection.find({ a: requiredValue }).toArray()
   ).resolves.toEqual([])
   expect(() => collection.find({ a: 'another value' })).toThrow()
+})
+
+const Schema = z.object({
+  a: z.string(),
+  b: z.number().optional(),
+  createdAt: z.date(),
+  updatedAt: z.date(),
+})
+
+const timeValues = {
+  createdAt: new Date(),
+  updatedAt: new Date(),
+}
+
+test('insertOne', async () => {
+  const collection = await initializeCollection()
+  const zColl = convertToZodCollection<WithTime<Example>>(
+    collection,
+    Schema,
+    false
+  )
+
+  await expect(
+    zColl.insertOne({ ...timeValues, a: requiredValue })
+  ).resolves.toBeTruthy()
+  expect(() =>
+    zColl.insertOne({
+      ...timeValues,
+      a: 'another value',
+    })
+  ).toThrow()
 })
 
 afterAll(() => closeDb())
