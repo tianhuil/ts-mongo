@@ -72,12 +72,33 @@ const timeValues = {
   updatedAt: new Date(),
 }
 
-test('insertOne', async () => {
+test('zodCollection:insertOne', async () => {
+  const collection = await initializeCollection()
+  const zColl = convertToZodCollection<WithTime<Example>>(collection, Schema)
+
+  await expect(
+    zColl.insertOne({ ...timeValues, a: requiredValue })
+  ).resolves.toBeTruthy()
+  expect(() =>
+    zColl.insertOne({
+      ...timeValues,
+      a: 'another value',
+    })
+  ).toThrow()
+  expect(() =>
+    zColl.insertOne({
+      c: 'some value',
+      d: 'another value',
+    } as any)
+  ).toThrow()
+})
+
+test('zodCollection:insertOne:silentError', async () => {
   const collection = await initializeCollection()
   const zColl = convertToZodCollection<WithTime<Example>>(
     collection,
     Schema,
-    false
+    true
   )
 
   await expect(
@@ -88,6 +109,166 @@ test('insertOne', async () => {
       ...timeValues,
       a: 'another value',
     })
+  ).toThrow()
+  expect(() =>
+    zColl.insertOne({
+      c: 'some value',
+      d: 'another value',
+    } as any)
+  ).toThrow()
+})
+
+test('zodCollection:updateOne', async () => {
+  const collection = await initializeCollection()
+  const zColl = convertToZodCollection<WithTime<Example>>(collection, Schema)
+  const insertResult = await zColl.insertOne({
+    ...timeValues,
+    a: requiredValue,
+  })
+  expect(insertResult).toBeTruthy()
+
+  expect(
+    zColl.updateOne(
+      { _id: insertResult.insertedId, a: requiredValue },
+      {
+        $set: {
+          ...timeValues,
+          a: 'another value',
+        },
+      }
+    )
+  ).resolves.toBeTruthy()
+
+  // Note: Does not pass due to the issue mentioned in converter.ts
+  // Note: Passes when 'silentError' is true (see test 'zodCollection:updateOne:silentError')
+  expect(
+    zColl.updateOne(
+      { _id: insertResult.insertedId, a: requiredValue },
+      {
+        $set: {
+          ...timeValues,
+        },
+      }
+    )
+  ).resolves.toBeTruthy()
+  expect(() =>
+    zColl.updateOne(
+      { _id: insertResult.insertedId },
+      {
+        $set: {
+          c: 'some value',
+          d: 'another value',
+        } as any,
+      }
+    )
+  ).toThrow()
+})
+
+test('zodCollection:updateOne:silentError', async () => {
+  const collection = await initializeCollection()
+  const zColl = convertToZodCollection<WithTime<Example>>(
+    collection,
+    Schema,
+    true
+  )
+  const insertResult = await zColl.insertOne({
+    ...timeValues,
+    a: requiredValue,
+  })
+  expect(insertResult).toBeTruthy()
+
+  expect(
+    zColl.updateOne(
+      { _id: insertResult.insertedId, a: requiredValue },
+      {
+        $set: {
+          ...timeValues,
+          a: 'another value',
+        },
+      }
+    )
+  ).resolves.toBeTruthy()
+
+  expect(
+    zColl.updateOne(
+      { _id: insertResult.insertedId, a: requiredValue },
+      {
+        $set: {
+          ...timeValues,
+        },
+      }
+    )
+  ).resolves.toBeTruthy()
+  expect(() =>
+    zColl.updateOne(
+      { _id: insertResult.insertedId },
+      {
+        $set: {
+          c: 'some value',
+          d: 'another value',
+        } as any,
+      }
+    )
+  ).toThrow()
+})
+
+test('zodCollection:replaceOne', async () => {
+  const collection = await initializeCollection()
+  const zColl = convertToZodCollection<WithTime<Example>>(collection, Schema)
+
+  const insertResult = await zColl.insertOne({
+    ...timeValues,
+    a: requiredValue,
+  })
+  expect(insertResult).toBeTruthy()
+
+  expect(() =>
+    zColl.replaceOne(
+      { _id: insertResult.insertedId },
+      {
+        ...timeValues,
+        a: 'another value',
+      }
+    )
+  ).toThrow()
+
+  expect(() =>
+    zColl.insertOne({
+      c: 'some value',
+      d: 'another value',
+    } as any)
+  ).toThrow()
+})
+
+test('zodCollection:replaceOne:silentError', async () => {
+  const collection = await initializeCollection()
+  const zColl = convertToZodCollection<WithTime<Example>>(
+    collection,
+    Schema,
+    true
+  )
+
+  const insertResult = await zColl.insertOne({
+    ...timeValues,
+    a: requiredValue,
+  })
+  expect(insertResult).toBeTruthy()
+
+  expect(() =>
+    zColl.replaceOne(
+      { _id: insertResult.insertedId },
+      {
+        ...timeValues,
+        a: 'another value',
+      }
+    )
+  ).toThrow()
+
+  expect(() =>
+    zColl.insertOne({
+      c: 'some value',
+      d: 'another value',
+    } as any)
   ).toThrow()
 })
 
