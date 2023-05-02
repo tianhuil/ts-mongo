@@ -1,4 +1,5 @@
-import { Document, OptionalUnlessRequiredId, WithoutId } from 'mongodb'
+import { Document, OptionalUnlessRequiredId, WithId, WithoutId } from 'mongodb'
+import { z } from 'zod'
 import { TsRawCollection, TsReadWriteCollection } from './collection'
 import { type MiddlewareMethods } from './middleware'
 import { DocumentWithId, TsFilter, TsUpdate } from './types'
@@ -245,3 +246,25 @@ export const convertReadWriteCollection = <
     TRead,
     TRead
   >(collection, converter)
+
+export const convertToZodCollection = <TSchema extends Document>(
+  collection: TsReadWriteCollection<TSchema, WithId<TSchema>>,
+  schema: z.ZodType<TSchema>,
+  silentError: boolean = false
+): TsReadWriteCollection<TSchema, WithId<TSchema>> =>
+  convertReadWriteCollection(collection, {
+    preInsert: (obj) => {
+      silentError ? schema.safeParse(obj) : schema.parse(obj)
+      return obj
+    },
+    preUpdate: (obj) => {
+      silentError ? schema.safeParse(obj) : schema.parse(obj)
+      return obj
+    },
+    preReplace: (obj) => {
+      silentError ? schema.safeParse(obj) : schema.parse(obj)
+      return obj
+    },
+    postFind: (obj) => obj,
+    preFilter: (obj) => obj,
+  })
