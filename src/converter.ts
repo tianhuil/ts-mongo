@@ -251,22 +251,22 @@ export const convertToZodCollection = <TSchema extends Document>(
   collection: TsReadWriteCollection<TSchema, WithId<TSchema>>,
   schema: z.ZodType<TSchema>,
   silentError: boolean = false
-): TsReadWriteCollection<TSchema, WithId<TSchema>> =>
-  convertReadWriteCollection(collection, {
-    preInsert: (obj) => {
-      if (silentError) {
-        const result = schema.safeParse(obj)
-        if (result.success)
-          return result.data as OptionalUnlessRequiredId<TSchema>
-        else return obj
-      } else {
-        return schema.parse(obj) as OptionalUnlessRequiredId<TSchema>
-      }
-    },
+): TsReadWriteCollection<TSchema, WithId<TSchema>> => {
+  const handleInsertOrReplace = <T extends WithoutId<TSchema>>(obj: T) => {
+    if (silentError) {
+      const result = schema.safeParse(obj)
+      if (result.success)
+        return result.data as OptionalUnlessRequiredId<TSchema>
+      else return obj
+    } else {
+      return schema.parse(obj) as OptionalUnlessRequiredId<TSchema>
+    }
+  }
+  return convertReadWriteCollection(collection, {
+    preInsert: (obj) => handleInsertOrReplace(obj),
     preUpdate: (obj) => {
-      type UpdateObjType = typeof obj
-      let key: keyof UpdateObjType
-      let parsedObj: UpdateObjType = {}
+      const parsedObj: TsUpdate<TSchema> = {}
+      const typeSafeUpdateOperators = ['$set', '$inc', '$min', '$max'] as const
 
       /**
        * Note: The goal was to make all the fields in the schema optional,
@@ -275,7 +275,7 @@ export const convertToZodCollection = <TSchema extends Document>(
        */
       const updateSchema = schema.optional()
 
-      for (key in obj) {
+      for (const key of typeSafeUpdateOperators) {
         if (silentError) {
           const result = updateSchema.safeParse(obj[key])
           if (result.success) {
@@ -289,16 +289,8 @@ export const convertToZodCollection = <TSchema extends Document>(
       }
       return parsedObj
     },
-    preReplace: (obj) => {
-      if (silentError) {
-        const result = schema.safeParse(obj)
-        if (result.success)
-          return result.data as OptionalUnlessRequiredId<TSchema>
-        else return obj
-      } else {
-        return schema.parse(obj) as OptionalUnlessRequiredId<TSchema>
-      }
-    },
+    preReplace: (obj) => handleInsertOrReplace(obj),
     postFind: (obj) => obj,
     preFilter: (obj) => obj,
   })
+}
