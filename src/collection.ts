@@ -90,3 +90,23 @@ export const mkTsCollection = <TSchema extends Document>(
 
   return collection as unknown as TsCollection<TSchema>
 }
+
+/**
+ * Creates a type-save collection only with read operations.
+ *
+ * Note: The created collection still contains all operations but only has typings for read operations
+ * @param db mongodb
+ * @param name name of collection
+ * @param options collection
+ * @returns
+ */
+
+export const mkReadCollection = <TSchema extends Document>(
+  db: Db,
+  name: string,
+  options?: CollectionOptions
+) => {
+  const collection = db.collection<TSchema>(name, options)
+
+  return collection as unknown as TsReadCollection<TSchema>
+}
