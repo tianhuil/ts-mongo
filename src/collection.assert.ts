@@ -1,4 +1,11 @@
-import type { Collection, Filter, ObjectId, WithId } from 'mongodb'
+import type {
+  Collection,
+  DeleteOptions,
+  DeleteResult,
+  Filter,
+  ObjectId,
+  WithId,
+} from 'mongodb'
 import * as ta from 'type-assertions'
 import type { TsCollection, TsReadCollection } from './collection'
 import type { TsFilter, TsFindOneAndDeleteOptions } from './types'
@@ -59,6 +66,20 @@ ta.assert<
           filter: TsFilter<TSchema>,
           options?: TsFindOneAndDeleteOptions
         ): Promise<TsModifyResult<TSchema>>
+      }
+    >
+  >
+>()
+
+ta.assert<
+  ta.Not<
+    ta.Extends<
+      TsReadCollection<TSchema>,
+      {
+        deleteOne(
+          filter: TsFilter<TSchema>,
+          options?: DeleteOptions
+        ): Promise<DeleteResult>
       }
     >
   >
