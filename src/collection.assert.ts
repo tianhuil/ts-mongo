@@ -1,7 +1,8 @@
-import { Collection, Filter, ObjectId, WithId } from 'mongodb'
+import type { Collection, Filter, ObjectId, WithId } from 'mongodb'
 import * as ta from 'type-assertions'
-import { TsCollection } from './collection'
-import { TsFilter } from './types'
+import type { TsCollection, TsReadCollection } from './collection'
+import type { TsFilter, TsFindOneAndDeleteOptions } from './types'
+import type { TsModifyResult } from './types/result'
 
 type TSchema = { a: string; _id: ObjectId }
 
@@ -44,5 +45,21 @@ ta.assert<
   ta.Extends<
     Collection<TSchema>,
     { countDocuments(filter: TsFilter<TSchema>): Promise<number> }
+  >
+>()
+
+// Read only collection tests
+
+ta.assert<
+  ta.Not<
+    ta.Extends<
+      TsReadCollection<TSchema>,
+      {
+        findOneAndDelete(
+          filter: TsFilter<TSchema>,
+          options?: TsFindOneAndDeleteOptions
+        ): Promise<TsModifyResult<TSchema>>
+      }
+    >
   >
 >()
