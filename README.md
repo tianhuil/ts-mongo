@@ -88,7 +88,7 @@ When you
 
 ## Release
 
-To release, run the following to check:
+To release, run the following to check on the `main` branch:
 
 ```bash
 # commit all your changes
