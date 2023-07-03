@@ -91,6 +91,12 @@ export type WithRecordOperator<
     }
   : {}
 
+export type WithModulusOperator<Field> = Field extends number
+  ? {
+      $mod?: [number, number]
+    }
+  : {}
+
 export type WithOperator<Field, IndexType extends number = 0> =
   | RecurPartial<Field>
   | WithNegatableOperator<
@@ -102,7 +108,8 @@ export type WithOperator<Field, IndexType extends number = 0> =
         WithEqualityOperator<Field> &
         WithArrayOperator<Field> &
         WithGeoSpatialQueryOperator<Field> &
-        WithBitwiseOperator<Field>
+        WithBitwiseOperator<Field> &
+        WithModulusOperator<Field>
     >
 
 /**
