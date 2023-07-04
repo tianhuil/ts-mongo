@@ -134,6 +134,9 @@ ta.assert<ta.Extends<{ a: { $in: number[] } }, TsFilter<{ a: number }>>>()
 ta.assert<
   ta.Extends<{ a: { $mod: [number, number] } }, TsFilter<{ a: number }>>
 >()
+ta.assert<
+  ta.Not<ta.Extends<{ a: { $mod: [3, 5] } }, TsFilter<{ a: string }>>>
+>()
 
 // Test FlattenPaths / FlattenType
 type Example = {
@@ -186,6 +189,7 @@ ta.assert<
 >()
 ta.assert<ta.Extends<{ $mod: [2, 0] }, FilterType<Example, 'a'>>>()
 ta.assert<ta.Not<ta.Extends<{ $mod: [2, 0] }, FilterType<Example, 'b.c'>>>>()
+ta.assert<ta.Not<ta.Extends<{ $mod: [2, 0] }, FilterType<Example, 'b.d'>>>>()
 
 // These use to be wrong, keeping as regression testing
 ta.assert<ta.Not<ta.Extends<{ a: 2 }, WithOperator<{ a: number }[]>>>>()
