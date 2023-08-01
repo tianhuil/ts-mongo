@@ -127,4 +127,4 @@ export declare interface TsUpdateResult
   upsertedId: ObjectId | null
 }
 
-export declare interface TUpdateOptions extends UpdateOptions, TimeOptions {}
+export declare interface TsUpdateOptions extends UpdateOptions, TimeOptions {}

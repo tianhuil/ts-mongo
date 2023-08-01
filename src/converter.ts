@@ -3,10 +3,10 @@ import { TsRawCollection, TsReadWriteCollection } from './collection'
 import { type MiddlewareMethods } from './middleware'
 import {
   DocumentWithId,
-  TUpdateOptions,
   TimeOptions,
   TsFilter,
   TsUpdate,
+  TsUpdateOptions,
 } from './types'
 import { TsModifyResult } from './types/result'
 
@@ -32,7 +32,7 @@ type Converter<
   ) => OptionalUnlessRequiredId<TInsertSchema0>
   preUpdate: (
     _: TsUpdate<TUpdateSchema1>,
-    options: TUpdateOptions | undefined
+    options: TsUpdateOptions | undefined
   ) => TsUpdate<TUpdateSchema0>
   preReplace: (_: WithoutId<TReplaceSchema1>) => WithoutId<TReplaceSchema0>
   postFind: (_: TReturnSchema) => TReturnSchema

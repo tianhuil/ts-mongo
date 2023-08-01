@@ -46,7 +46,7 @@ import {
 } from './find'
 import { IndexSpecification } from './mongo-index'
 import { TsModifyResult } from './result'
-import { TsUpdate, TsUpdateResult, TUpdateOptions } from './update'
+import { TsUpdate, TsUpdateOptions, TsUpdateResult } from './update'
 import { Doc, DocumentWithId } from './util'
 
 export declare class SafeCollection<
@@ -128,7 +128,7 @@ export declare class SafeCollection<
   updateOne(
     filter: TsFilter<TFilterSchema>,
     update: TsUpdate<TUpdateSchema>,
-    options?: TUpdateOptions
+    options?: TsUpdateOptions
   ): Promise<TsUpdateResult>
   /**
    * Update multiple documents in a collection
@@ -141,7 +141,7 @@ export declare class SafeCollection<
   updateMany(
     filter: TsFilter<TFilterSchema>,
     update: TsUpdate<TUpdateSchema>,
-    options?: TUpdateOptions
+    options?: TsUpdateOptions
   ): Promise<TsUpdateResult | Document>
   /**
    * Replace a document in a collection with another document
@@ -504,7 +504,7 @@ export declare class SafeCollection<
   update(
     selector: TsFilter<TFilterSchema>,
     update: TsUpdate<TUpdateSchema>,
-    options?: TUpdateOptions
+    options?: TsUpdateOptions
   ): Promise<UpdateResult>
   /**
    * Remove documents.
