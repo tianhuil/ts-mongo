@@ -71,7 +71,9 @@ test('createdAt should not be updated if `setUpdatedAt` is false', async () => {
     { setUpdatedAt: false }
   )
   const result2 = await collection.findOne({ a: 'b' })
-  expect(result1?.updatedAt.getTime()).toEqual(result2?.updatedAt.getTime())
+  expect(result1?.updatedAt.getTime()).toStrictEqual(
+    result2?.updatedAt.getTime()
+  )
 })
 
 afterAll(() => closeDb())
