@@ -59,4 +59,20 @@ test('updateOne', async () => {
   expect(result?.updatedAt.getTime()).toBeGreaterThan(time)
 })
 
+test('createdAt should not be updated if `setUpdatedAt` is false', async () => {
+  const collection = await initializeTimeCollection()
+  await collection.insertOne({ a: 'a' })
+
+  await delay(5)
+  const time = new Date().getTime()
+  await delay(5)
+  await collection.updateOne(
+    { a: 'a' },
+    { $set: { a: 'b' } },
+    { setUpdatedAt: false }
+  )
+  const result = await collection.findOne({ a: 'b' })
+  expect(result?.updatedAt.getTime()).toEqual(time)
+})
+
 afterAll(() => closeDb())
