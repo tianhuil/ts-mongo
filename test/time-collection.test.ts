@@ -59,7 +59,7 @@ test('updateOne', async () => {
   expect(result?.updatedAt.getTime()).toBeGreaterThan(time)
 })
 
-test('createdAt should not be updated if `setUpdatedAt` is false', async () => {
+test('updatedAt should not be updated if `setUpdatedAt` is false', async () => {
   const collection = await initializeTimeCollection()
   await collection.insertOne({ a: 'a' })
   const result1 = await collection.findOne({ a: 'a' })
