@@ -1,7 +1,7 @@
 import { Document, OptionalUnlessRequiredId, WithId } from 'mongodb'
 import { TsReadWriteCollection } from './collection'
 import { convertReadWriteCollection } from './converter'
-import { DocumentWithId, TsUpdate } from './types'
+import { DocumentWithId, TimeOptions, TsUpdate } from './types'
 
 export type WithTime<T> = T & {
   createdAt: Date
@@ -30,12 +30,19 @@ export const convertToTimeCollection = <TSchema extends Document>(
       const date = new Date()
       return { ...obj, createdAt: date, updatedAt: date } as any
     },
-    preUpdate: (obj: TsUpdate<TSchema>): TsUpdate<WithTime<TSchema>> => {
+    preUpdate: (
+      obj: TsUpdate<TSchema>,
+      options: TimeOptions | undefined
+    ): TsUpdate<WithTime<TSchema>> => {
       const date = new Date()
+      const { setUpdatedAt = true } = options ?? {}
       return {
         ...(obj as TsUpdate<WithTime<TSchema>>),
         $setOnInsert: { ...obj.$setOnInsert, createdAt: date } as any,
-        $set: { ...obj.$set, updatedAt: date } as any,
+        $set: {
+          ...obj.$set,
+          ...(setUpdatedAt ? { updatedAt: date } : {}),
+        } as any,
       }
     },
     preReplace: () => {
