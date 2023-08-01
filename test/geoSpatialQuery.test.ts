@@ -31,7 +31,7 @@ const locations: Example[] = [
 const initializeData = async () => {
   const col = await mkTsTestCollection<Example>()
   const result = await col.insertMany(locations)
-  col.unsafe.createIndex({ 'location.coordinates': '2dsphere' })
+  await col.unsafe.createIndex({ 'location.coordinates': '2dsphere' })
   return [col, result.insertedIds] as const
 }
 
