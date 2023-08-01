@@ -1,8 +1,21 @@
 import { Document, OptionalUnlessRequiredId, WithoutId } from 'mongodb'
 import { TsRawCollection, TsReadWriteCollection } from './collection'
 import { type MiddlewareMethods } from './middleware'
-import { DocumentWithId, TUpdateOptions, TsFilter, TsUpdate } from './types'
+import {
+  DocumentWithId,
+  TUpdateOptions,
+  TimeOptions,
+  TsFilter,
+  TsUpdate,
+} from './types'
 import { TsModifyResult } from './types/result'
+
+/** Omits `setUpdatedAt` field from update options so it's not sent to mongo */
+const omitSetUpdatedAt = <T extends TimeOptions>(options: T | undefined) => {
+  if (!options) return undefined
+  const { setUpdatedAt, ...rest } = options
+  return rest
+}
 
 type Converter<
   TInsertSchema0 extends Document,
@@ -118,14 +131,22 @@ export const convertRawCollection = <
           return convert(
             prop,
             (oldMethod) => (filter, update, options) =>
-              oldMethod(preFilter(filter), preUpdate(update, options), options)
+              oldMethod(
+                preFilter(filter),
+                preUpdate(update, options),
+                omitSetUpdatedAt(options)
+              )
           )
         }
         case 'updateMany': {
           return convert(
             prop,
             (oldMethod) => (filter, update, options) =>
-              oldMethod(preFilter(filter), preUpdate(update, options), options)
+              oldMethod(
+                preFilter(filter),
+                preUpdate(update, options),
+                omitSetUpdatedAt(options)
+              )
           )
         }
         case 'replaceOne': {
@@ -190,7 +211,7 @@ export const convertRawCollection = <
               oldMethod(
                 preFilter(filter),
                 preUpdate(update, options),
-                options
+                omitSetUpdatedAt(options)
               ).then(convertModifyResult)
           )
         }
@@ -205,7 +226,11 @@ export const convertRawCollection = <
           return convert(
             prop,
             (oldMethod) => (filter, update, options) =>
-              oldMethod(preFilter(filter), preUpdate(update, options), options)
+              oldMethod(
+                preFilter(filter),
+                preUpdate(update, options),
+                omitSetUpdatedAt(options)
+              )
           )
         }
         default: {
