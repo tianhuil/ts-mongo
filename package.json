@@ -9,6 +9,7 @@
   "scripts": {
     "assert": ". ./assert.sh",
     "typecheck": "tsc --noEmit",
+    "typecheck:watch": "tsc --noEmit --watch",
     "jest": "jest",
     "jest:watch": "jest --watch",
     "lint": "eslint -c .eslintrc.js",

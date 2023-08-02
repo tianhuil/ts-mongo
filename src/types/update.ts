@@ -1,4 +1,10 @@
-import { Document, ObjectId, Timestamp, UpdateResult } from 'mongodb'
+import {
+  Document,
+  ObjectId,
+  Timestamp,
+  UpdateOptions,
+  UpdateResult,
+} from 'mongodb'
 import { WithOperator } from './filter'
 import {
   FlattenFilterPaths,
@@ -7,6 +13,7 @@ import {
   FlattenUpdateType,
 } from './flatten'
 import { TsSort } from './sort'
+import { TimeOptions } from './util'
 
 export declare type TsUpdate<TSchema extends Document> = {
   // General operators
@@ -119,3 +126,5 @@ export declare interface TsUpdateResult
   extends Omit<UpdateResult, 'upsertedId'> {
   upsertedId: ObjectId | null
 }
+
+export declare interface TsUpdateOptions extends UpdateOptions, TimeOptions {}

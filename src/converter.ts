@@ -1,8 +1,21 @@
 import { Document, OptionalUnlessRequiredId, WithoutId } from 'mongodb'
 import { TsRawCollection, TsReadWriteCollection } from './collection'
 import { type MiddlewareMethods } from './middleware'
-import { DocumentWithId, TsFilter, TsUpdate } from './types'
+import {
+  DocumentWithId,
+  TimeOptions,
+  TsFilter,
+  TsUpdate,
+  TsUpdateOptions,
+} from './types'
 import { TsModifyResult } from './types/result'
+
+/** Omits `setUpdatedAt` field from update options so it's not sent to mongo */
+const omitSetUpdatedAt = <T extends TimeOptions>(options: T | undefined) => {
+  if (!options) return undefined
+  const { setUpdatedAt, ...rest } = options
+  return rest
+}
 
 type Converter<
   TInsertSchema0 extends Document,
@@ -17,7 +30,10 @@ type Converter<
   preInsert: (
     obj: OptionalUnlessRequiredId<TInsertSchema1>
   ) => OptionalUnlessRequiredId<TInsertSchema0>
-  preUpdate: (_: TsUpdate<TUpdateSchema1>) => TsUpdate<TUpdateSchema0>
+  preUpdate: (
+    _: TsUpdate<TUpdateSchema1>,
+    options: TsUpdateOptions | undefined
+  ) => TsUpdate<TUpdateSchema0>
   preReplace: (_: WithoutId<TReplaceSchema1>) => WithoutId<TReplaceSchema0>
   postFind: (_: TReturnSchema) => TReturnSchema
   preFilter: (_: TsFilter<TsFilterSchema>) => TsFilter<TsFilterSchema>
@@ -115,14 +131,22 @@ export const convertRawCollection = <
           return convert(
             prop,
             (oldMethod) => (filter, update, options) =>
-              oldMethod(preFilter(filter), preUpdate(update), options)
+              oldMethod(
+                preFilter(filter),
+                preUpdate(update, options),
+                omitSetUpdatedAt(options)
+              )
           )
         }
         case 'updateMany': {
           return convert(
             prop,
             (oldMethod) => (filter, update, options) =>
-              oldMethod(preFilter(filter), preUpdate(update), options)
+              oldMethod(
+                preFilter(filter),
+                preUpdate(update, options),
+                omitSetUpdatedAt(options)
+              )
           )
         }
         case 'replaceOne': {
@@ -184,9 +208,11 @@ export const convertRawCollection = <
           return convert(
             prop,
             (oldMethod) => (filter, update, options) =>
-              oldMethod(preFilter(filter), preUpdate(update), options).then(
-                convertModifyResult
-              )
+              oldMethod(
+                preFilter(filter),
+                preUpdate(update, options),
+                omitSetUpdatedAt(options)
+              ).then(convertModifyResult)
           )
         }
         case 'insert': {
@@ -200,7 +226,11 @@ export const convertRawCollection = <
           return convert(
             prop,
             (oldMethod) => (filter, update, options) =>
-              oldMethod(preFilter(filter), preUpdate(update), options)
+              oldMethod(
+                preFilter(filter),
+                preUpdate(update, options),
+                omitSetUpdatedAt(options)
+              )
           )
         }
         default: {

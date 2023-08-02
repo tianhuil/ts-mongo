@@ -85,3 +85,8 @@ export declare type RecurFlattenUnion<
   : T extends Record<string, unknown>
   ? { readonly [P in keyof F]: RecurFlattenUnion<F[P]> }
   : never
+
+export declare interface TimeOptions {
+  /** Used to control whether to update `updatedAt` on update operations. Only works on time collections. Default is `true` */
+  setUpdatedAt?: boolean
+}

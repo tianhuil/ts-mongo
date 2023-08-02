@@ -8,7 +8,7 @@ import {
 } from 'mongodb'
 import { TsProjection } from './projection'
 import { SortDirection, TsSort } from './sort'
-import { RemodelType } from './util'
+import { RemodelType, TimeOptions } from './util'
 
 // Remove sort and projection from options; instead use project / sort on the cursor
 // This simplifies return types
@@ -22,10 +22,8 @@ export declare type TsFindOneAndReplaceOptions = Omit<
   'sort' | 'projection'
 >
 
-export declare type TsFindOneAndUpdateOptions = Omit<
-  FindOneAndUpdateOptions,
-  'sort' | 'projection'
->
+export declare type TsFindOneAndUpdateOptions = TimeOptions &
+  Omit<FindOneAndUpdateOptions, 'sort' | 'projection'>
 
 export declare type TsFindOptions = Omit<FindOptions, 'sort' | 'projection'>
 
