@@ -80,8 +80,5 @@
   },
   "publishConfig": {
     "access": "public"
-  },
-  "dependencies": {
-    "json5": "2.2.2"
   }
 }

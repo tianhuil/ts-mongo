@@ -7,11 +7,6 @@ overrides:
   semver: '>=7.5.2'
   word-wrap: '>=1.2.4'
 
-dependencies:
-  json5:
-    specifier: 2.2.2
-    version: 2.2.2
-
 devDependencies:
   '@shelf/jest-mongodb':
     specifier: ^4.1.6
@@ -4142,6 +4137,7 @@ packages:
     resolution: {integrity: sha512-46Tk9JiOL2z7ytNQWFLpj99RZkVgeHf87yGQKsIkaPz1qSH9UczKH1rO7K3wgRselo0tYMUNfecYpm/p1vC7tQ==}
     engines: {node: '>=6'}
     hasBin: true
+    dev: true
 
   /keyv@4.5.3:
     resolution: {integrity: sha512-QCiSav9WaX1PgETJ+SpNnx2PRRapJ/oRSXM4VO5OGYGSjrxbKPVFVhB3l2OCbLCk329N8qyAtsJjSjvVBWzEug==}
