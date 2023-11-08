@@ -35,7 +35,6 @@ export declare type TsReadWriteCollection<
 > = TsRawCollection<TWrite, TWrite, TWrite, TRead, TRead>
 
 export type ReadOperationKeys =
-  | 'stats'
   | 'bsonOptions'
   | 'collectionName'
   | 'count'

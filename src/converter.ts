@@ -215,24 +215,6 @@ export const convertRawCollection = <
               ).then(convertModifyResult)
           )
         }
-        case 'insert': {
-          return convert(
-            prop,
-            (oldMethod) => (docs, options) =>
-              oldMethod(docs.map(preInsert), options)
-          )
-        }
-        case 'update': {
-          return convert(
-            prop,
-            (oldMethod) => (filter, update, options) =>
-              oldMethod(
-                preFilter(filter),
-                preUpdate(update, options),
-                omitSetUpdatedAt(options)
-              )
-          )
-        }
         default: {
           const result = target[prop as keyof typeof target]
           if (result instanceof Function) {

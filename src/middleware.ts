@@ -33,12 +33,8 @@ export const middlewareMethods = [
   'findOneAndUpdate',
   'aggregate',
   'watch',
-  'mapReduce',
   'initializeUnorderedBulkOp',
   'initializeOrderedBulkOp',
-  'insert',
-  'update',
-  'remove',
   'count',
 
   // house-keeping operations
@@ -50,7 +46,6 @@ export const middlewareMethods = [
   'indexExists',
   'indexInformation',
   'indexes',
-  'stats',
 ] as const
 
 export type MiddlewareMethods = (typeof middlewareMethods)[number]
@@ -78,6 +73,9 @@ export const addMiddleware = <TSchema extends Document>(
 ) => {
   if (handler) {
     middlewareMethods.forEach((methodName) => {
+      if (collection[methodName] === undefined) {
+        console.log('>>>> Undefined method name: ', methodName)
+      }
       Object.defineProperty(collection, methodName, {
         value: handler({
           originalMethod: collection[methodName].bind(collection),
