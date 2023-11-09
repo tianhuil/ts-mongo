@@ -39,7 +39,6 @@ import {
   TsFindOptions,
 } from './find'
 import { IndexSpecification } from './mongo-index'
-import { TsModifyResult } from './result'
 import { TsUpdate, TsUpdateOptions, TsUpdateResult } from './update'
 import { Doc, DocumentWithId } from './util'
 
@@ -387,7 +386,7 @@ export declare class SafeCollection<
   findOneAndDelete(
     filter: TsFilter<TFilterSchema>,
     options?: TsFindOneAndDeleteOptions
-  ): Promise<TsModifyResult<TReturnSchema>>
+  ): Promise<TReturnSchema | null>
   /**
    * Find a document and replace it in one atomic operation. Requires a write lock for the duration of the operation.
    *
@@ -400,7 +399,7 @@ export declare class SafeCollection<
     filter: TsFilter<TFilterSchema>,
     replacement: WithoutId<TReplaceSchema>,
     options?: TsFindOneAndReplaceOptions
-  ): Promise<TsModifyResult<TReturnSchema>>
+  ): Promise<TReturnSchema | null>
   /**
    * Find a document and update it in one atomic operation. Requires a write lock for the duration of the operation.
    *
@@ -413,7 +412,7 @@ export declare class SafeCollection<
     filter: TsFilter<TFilterSchema>,
     update: TsUpdate<TUpdateSchema>,
     options?: TsFindOneAndUpdateOptions
-  ): Promise<TsModifyResult<TReturnSchema>>
+  ): Promise<TReturnSchema | null>
   /**
    * Retrieve all the indexes on the collection.
    *

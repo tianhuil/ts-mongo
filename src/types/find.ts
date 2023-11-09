@@ -14,16 +14,16 @@ import { RemodelType, TimeOptions } from './util'
 // This simplifies return types
 export declare type TsFindOneAndDeleteOptions = Omit<
   FindOneAndDeleteOptions,
-  'sort' | 'projection'
+  'sort' | 'projection' | 'includeResultMetadata'
 >
 
 export declare type TsFindOneAndReplaceOptions = Omit<
   FindOneAndReplaceOptions,
-  'sort' | 'projection'
+  'sort' | 'projection' | 'includeResultMetadata'
 >
 
 export declare type TsFindOneAndUpdateOptions = TimeOptions &
-  Omit<FindOneAndUpdateOptions, 'sort' | 'projection'>
+  Omit<FindOneAndUpdateOptions, 'sort' | 'projection' | 'includeResultMetadata'>
 
 export declare type TsFindOptions = Omit<FindOptions, 'sort' | 'projection'>
 

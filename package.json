@@ -11,8 +11,8 @@
   },
   "scripts": {
     "assert": ". ./assert.sh",
-    "typecheck": "tsc -p ./pkg-tsconfig/tsconfig.esm.json --noEmit",
-    "typecheck:watch": "tsc -p ./pkg-tsconfig/tsconfig.esm.json --noEmit --watch",
+    "typecheck": "tsc --noEmit",
+    "typecheck:watch": "tsc --noEmit --watch",
     "jest": "jest",
     "jest:watch": "jest --watch",
     "lint": "eslint -c .eslintrc.js",

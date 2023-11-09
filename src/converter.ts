@@ -8,7 +8,6 @@ import {
   TsUpdate,
   TsUpdateOptions,
 } from './types'
-import { TsModifyResult } from './types/result'
 
 /** Omits `setUpdatedAt` field from update options so it's not sent to mongo */
 const omitSetUpdatedAt = <T extends TimeOptions>(options: T | undefined) => {
@@ -94,14 +93,6 @@ export const convertRawCollection = <
     TsFilterSchema,
     TReturnSchema
   >
-
-  const convertModifyResult = ({
-    value,
-    ...result
-  }: TsModifyResult<TReturnSchema>) => ({
-    value: value ? postFind(value) : value,
-    ...result,
-  })
 
   const proxy = new Proxy<InputType>(collection, {
     get: (target, prop) => {
@@ -190,7 +181,9 @@ export const convertRawCollection = <
           return convert(
             prop,
             (oldMethod) => (filter, options) =>
-              oldMethod(preFilter(filter), options).then(convertModifyResult)
+              oldMethod(preFilter(filter), options).then((result) =>
+                result ? postFind(result) : null
+              )
           )
         }
         case 'findOneAndReplace': {
@@ -201,7 +194,7 @@ export const convertRawCollection = <
                 preFilter(filter),
                 preReplace(replacement),
                 options
-              ).then(convertModifyResult)
+              ).then((result) => (result ? postFind(result) : null))
           )
         }
         case 'findOneAndUpdate': {
@@ -212,7 +205,7 @@ export const convertRawCollection = <
                 preFilter(filter),
                 preUpdate(update, options),
                 omitSetUpdatedAt(options)
-              ).then(convertModifyResult)
+              ).then((result) => (result ? postFind(result) : null))
           )
         }
         default: {
