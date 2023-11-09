@@ -73,9 +73,6 @@ export const addMiddleware = <TSchema extends Document>(
 ) => {
   if (handler) {
     middlewareMethods.forEach((methodName) => {
-      if (collection[methodName] === undefined) {
-        console.log('>>>> Undefined method name: ', methodName)
-      }
       Object.defineProperty(collection, methodName, {
         value: handler({
           originalMethod: collection[methodName].bind(collection),
