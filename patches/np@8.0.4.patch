@@ -1,0 +1,14 @@
+diff --git a/source/index.js b/source/index.js
+index 28a263cb07b82ec1a810a7899ed79361452d080e..fdf5e40933de6302c9c3d1a048a6ad6a8bed732d 100644
+--- a/source/index.js
++++ b/source/index.js
+@@ -133,7 +133,8 @@ const np = async (input = 'patch', options, {pkg, rootDir}) => {
+ 				enabled: () => options.yarn === false,
+ 				task() {
+ 					const args = hasLockFile ? ['ci'] : ['install', '--no-package-lock', '--no-production'];
+-					return exec('npm', [...args, '--engine-strict']);
++					// Do this because "@shelf/jest-mongodb" does not support mongodb 6.x yet.
++					return exec('npm', [...args, '--engine-strict', '--force']);
+ 				},
+ 			},
+ 		]);
