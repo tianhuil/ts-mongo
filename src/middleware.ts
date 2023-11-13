@@ -33,12 +33,8 @@ export const middlewareMethods = [
   'findOneAndUpdate',
   'aggregate',
   'watch',
-  'mapReduce',
   'initializeUnorderedBulkOp',
   'initializeOrderedBulkOp',
-  'insert',
-  'update',
-  'remove',
   'count',
 
   // house-keeping operations
@@ -50,7 +46,6 @@ export const middlewareMethods = [
   'indexExists',
   'indexInformation',
   'indexes',
-  'stats',
 ] as const
 
 export type MiddlewareMethods = (typeof middlewareMethods)[number]

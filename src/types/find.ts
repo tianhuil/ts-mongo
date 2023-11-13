@@ -11,19 +11,20 @@ import { SortDirection, TsSort } from './sort'
 import { RemodelType, TimeOptions } from './util'
 
 // Remove sort and projection from options; instead use project / sort on the cursor
-// This simplifies return types
+// Remove includeResultMetadata, which is almost never used
+// These simplifies return types
 export declare type TsFindOneAndDeleteOptions = Omit<
   FindOneAndDeleteOptions,
-  'sort' | 'projection'
+  'sort' | 'projection' | 'includeResultMetadata'
 >
 
 export declare type TsFindOneAndReplaceOptions = Omit<
   FindOneAndReplaceOptions,
-  'sort' | 'projection'
+  'sort' | 'projection' | 'includeResultMetadata'
 >
 
 export declare type TsFindOneAndUpdateOptions = TimeOptions &
-  Omit<FindOneAndUpdateOptions, 'sort' | 'projection'>
+  Omit<FindOneAndUpdateOptions, 'sort' | 'projection' | 'includeResultMetadata'>
 
 export declare type TsFindOptions = Omit<FindOptions, 'sort' | 'projection'>
 

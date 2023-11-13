@@ -9,7 +9,6 @@ import type {
 import * as ta from 'type-assertions'
 import type { TsCollection, TsReadCollection } from './collection'
 import type { TsFilter, TsFindOneAndDeleteOptions } from './types'
-import type { TsModifyResult } from './types/result'
 
 type TSchema = { a: string; _id: ObjectId }
 
@@ -65,7 +64,7 @@ ta.assert<
         findOneAndDelete(
           filter: TsFilter<TSchema>,
           options?: TsFindOneAndDeleteOptions
-        ): Promise<TsModifyResult<TSchema>>
+        ): Promise<TSchema | null>
       }
     >
   >

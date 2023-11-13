@@ -6,8 +6,6 @@ import {
   ChangeStream,
   ChangeStreamOptions,
   Collection,
-  CollStats,
-  CollStatsOptions,
   CountDocumentsOptions,
   CountOptions,
   CreateIndexesOptions,
@@ -24,15 +22,11 @@ import {
   InsertOneResult,
   ListIndexesCursor,
   ListIndexesOptions,
-  MapFunction,
-  MapReduceOptions,
   OptionalUnlessRequiredId,
   OrderedBulkOperation,
-  ReduceFunction,
   RenameOptions,
   ReplaceOptions,
   UnorderedBulkOperation,
-  UpdateResult,
   WithoutId,
 } from 'mongodb'
 import { TsAggregationCursor, TsPipeline } from './aggregation'
@@ -45,7 +39,6 @@ import {
   TsFindOptions,
 } from './find'
 import { IndexSpecification } from './mongo-index'
-import { TsModifyResult } from './result'
 import { TsUpdate, TsUpdateOptions, TsUpdateResult } from './update'
 import { Doc, DocumentWithId } from './util'
 
@@ -393,7 +386,7 @@ export declare class SafeCollection<
   findOneAndDelete(
     filter: TsFilter<TFilterSchema>,
     options?: TsFindOneAndDeleteOptions
-  ): Promise<TsModifyResult<TReturnSchema>>
+  ): Promise<TReturnSchema | null>
   /**
    * Find a document and replace it in one atomic operation. Requires a write lock for the duration of the operation.
    *
@@ -406,7 +399,7 @@ export declare class SafeCollection<
     filter: TsFilter<TFilterSchema>,
     replacement: WithoutId<TReplaceSchema>,
     options?: TsFindOneAndReplaceOptions
-  ): Promise<TsModifyResult<TReturnSchema>>
+  ): Promise<TReturnSchema | null>
   /**
    * Find a document and update it in one atomic operation. Requires a write lock for the duration of the operation.
    *
@@ -419,7 +412,7 @@ export declare class SafeCollection<
     filter: TsFilter<TFilterSchema>,
     update: TsUpdate<TUpdateSchema>,
     options?: TsFindOneAndUpdateOptions
-  ): Promise<TsModifyResult<TReturnSchema>>
+  ): Promise<TReturnSchema | null>
   /**
    * Retrieve all the indexes on the collection.
    *
@@ -427,13 +420,6 @@ export declare class SafeCollection<
    * @param callback - An optional callback, a Promise will be returned if none is provided
    */
   indexes(options?: IndexInformationOptions): Promise<Document[]>
-  /**
-   * Get all the collection statistics.
-   *
-   * @param options - Optional settings for the command
-   * @param callback - An optional callback, a Promise will be returned if none is provided
-   */
-  stats(options?: CollStatsOptions): Promise<CollStats>
   /**
    * Execute an aggregation framework pipeline against the collection, needs MongoDB \>= 2.2
    *
@@ -461,63 +447,10 @@ export declare class SafeCollection<
     pipeline?: Document[],
     options?: ChangeStreamOptions
   ): ChangeStream<TLocal>
-  /**
-   * Run Map Reduce across a collection. Be aware that the inline option for out will return an array of results not a collection.
-   *
-   * @deprecated collection.mapReduce is deprecated. Use the aggregation pipeline instead. Visit https://docs.mongodb.com/manual/reference/map-reduce-to-aggregation-pipeline for more information on how to translate map-reduce operations to the aggregation pipeline.
-   * @param map - The mapping function.
-   * @param reduce - The reduce function.
-   * @param options - Optional settings for the command
-   * @param callback - An optional callback, a Promise will be returned if none is provided
-   */
-  mapReduce<TKey = any, TValue = any>(
-    map: string | MapFunction<TReturnSchema>,
-    reduce: string | ReduceFunction<TKey, TValue>,
-    options?: MapReduceOptions<TKey, TValue>
-  ): Promise<Document | Document[]>
+
   initializeUnorderedBulkOp(options?: BulkWriteOptions): UnorderedBulkOperation
   /** Initiate an In order bulk write operation. Operations will be serially executed in the order they are added, creating a new operation for each switch in types. */
   initializeOrderedBulkOp(options?: BulkWriteOptions): OrderedBulkOperation
-  /**
-   * Inserts a single document or a an array of documents into MongoDB. If documents passed in do not contain the **_id** field,
-   * one will be added to each of the documents missing it by the driver, mutating the document. This behavior
-   * can be overridden by setting the **forceServerObjectId** flag.
-   *
-   * @deprecated Use insertOne, insertMany or bulkWrite instead.
-   * @param docs - The documents to insert
-   * @param options - Optional settings for the command
-   * @param callback - An optional callback, a Promise will be returned if none is provided
-   */
-  insert(
-    docs: OptionalUnlessRequiredId<TInsertSchema>[],
-    options?: BulkWriteOptions
-  ): Promise<InsertManyResult<TReturnSchema>>
-  /**
-   * Updates documents.
-   *
-   * @deprecated use updateOne, updateMany or bulkWrite
-   * @param selector - The selector for the update operation.
-   * @param update - The update operations to be applied to the documents
-   * @param options - Optional settings for the command
-   * @param callback - An optional callback, a Promise will be returned if none is provided
-   */
-  update(
-    selector: TsFilter<TFilterSchema>,
-    update: TsUpdate<TUpdateSchema>,
-    options?: TsUpdateOptions
-  ): Promise<UpdateResult>
-  /**
-   * Remove documents.
-   *
-   * @deprecated use deleteOne, deleteMany or bulkWrite
-   * @param selector - The selector for the update operation.
-   * @param options - Optional settings for the command
-   * @param callback - An optional callback, a Promise will be returned if none is provided
-   */
-  remove(
-    selector: TsFilter<TFilterSchema>,
-    options?: DeleteOptions
-  ): Promise<DeleteResult>
   /**
    * An estimated count of matching documents in the db to a filter.
    *
