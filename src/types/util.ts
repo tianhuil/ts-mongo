@@ -1,8 +1,14 @@
 import { Document, ObjectId } from 'mongodb'
 
+/** Using regular `Omit` in discriminated unions breaks them (TS will no longer discriminate between them). This utility type
+ * removes the desired keys, while maintaining the discriminated union. */
+export type OmitUnion<Type, Field extends string | number | symbol> = {
+  [Property in keyof Type as Exclude<Property, Field>]: Type[Property]
+}
+
 export declare type DocumentWithId = Document & { _id: ObjectId }
 
-export declare type OptionalId<TSchema extends DocumentWithId> = Omit<
+export declare type OptionalId<TSchema extends DocumentWithId> = OmitUnion<
   TSchema,
   '_id'
 > &
@@ -41,7 +47,7 @@ export declare type NonArrayObject = {
 }
 
 export declare type RemodelType<NewType, OldType> = NewType &
-  Omit<OldType, keyof NewType>
+  OmitUnion<OldType, keyof NewType>
 
 export declare type NonNeverKeys<TSchema extends NonArrayObject> = {
   [Key in keyof TSchema]: TSchema[Key] extends never ? never : Key
@@ -58,7 +64,10 @@ export declare type RecurRemoveNever<TSchema> = TSchema extends BaseTypes
 /**
  * Allow only one of the keys in `Keys` to be present in `T`
  */
-export type AllowOnlyOne<T, Keys extends keyof T = keyof T> = Omit<T, Keys> &
+export type AllowOnlyOne<T, Keys extends keyof T = keyof T> = OmitUnion<
+  T,
+  Keys
+> &
   {
     [K in keyof T]: Pick<T, K> & Partial<Record<Exclude<Keys, K>, never>>
   }[Keys]

@@ -8,25 +8,31 @@ import {
 } from 'mongodb'
 import { TsProjection } from './projection'
 import { SortDirection, TsSort } from './sort'
-import { RemodelType, TimeOptions } from './util'
+import { OmitUnion, RemodelType, TimeOptions } from './util'
 
 // Remove sort and projection from options; instead use project / sort on the cursor
 // Remove includeResultMetadata, which is almost never used
 // These simplifies return types
-export declare type TsFindOneAndDeleteOptions = Omit<
+export declare type TsFindOneAndDeleteOptions = OmitUnion<
   FindOneAndDeleteOptions,
   'sort' | 'projection' | 'includeResultMetadata'
 >
 
-export declare type TsFindOneAndReplaceOptions = Omit<
+export declare type TsFindOneAndReplaceOptions = OmitUnion<
   FindOneAndReplaceOptions,
   'sort' | 'projection' | 'includeResultMetadata'
 >
 
 export declare type TsFindOneAndUpdateOptions = TimeOptions &
-  Omit<FindOneAndUpdateOptions, 'sort' | 'projection' | 'includeResultMetadata'>
+  OmitUnion<
+    FindOneAndUpdateOptions,
+    'sort' | 'projection' | 'includeResultMetadata'
+  >
 
-export declare type TsFindOptions = Omit<FindOptions, 'sort' | 'projection'>
+export declare type TsFindOptions = OmitUnion<
+  FindOptions,
+  'sort' | 'projection'
+>
 
 export declare type TsFindCursor<TSchema extends Document> = RemodelType<
   {

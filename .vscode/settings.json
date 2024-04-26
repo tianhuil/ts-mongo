@@ -3,22 +3,22 @@
     "editor.formatOnSave": true,
     "editor.formatOnPaste": true,
     "editor.codeActionsOnSave": {
-      "source.organizeImports": true
+      "source.organizeImports": "explicit"
     }
   },
   "[typescript]": {
     "editor.formatOnSave": true,
     "editor.formatOnPaste": true,
     "editor.codeActionsOnSave": {
-      "source.organizeImports": true
-    },
+      "source.organizeImports": "explicit"
+    }
   },
   "files.trimTrailingWhitespace": true,
   "files.exclude": {
-      "**/node_modules": true,
+    "**/node_modules": true
   },
   "search.exclude": {
-      "**/node_modules": true,
+    "**/node_modules": true
   },
   "editor.tabSize": 2,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
@@ -37,5 +37,10 @@
   // See https://www.techiediaries.com/enable-json-comments-vs-code
   "files.associations": {
     "*.json": "jsonc"
+  },
+  "[javscript][typescript]": {
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "explicit"
+    }
   }
 }
