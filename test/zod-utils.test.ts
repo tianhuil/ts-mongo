@@ -1,7 +1,6 @@
 import * as z from 'zod'
 import { zodDeepPartial, parseFieldsAsArrays } from '../src/zod-utils'
 
-// These tests are actually unreliable (will pass even with the `.optional()` removed)
 describe('zodDeepPartial', () => {
   test('partial of primitives', () => {
     const deepPartial = zodDeepPartial(
