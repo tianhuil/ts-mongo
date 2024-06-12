@@ -37,7 +37,7 @@ export const parseFieldsAsArrays = <T extends Record<string, unknown>>(
 
 // Copied from github.com/colinhacks/zod/blob/6dad90785398885f7b058f5c0760d5ae5476b833/src/types.ts#L2189-L2217
 // and extended to support unions and discriminated unions
-export function zodDeepPartial(schema: ZodTypeAny): ZodTypeAny {
+export const zodDeepPartial = (schema: ZodTypeAny): ZodTypeAny => {
   if (schema instanceof ZodObject) {
     const newShape: any = {}
 

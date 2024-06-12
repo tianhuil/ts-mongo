@@ -43,7 +43,7 @@ export const convertToZodCollection = <TSchema extends Document>(
           : {}),
       }
     },
-    preReplace: (obj) => schema.parse(obj), // TODO: remove any _id, if present
+    preReplace: (obj) => schema.parse(obj),
     postFind: (obj) => obj,
     preFilter: (obj) => obj,
   })
