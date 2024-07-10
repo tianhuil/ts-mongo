@@ -1,4 +1,4 @@
-import { Document, OptionalUnlessRequiredId, WithId } from 'mongodb'
+import { Document, OptionalUnlessRequiredId, WithId, WithoutId } from 'mongodb'
 import { TsReadWriteCollection } from './collection'
 import { convertReadWriteCollection } from './converter'
 import { DocumentWithId, TimeOptions, TsUpdate } from './types'
@@ -13,6 +13,8 @@ export type DocumentWithIdTime = DocumentWithId & {
   updatedAt: Date
 }
 
+/** Note that `replaceOne` and `findOneAndReplace` methods will overwrite
+ * the `createdAt` and `updatedAt` fields with a new Date value. */
 export const convertToTimeCollection = <TSchema extends Document>(
   collection: TsReadWriteCollection<
     WithTime<TSchema>,
@@ -45,8 +47,9 @@ export const convertToTimeCollection = <TSchema extends Document>(
         } as any,
       }
     },
-    preReplace: () => {
-      throw Error('Does not support replace')
+    preReplace: (obj: WithoutId<TSchema>): WithoutId<WithTime<TSchema>> => {
+      const date = new Date()
+      return { ...obj, createdAt: date, updatedAt: date } as any
     },
     postFind: (obj) => obj,
     preFilter: (obj) => obj,

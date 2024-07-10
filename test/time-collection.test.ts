@@ -76,4 +76,17 @@ test('updatedAt should not be updated if `setUpdatedAt` is false', async () => {
   )
 })
 
+test('replaceOne', async () => {
+  const collection = await initializeTimeCollection()
+  await collection.insertOne({ a: 'firstInsertion' })
+  const result1 = await collection.findOne({ a: 'firstInsertion' })
+  await delay(5)
+  await collection.replaceOne({ a: 'firstInsertion' }, { a: 'replaced' })
+  const result2 = await collection.findOne({ a: 'replaced' })
+  if (!result1 || !result2) {
+    throw new Error('db result is unexpectedly null')
+  }
+  expect(result1.createdAt.getTime()).toBeLessThan(result2.createdAt.getTime())
+})
+
 afterAll(() => closeDb())
