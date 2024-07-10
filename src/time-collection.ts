@@ -13,8 +13,12 @@ export type DocumentWithIdTime = DocumentWithId & {
   updatedAt: Date
 }
 
-/** Note that `replaceOne` and `findOneAndReplace` methods will overwrite
- * the `createdAt` and `updatedAt` fields with a new Date value. */
+/**
+ * Note that `replaceOne` and `findOneAndReplace` methods will overwrite the
+ * `createdAt` and `updatedAt` fields with a new Date value. The replace methods
+ * with option `upsert=True` can create a new document and need to set
+ * `createdAt` to guarantee the field is always set.
+ */
 export const convertToTimeCollection = <TSchema extends Document>(
   collection: TsReadWriteCollection<
     WithTime<TSchema>,
