@@ -27,6 +27,7 @@ jobs:
         uses: aerialops/ci-actions/pnpm-with-cached-modules@main
         with:
           node_version: 20.x
+          pnpm_version: 9.3.x
 
       - run: pnpm run prettier
       - run: pnpm run lint
