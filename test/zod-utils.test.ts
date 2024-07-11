@@ -1,5 +1,9 @@
 import * as z from 'zod'
-import { zodDeepPartial, parseFieldsAsArrays } from '../src/zod-utils'
+import {
+  zodDeepPartial,
+  parseFieldsAsArrays,
+  isInstanceOfSchema,
+} from '../src/zod-utils'
 
 describe('zodDeepPartial', () => {
   test('partial of primitives', () => {
@@ -79,6 +83,44 @@ describe('zodDeepPartial', () => {
 
     expect(() => deepPartial.parse({ t: 't2' })).toThrow()
     expect(() => deepPartial.parse({ y: 'y2' })).toThrow()
+  })
+})
+
+describe('isInstanceOfSchema', () => {
+  test('should return true for same schema', () => {
+    expect(isInstanceOfSchema(z.object({}), z.ZodObject)).toBeTruthy()
+    expect(
+      isInstanceOfSchema(z.object({ prop: z.number() }), z.ZodObject)
+    ).toBeTruthy()
+    expect(isInstanceOfSchema(z.literal('TEST'), z.ZodLiteral)).toBeTruthy()
+    expect(
+      isInstanceOfSchema(z.union([z.number(), z.string()]), z.ZodUnion)
+    ).toBeTruthy()
+    expect(
+      isInstanceOfSchema(
+        z.intersection(z.literal('TEST'), z.string()),
+        z.ZodIntersection
+      )
+    ).toBeTruthy()
+    expect(isInstanceOfSchema(z.ZodNumber.create(), z.ZodNumber)).toBeTruthy()
+  })
+  test('should return false for different schemas', () => {
+    expect(isInstanceOfSchema(z.string(), z.ZodObject)).toBeFalsy()
+    expect(
+      isInstanceOfSchema(z.object({ prop: z.number() }), z.ZodNumber)
+    ).toBeFalsy()
+    expect(isInstanceOfSchema(z.number().optional(), z.ZodNumber)).toBeFalsy()
+    expect(isInstanceOfSchema(z.number().nullable(), z.ZodOptional)).toBeFalsy()
+    expect(isInstanceOfSchema(z.literal('TEST'), z.ZodString)).toBeFalsy()
+    expect(
+      isInstanceOfSchema(
+        z.discriminatedUnion('type', [
+          z.object({ type: z.literal('a') }),
+          z.object({ type: z.literal('b') }),
+        ]),
+        z.ZodUnion
+      )
+    ).toBeFalsy()
   })
 })
 
