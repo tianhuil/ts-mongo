@@ -1,13 +1,14 @@
 diff --git a/lib/types.js b/lib/types.js
-index 0eb943a350832a548f0c7c1b4bb43a4207ba44fd..fcbbe0288f64509ee7f646d7770d0ce4c1804926 100644
+index 0eb943a350832a548f0c7c1b4bb43a4207ba44fd..c2b7f9296e2a51439ab28b60aefa3a7963a48ec8 100644
 --- a/lib/types.js
 +++ b/lib/types.js
-@@ -113,6 +113,26 @@ class ZodType {
+@@ -113,6 +113,27 @@ class ZodType {
          this.isNullable = this.isNullable.bind(this);
          this.isOptional = this.isOptional.bind(this);
      }
 +    // The instanceof operator does not work properly when ts-mongo is imported from another library
 +    // https://stackoverflow.com/questions/59265098/instanceof-not-work-correctly-in-typescript-library-project
++    // This alternative implementation checks the constructor names of the object and its inherited classes
 +    static [Symbol.hasInstance](instance) {
 +        if (
 +            typeof instance !== 'object' ||
