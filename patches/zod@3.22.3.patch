@@ -1,8 +1,8 @@
 diff --git a/lib/types.js b/lib/types.js
-index 0eb943a350832a548f0c7c1b4bb43a4207ba44fd..c2b7f9296e2a51439ab28b60aefa3a7963a48ec8 100644
+index be6b81d2d1a6d317f535cfd76ba9e77ab1c3f2ad..6f05b4464d4ee079f61ce82b3e6a3b395af05cec 100644
 --- a/lib/types.js
 +++ b/lib/types.js
-@@ -113,6 +113,27 @@ class ZodType {
+@@ -95,6 +95,27 @@ class ZodType {
          this.isNullable = this.isNullable.bind(this);
          this.isOptional = this.isOptional.bind(this);
      }
