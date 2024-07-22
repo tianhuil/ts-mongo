@@ -35,24 +35,10 @@ export const parseFieldsAsArrays = <T extends Record<string, unknown>>(
   ) as T
 }
 
-/**
- * We cannot use the instanceof operator because it will always return
- * false when the library is called in a WebPack bundle (but not on tests).
- * https://stackoverflow.com/questions/59265098/instanceof-not-work-correctly-in-typescript-library-project
- * @param obj
- * @param schema
- */
-export const isInstanceOfSchema = <T extends ZodTypeAny>(
-  obj: ZodTypeAny,
-  schema: { new (...args: any): T }
-): obj is T => {
-  return obj._def.typeName === schema.name
-}
-
 // Copied from github.com/colinhacks/zod/blob/6dad90785398885f7b058f5c0760d5ae5476b833/src/types.ts#L2189-L2217
 // and extended to support unions and discriminated unions
 export const zodDeepPartial = (schema: ZodTypeAny): ZodTypeAny => {
-  if (isInstanceOfSchema(schema, ZodObject)) {
+  if (schema instanceof ZodObject) {
     const newShape: any = {}
 
     for (const key in schema.shape) {
@@ -63,22 +49,22 @@ export const zodDeepPartial = (schema: ZodTypeAny): ZodTypeAny => {
       ...schema._def,
       shape: () => newShape,
     }) as any
-  } else if (isInstanceOfSchema(schema, ZodIntersection)) {
+  } else if (schema instanceof ZodIntersection) {
     return ZodIntersection.create(
       zodDeepPartial(schema._def.left),
       zodDeepPartial(schema._def.right)
     )
-  } else if (isInstanceOfSchema(schema, ZodUnion)) {
+  } else if (schema instanceof ZodUnion) {
     type Options = [ZodTypeAny, ZodTypeAny, ...ZodTypeAny[]]
     const options = schema._def.options as Options
     return ZodUnion.create(
       options.map((option) => zodDeepPartial(option)) as Options
     ) as any
-  } else if (isInstanceOfSchema(schema, ZodDiscriminatedUnion)) {
+  } else if (schema instanceof ZodDiscriminatedUnion) {
     const types = Object.values(schema.options) as (AnyZodObject &
       ZodRawShape)[]
     const discriminator = schema.discriminator
-    const newTypeEntries = types.map((type) => {
+    const newTypes = types.map((type) => {
       const newShape: any = {}
 
       for (const key in type.shape) {
@@ -89,35 +75,22 @@ export const zodDeepPartial = (schema: ZodTypeAny): ZodTypeAny => {
           newShape[key] = ZodOptional.create(zodDeepPartial(fieldSchema))
         }
       }
-      const newType = new ZodObject({
+      return new ZodObject({
         ...type._def,
         shape: () => newShape,
       } as any)
-      return [type, newType] as const
-    })
-    const typeMap = new Map<any, any>(newTypeEntries)
-    // ZodDiscriminatedUnion uses instanceof indirectly, so we avoid it
-    return new ZodDiscriminatedUnion({
-      ...schema._def,
-      options: Array.from(typeMap.values()),
-      // Keep the same map values, but swap the objects
-      optionsMap: new Map(
-        Array.from(schema.optionsMap.entries(), ([key, oldVal]) => [
-          key,
-          typeMap.get(oldVal),
-        ])
-      ),
-    })
-  } else if (isInstanceOfSchema(schema, ZodArray)) {
+    }) as any
+    return ZodDiscriminatedUnion.create(discriminator, newTypes) as any
+  } else if (schema instanceof ZodArray) {
     return new ZodArray({
       ...schema._def,
       type: zodDeepPartial(schema.element),
     })
-  } else if (isInstanceOfSchema(schema, ZodOptional)) {
+  } else if (schema instanceof ZodOptional) {
     return ZodOptional.create(zodDeepPartial(schema.unwrap()))
-  } else if (isInstanceOfSchema(schema, ZodNullable)) {
+  } else if (schema instanceof ZodNullable) {
     return ZodNullable.create(zodDeepPartial(schema.unwrap()))
-  } else if (isInstanceOfSchema(schema, ZodTuple<any>)) {
+  } else if (schema instanceof ZodTuple) {
     return ZodTuple.create(
       schema.items.map((item: any) => zodDeepPartial(item))
     )
