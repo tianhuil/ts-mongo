@@ -13,11 +13,6 @@ overrides:
   word-wrap: '>=1.2.4'
   braces: '>=3.0.3'
 
-patchedDependencies:
-  zod@3.22.3:
-    hash: av6zrty743wz35jpsfng5vefxy
-    path: patches/zod@3.22.3.patch
-
 importers:
 
   .:
@@ -83,8 +78,8 @@ importers:
         specifier: ^4.9.5
         version: 4.9.5
       zod:
-        specifier: 3.22.3
-        version: 3.22.3(patch_hash=av6zrty743wz35jpsfng5vefxy)
+        specifier: github:cau777/zod#7a619722ad5105fda5968a84200198a6c8850ad4
+        version: https://codeload.github.com/cau777/zod/tar.gz/7a619722ad5105fda5968a84200198a6c8850ad4
 
 packages:
 
@@ -3050,8 +3045,9 @@ packages:
     resolution: {integrity: sha512-9bnSc/HEW2uRy67wc+T8UwauLuPJVn28jb+GtJY16iiKWyvmYJRXVT4UamsAEGQfPohgr2q4Tq0sQbQlxTfi1g==}
     engines: {node: '>=12.20'}
 
-  zod@3.22.3:
-    resolution: {integrity: sha512-EjIevzuJRiRPbVH4mGc8nApb/lVLKVpmUhAaR5R5doKGfAnGJ6Gr3CViAVjP+4FWSxCsybeWQdcgCtbX+7oZug==}
+  zod@https://codeload.github.com/cau777/zod/tar.gz/7a619722ad5105fda5968a84200198a6c8850ad4:
+    resolution: {tarball: https://codeload.github.com/cau777/zod/tar.gz/7a619722ad5105fda5968a84200198a6c8850ad4}
+    version: 3.23.8
 
 snapshots:
 
@@ -6411,4 +6407,4 @@ snapshots:
 
   yocto-queue@1.0.0: {}
 
-  zod@3.22.3(patch_hash=av6zrty743wz35jpsfng5vefxy): {}
+  zod@https://codeload.github.com/cau777/zod/tar.gz/7a619722ad5105fda5968a84200198a6c8850ad4: {}
