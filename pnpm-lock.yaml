@@ -78,7 +78,7 @@ importers:
         specifier: ^4.9.5
         version: 4.9.5
       zod:
-        specifier: github:cau777/zod#fix/instanceof-for-libs
+        specifier: github:cau777/zod#7a619722ad5105fda5968a84200198a6c8850ad4
         version: https://codeload.github.com/cau777/zod/tar.gz/7a619722ad5105fda5968a84200198a6c8850ad4
 
 packages:
