@@ -1,0 +1,32 @@
+diff --git a/lib/types.js b/lib/types.js
+index be6b81d2d1a6d317f535cfd76ba9e77ab1c3f2ad..6f05b4464d4ee079f61ce82b3e6a3b395af05cec 100644
+--- a/lib/types.js
++++ b/lib/types.js
+@@ -95,6 +95,27 @@ class ZodType {
+         this.isNullable = this.isNullable.bind(this);
+         this.isOptional = this.isOptional.bind(this);
+     }
++    // The instanceof operator does not work properly when ts-mongo is imported from another library
++    // https://stackoverflow.com/questions/59265098/instanceof-not-work-correctly-in-typescript-library-project
++    // This alternative implementation checks the constructor names of the object and its inherited classes
++    static [Symbol.hasInstance](instance) {
++        if (
++            typeof instance !== 'object' ||
++            instance === null ||
++            !('_def' in instance)
++        )
++            return false
++
++        // Also check inherited prototypes
++        const getPrototypeChain = (prototype) => {
++            if (!prototype) return []
++            return [prototype, ...getPrototypeChain(prototype.__proto__)]
++        }
++
++        const prototypes = getPrototypeChain(instance)
++        const className = this.name
++        return prototypes.some((proto) => proto.constructor.name === className)
++    }
+     get description() {
+         return this._def.description;
+     }
