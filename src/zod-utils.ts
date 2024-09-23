@@ -36,7 +36,7 @@ export const parseFieldsAsArrays = <T extends Record<string, unknown>>(
 }
 
 /**
- * Merge all objects into a single one. If a property appears on multiple schemas, it
+ * Merge all objects into a single one. If a property appears on multiple members, it
  * will create a ZodUnion with all possible values for that property.
  *
  * This is important because, when dealing with a union of multiple objects where all
