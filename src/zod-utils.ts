@@ -35,6 +35,57 @@ export const parseFieldsAsArrays = <T extends Record<string, unknown>>(
   ) as T
 }
 
+/**
+ * Merge all objects into a single one. If a property appears on multiple schemas, it
+ * will create a ZodUnion with all possible values for that property.
+ *
+ * This is important because, when dealing with a union of multiple objects where all
+ * fields are optional, zod won't be able to differentiate between them in a union, and
+ * will end up always choosing the first union item, even if it means stripping some fields.
+ * @param schemas
+ */
+export const mergeObjectSchemas = (schemas: z.ZodTypeAny[]): z.ZodTypeAny => {
+  const objects = schemas.filter(
+    (schema): schema is z.ZodObject<any> => schema instanceof z.ZodObject
+  )
+  // It could be a union of a ZodObject and a ZodNumber for example
+  const otherTypes = schemas.filter(
+    (schema) => !(schema instanceof z.ZodObject)
+  )
+
+  // Get all possible ZodTypes for each property
+  const mergedTypes = objects
+    .flatMap((obj) => Object.entries(obj.shape) as [string, ZodTypeAny][])
+    .reduce((acc, [key, value]): Record<string, ZodTypeAny[]> => {
+      if (key in acc) return { ...acc, [key]: [...acc[key], value] }
+      return { ...acc, [key]: [value] }
+    }, {} as Record<string, ZodTypeAny[]>)
+
+  const mergedShape = Object.fromEntries(
+    Object.entries(mergedTypes).map(([key, values]) => {
+      // This is not 100% because it will only dedupe by reference
+      const uniqueValues = Array.from(new Set(values))
+      const valueOrUnion =
+        uniqueValues.length === 1
+          ? uniqueValues[0]
+          : ZodUnion.create(
+              uniqueValues as [ZodTypeAny, ZodTypeAny, ...ZodTypeAny[]]
+            )
+      // If the value doesn't appear in all objects, make sure it's optional
+      const optionalValue =
+        values.length < objects.length
+          ? ZodOptional.create(valueOrUnion)
+          : valueOrUnion
+      return [key, optionalValue]
+    })
+  )
+
+  const allOptions = [...otherTypes, ZodObject.create(mergedShape)]
+  return allOptions.length === 1
+    ? allOptions[0]
+    : ZodUnion.create(allOptions as [ZodTypeAny, ZodTypeAny, ...ZodTypeAny[]])
+}
+
 // Copied from github.com/colinhacks/zod/blob/6dad90785398885f7b058f5c0760d5ae5476b833/src/types.ts#L2189-L2217
 // and extended to support unions and discriminated unions
 export const zodDeepPartial = (schema: ZodTypeAny): ZodTypeAny => {
@@ -57,9 +108,8 @@ export const zodDeepPartial = (schema: ZodTypeAny): ZodTypeAny => {
   } else if (schema instanceof ZodUnion) {
     type Options = [ZodTypeAny, ZodTypeAny, ...ZodTypeAny[]]
     const options = schema._def.options as Options
-    return ZodUnion.create(
-      options.map((option) => zodDeepPartial(option)) as Options
-    ) as any
+    const partialOptions = options.map(zodDeepPartial)
+    return mergeObjectSchemas(partialOptions)
   } else if (schema instanceof ZodDiscriminatedUnion) {
     const types = Object.values(schema.options) as (AnyZodObject &
       ZodRawShape)[]

@@ -1,5 +1,52 @@
 import * as z from 'zod'
-import { zodDeepPartial, parseFieldsAsArrays } from '../src/zod-utils'
+import {
+  zodDeepPartial,
+  parseFieldsAsArrays,
+  mergeObjectSchemas,
+} from '../src/zod-utils'
+
+describe('mergeObjectSchemas', () => {
+  test('should keep the properties of aa single object', () => {
+    const schema = mergeObjectSchemas([
+      z.object({ n: z.number(), s: z.string().optional() }),
+    ])
+    expect(schema.parse({ n: 1 })).toEqual({ n: 1 })
+    expect(schema.parse({ n: 1, s: 'a' })).toEqual({ n: 1, s: 'a' })
+    expect(schema.parse({ n: 1, unrelated: 'a' })).toEqual({ n: 1 })
+    expect(() => schema.parse({ s: 'a' })).toThrow()
+  })
+  test('should merge the properties of multiple objects', () => {
+    const schema = mergeObjectSchemas([
+      z.object({ type: z.literal('a'), n: z.number() }),
+      z.object({ type: z.literal('b'), s: z.string() }),
+      z.object({ n: z.boolean().optional() }),
+    ])
+
+    expect(schema.parse({})).toEqual({})
+    expect(schema.parse({ n: 1 })).toEqual({ n: 1 })
+    expect(schema.parse({ n: true })).toEqual({ n: true })
+
+    expect(schema.parse({ type: 'a' })).toEqual({ type: 'a' })
+    expect(schema.parse({ type: 'b' })).toEqual({ type: 'b' })
+    expect(() => schema.parse({ type: 'c' })).toThrow()
+
+    expect(schema.parse({ s: 'b' })).toEqual({ s: 'b' })
+  })
+  test('should be compatible with non-object types', () => {
+    const schema = mergeObjectSchemas([
+      z.object({ type: z.literal('a'), n: z.number() }),
+      z.object({ type: z.literal('b'), s: z.string() }),
+      z.number(),
+      z.null(),
+    ])
+
+    expect(schema.parse(1)).toEqual(1)
+    expect(schema.parse(null)).toEqual(null)
+    expect(() => schema.parse({ type: 'c' })).toThrow()
+    expect(() => schema.parse({})).toThrow()
+    expect(() => schema.parse('str')).toThrow()
+  })
+})
 
 describe('zodDeepPartial', () => {
   test('partial of primitives', () => {
