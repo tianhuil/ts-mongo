@@ -122,6 +122,18 @@ describe('zodDeepPartial', () => {
 
     expect(deepPartial2.parse({ s: 'a' })).toEqual({ s: 'a' })
     expect(deepPartial2.parse({ n: 2 })).toEqual({ n: 2 })
+
+    const ZUnionOfUnion = z.union([
+      z.object({ randomField: z.string().optional() }),
+      ZTestUnion,
+    ])
+    const deepPartial3 = zodDeepPartial(ZUnionOfUnion)
+    expect(deepPartial3.parse({ s: 'a' })).toEqual({ s: 'a' })
+    expect(deepPartial3.parse({ n: 2 })).toEqual({ n: 2 })
+    expect(deepPartial3.parse({ randomField: 'r', n: 3 })).toEqual({
+      randomField: 'r',
+      n: 3,
+    })
   })
 
   test('partial of discriminated union', () => {
