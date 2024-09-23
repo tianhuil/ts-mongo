@@ -1,5 +1,52 @@
 import * as z from 'zod'
-import { zodDeepPartial, parseFieldsAsArrays } from '../src/zod-utils'
+import {
+  zodDeepPartial,
+  parseFieldsAsArrays,
+  mergeObjectSchemas,
+} from '../src/zod-utils'
+
+describe('mergeObjectSchemas', () => {
+  test('should keep the properties of aa single object', () => {
+    const schema = mergeObjectSchemas([
+      z.object({ n: z.number(), s: z.string().optional() }),
+    ])
+    expect(schema.parse({ n: 1 })).toEqual({ n: 1 })
+    expect(schema.parse({ n: 1, s: 'a' })).toEqual({ n: 1, s: 'a' })
+    expect(schema.parse({ n: 1, unrelated: 'a' })).toEqual({ n: 1 })
+    expect(() => schema.parse({ s: 'a' })).toThrow()
+  })
+  test('should merge the properties of multiple objects', () => {
+    const schema = mergeObjectSchemas([
+      z.object({ type: z.literal('a'), n: z.number() }),
+      z.object({ type: z.literal('b'), s: z.string() }),
+      z.object({ n: z.boolean().optional() }),
+    ])
+
+    expect(schema.parse({})).toEqual({})
+    expect(schema.parse({ n: 1 })).toEqual({ n: 1 })
+    expect(schema.parse({ n: true })).toEqual({ n: true })
+
+    expect(schema.parse({ type: 'a' })).toEqual({ type: 'a' })
+    expect(schema.parse({ type: 'b' })).toEqual({ type: 'b' })
+    expect(() => schema.parse({ type: 'c' })).toThrow()
+
+    expect(schema.parse({ s: 'b' })).toEqual({ s: 'b' })
+  })
+  test('should be compatible with non-object types', () => {
+    const schema = mergeObjectSchemas([
+      z.object({ type: z.literal('a'), n: z.number() }),
+      z.object({ type: z.literal('b'), s: z.string() }),
+      z.number(),
+      z.null(),
+    ])
+
+    expect(schema.parse(1)).toEqual(1)
+    expect(schema.parse(null)).toEqual(null)
+    expect(() => schema.parse({ type: 'c' })).toThrow()
+    expect(() => schema.parse({})).toThrow()
+    expect(() => schema.parse('str')).toThrow()
+  })
+})
 
 describe('zodDeepPartial', () => {
   test('partial of primitives', () => {
@@ -34,18 +81,59 @@ describe('zodDeepPartial', () => {
   })
 
   test('partial of unions', () => {
-    const deepPartial = zodDeepPartial(
-      z.union([
-        z.object({ s: z.string() }).strict(),
-        z.object({ n: z.number() }).strict(),
-      ])
-    )
+    const ZTestUnion = z.union([
+      z.object({ s: z.string() }).strict(),
+      z.object({ n: z.number() }).strict(),
+    ])
+    const deepPartial = zodDeepPartial(ZTestUnion)
 
     expect(deepPartial.parse({ s: 'string' })).toEqual({ s: 'string' })
     expect(deepPartial.parse({ n: 10 })).toEqual({ n: 10 })
     expect(deepPartial.parse({})).toEqual({})
 
     expect(() => deepPartial.parse({ n: 'string' })).toThrow()
+
+    const ZNestedTestUnion = z.object({
+      field: z.number(),
+      union: ZTestUnion,
+    })
+    const nestedDeepPartial = zodDeepPartial(ZNestedTestUnion)
+    expect(
+      nestedDeepPartial.parse({ field: 1, union: { s: 'string' } })
+    ).toEqual({ field: 1, union: { s: 'string' } })
+    expect(nestedDeepPartial.parse({ field: 1, union: { n: 10 } })).toEqual({
+      field: 1,
+      union: { n: 10 },
+    })
+    expect(nestedDeepPartial.parse({ field: 1, union: {} })).toEqual({
+      field: 1,
+      union: {},
+    })
+
+    const deepPartial2 = zodDeepPartial(
+      z.union([
+        z.object({
+          t: z.literal('a'),
+          s: z.string(),
+        }),
+        z.object({ t: z.literal('b'), n: z.number() }),
+      ])
+    )
+
+    expect(deepPartial2.parse({ s: 'a' })).toEqual({ s: 'a' })
+    expect(deepPartial2.parse({ n: 2 })).toEqual({ n: 2 })
+
+    const ZUnionOfUnion = z.union([
+      z.object({ randomField: z.string().optional() }),
+      ZTestUnion,
+    ])
+    const deepPartial3 = zodDeepPartial(ZUnionOfUnion)
+    expect(deepPartial3.parse({ s: 'a' })).toEqual({ s: 'a' })
+    expect(deepPartial3.parse({ n: 2 })).toEqual({ n: 2 })
+    expect(deepPartial3.parse({ randomField: 'r', n: 3 })).toEqual({
+      randomField: 'r',
+      n: 3,
+    })
   })
 
   test('partial of discriminated union', () => {
