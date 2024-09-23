@@ -81,18 +81,34 @@ describe('zodDeepPartial', () => {
   })
 
   test('partial of unions', () => {
-    const deepPartial = zodDeepPartial(
-      z.union([
-        z.object({ s: z.string() }).strict(),
-        z.object({ n: z.number() }).strict(),
-      ])
-    )
+    const ZTestUnion = z.union([
+      z.object({ s: z.string() }).strict(),
+      z.object({ n: z.number() }).strict(),
+    ])
+    const deepPartial = zodDeepPartial(ZTestUnion)
 
     expect(deepPartial.parse({ s: 'string' })).toEqual({ s: 'string' })
     expect(deepPartial.parse({ n: 10 })).toEqual({ n: 10 })
     expect(deepPartial.parse({})).toEqual({})
 
     expect(() => deepPartial.parse({ n: 'string' })).toThrow()
+
+    const ZNestedTestUnion = z.object({
+      field: z.number(),
+      union: ZTestUnion,
+    })
+    const nestedDeepPartial = zodDeepPartial(ZNestedTestUnion)
+    expect(
+      nestedDeepPartial.parse({ field: 1, union: { s: 'string' } })
+    ).toEqual({ field: 1, union: { s: 'string' } })
+    expect(nestedDeepPartial.parse({ field: 1, union: { n: 10 } })).toEqual({
+      field: 1,
+      union: { n: 10 },
+    })
+    expect(nestedDeepPartial.parse({ field: 1, union: {} })).toEqual({
+      field: 1,
+      union: {},
+    })
 
     const deepPartial2 = zodDeepPartial(
       z.union([
