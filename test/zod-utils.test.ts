@@ -46,6 +46,19 @@ describe('zodDeepPartial', () => {
     expect(deepPartial.parse({})).toEqual({})
 
     expect(() => deepPartial.parse({ n: 'string' })).toThrow()
+
+    const deepPartial2 = zodDeepPartial(
+      z.union([
+        z.object({
+          t: z.literal('a'),
+          s: z.string(),
+        }),
+        z.object({ t: z.literal('b'), n: z.number() }),
+      ])
+    )
+
+    expect(deepPartial2.parse({ s: 'a' })).toEqual({ s: 'a' })
+    expect(deepPartial2.parse({ n: 2 })).toEqual({ n: 2 })
   })
 
   test('partial of discriminated union', () => {
