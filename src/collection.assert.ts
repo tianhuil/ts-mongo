@@ -7,7 +7,7 @@ import type {
   WithId,
 } from 'mongodb'
 import * as ta from 'type-assertions'
-import { TsCollection, TsReadCollection } from './collection'
+import type { TsCollection, TsReadCollection } from './collection'
 import type { TsFilter, TsFindOneAndDeleteOptions } from './types'
 
 type TSchema = { a: string; _id: ObjectId }
