@@ -16,6 +16,7 @@ import {
   DropCollectionOptions,
   DropIndexesOptions,
   EstimatedDocumentCountOptions,
+  Flatten,
   IndexInformationOptions,
   InsertManyResult,
   InsertOneOptions,
@@ -27,6 +28,7 @@ import {
   RenameOptions,
   ReplaceOptions,
   UnorderedBulkOperation,
+  WithId,
   WithoutId,
 } from 'mongodb'
 import { TsAggregationCursor, TsPipeline } from './aggregation'
@@ -39,8 +41,14 @@ import {
   TsFindOptions,
 } from './find'
 import { IndexSpecification } from './mongo-index'
-import { TsUpdate, TsUpdateOptions, TsUpdateResult } from './update'
+import {
+  SelectFlattenUpdatePaths,
+  TsUpdate,
+  TsUpdateOptions,
+  TsUpdateResult,
+} from './update'
 import { Doc, DocumentWithId } from './util'
+import { FlattenProjectionPaths, FlattenProjectionType } from './flatten'
 
 export declare class SafeCollection<
   TInsertSchema extends Document,
@@ -369,13 +377,12 @@ export declare class SafeCollection<
    * @param key - Field of the document to find distinct values for
    * @param filter - The filter for filtering the set of documents to which we apply the distinct filter.
    * @param options - Optional settings for the command
-   * @param callback - An optional callback, a Promise will be returned if none is provided
    */
-  distinct(
-    key: string,
+  distinct<TKey extends FlattenProjectionPaths<TReturnSchema>>(
+    key: TKey,
     filter: TsFilter<TFilterSchema>,
     options?: DistinctOptions
-  ): Promise<any[]>
+  ): Promise<FlattenProjectionType<TReturnSchema, TKey>[]>
   /**
    * Find a document and delete it in one atomic operation. Requires a write lock for the duration of the operation.
    *
