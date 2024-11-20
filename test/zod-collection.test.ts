@@ -1,7 +1,7 @@
 import { z } from 'zod'
-import { convertToZodCollection, TsReadWriteCollection, WithTime } from '../src'
+import { convertToZodCollection, WithTime } from '../src'
 import { closeDb, mkTsTestCollection } from './util'
-import { ObjectId, WithId } from 'mongodb'
+import { ObjectId } from 'mongodb'
 
 const ZExample = z.object({
   a: z.number(),
@@ -24,6 +24,12 @@ test('Documents should be parsed correctly on insert', async () => {
   ).toThrow()
   await expect(
     zodCol.insertOne({ a: 0, b: 'string', numbers: [0] })
+  ).resolves.toBeTruthy()
+
+  // @ts-expect-error
+  expect(() => zodCol.insertMany([{ a: 0, b: 0 }])).toThrow()
+  await expect(
+    zodCol.insertMany([{ a: 0, b: 'string', numbers: [7] }])
   ).resolves.toBeTruthy()
 })
 
@@ -52,6 +58,18 @@ test('Should allow inserting documents with _id even if not in schema', async ()
       // @ts-expect-error
       _id: 'idStr',
     })
+  ).toThrow()
+
+  expect(() =>
+    zodCol.insertMany([
+      {
+        a: 0,
+        b: 'string',
+        numbers: [0],
+        // @ts-expect-error
+        _id: 'idStr',
+      },
+    ])
   ).toThrow()
 })
 
