@@ -1,6 +1,7 @@
 import { z } from 'zod'
 import { convertToZodCollection } from '../src'
 import { closeDb, mkTsTestCollection } from './util'
+import { ObjectId } from 'mongodb'
 
 const ZExample = z.object({
   a: z.number(),
@@ -24,6 +25,15 @@ test('Documents should be parsed correctly on insert', async () => {
   await expect(
     zodCol.insertOne({ a: 0, b: 'string', numbers: [0] })
   ).resolves.toBeTruthy()
+
+  const id = new ObjectId()
+  const { insertedId } = await zodCol.insertOne({
+    a: 0,
+    b: 'string',
+    numbers: [0],
+    _id: id,
+  })
+  expect(insertedId.equals(id)).toBeTruthy()
 
   expect(() => zodCol.insertMany([{ a: 0, b: 0 }])).toThrow()
   await expect(
