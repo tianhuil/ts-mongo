@@ -1,7 +1,7 @@
 import { TsReadWriteCollection } from './collection'
 import z from 'zod'
 import { convertReadWriteCollection } from './converter'
-import { OptionalUnlessRequiredId, WithId, Document, ObjectId } from 'mongodb'
+import { OptionalUnlessRequiredId, WithId, Document } from 'mongodb'
 import { WithTime } from './time-collection'
 import { parseFieldsAsArrays, zodDeepPartial } from './zod-utils'
 
