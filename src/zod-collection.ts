@@ -1,7 +1,7 @@
 import { TsReadWriteCollection } from './collection'
 import z from 'zod'
 import { convertReadWriteCollection } from './converter'
-import { OptionalUnlessRequiredId, WithId, Document } from 'mongodb'
+import { OptionalUnlessRequiredId, WithId, Document, ObjectId } from 'mongodb'
 import { WithTime } from './time-collection'
 import { parseFieldsAsArrays, zodDeepPartial } from './zod-utils'
 
@@ -21,7 +21,18 @@ export const convertToZodCollection = <TSchema extends Document>(
     preInsert: (
       obj: OptionalUnlessRequiredId<TSchema>
     ): OptionalUnlessRequiredId<TSchema> => {
-      return schema.parse(obj) as OptionalUnlessRequiredId<TSchema>
+      const schemaWithId = schema.and(
+        z.object({
+          _id: z
+            // Can't be instanceof(ObjectId) because the instanceof operator
+            // doesn't work correctly when ts-mongo is imported by another lib
+            // This is similar to what we do with zod instance checking
+            .instanceof(Object)
+            .refine((obj) => obj.constructor.name === 'ObjectId')
+            .optional(),
+        })
+      )
+      return schemaWithId.parse(obj) as OptionalUnlessRequiredId<TSchema>
     },
     preUpdate: (obj) => {
       const partialSchema = zodDeepPartial(schema)

@@ -35,6 +35,14 @@ test('Documents should be parsed correctly on insert', async () => {
   })
   expect(insertedId.equals(id)).toBeTruthy()
 
+  expect(() =>
+    zodCol.insertOne({ a: 'string', b: 'string', numbers: [0], _id: null })
+  ).toThrow()
+
+  expect(() =>
+    zodCol.insertOne({ a: 'string', b: 'string', numbers: [0], _id: 'idStr' })
+  ).toThrow()
+
   expect(() => zodCol.insertMany([{ a: 0, b: 0 }])).toThrow()
   await expect(
     zodCol.insertMany([{ a: 0, b: 'string', numbers: [7] }])
