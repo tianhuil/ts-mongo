@@ -26,7 +26,8 @@ export const convertToZodCollection = <TSchema extends Document>(
           _id: z
             // Can't be instanceof(ObjectId) because the instanceof operator
             // doesn't work correctly when ts-mongo is imported by another lib
-            // This is similar to what we do with zod instance checking
+            // This is similar to what we do with zod instance checking here:
+            // https://github.com/cau777/zod/blob/ee7f929f6b145721e5f79ad8ba7a2357d32053f6/src/types.ts#L206-L226
             .instanceof(Object)
             .refine((obj) => obj.constructor.name === 'ObjectId')
             .optional(),
