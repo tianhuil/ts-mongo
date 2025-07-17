@@ -7,7 +7,7 @@
     "url": "https://github.com/tianhuil/ts-mongo.git"
   },
   "engines": {
-    "node": ">=18.13.0 <21.0.0"
+    "node": ">=18.13.0"
   },
   "scripts": {
     "assert": ". ./assert.sh",
