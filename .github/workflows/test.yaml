@@ -29,6 +29,21 @@ jobs:
           node_version: 20.x
           pnpm_version: 9.3.x
 
+      - name: Cache libssl binary
+        id: libssl-bin
+        uses: actions/cache@v4.2.3
+        with:
+          path: libssl1.1_1.1.1w-0+deb11u1_amd64.deb
+          # We will always download the same file from the url
+          key: https://debian.mirror.ac.za/debian/pool/main/o/openssl/libssl1.1_1.1.1w-0%2Bdeb11u1_amd64.deb
+
+      - name: Download libssl
+        if: steps.libssl-bin.outputs.cache-hit != 'true'
+        run: wget https://debian.mirror.ac.za/debian/pool/main/o/openssl/libssl1.1_1.1.1w-0%2Bdeb11u1_amd64.deb
+
+      - name: Install libssl
+        run: sudo dpkg -i libssl1.1_1.1.1w-0+deb11u1_amd64.deb
+
       - run: pnpm run prettier
       - run: pnpm run lint
       - run: pnpm run typecheck
